@@ -67,7 +67,7 @@ spring:
             name: DeenaBandhu
             password: m1053559
 token:
-    url: http://localhost:8091//oauth/token
+    url: http://localhost:8091/oauth/token
 logstash:
   host: localhost
   port: 5044

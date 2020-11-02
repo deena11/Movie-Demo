@@ -1,5 +1,7 @@
 package com.example.userservice.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -38,90 +40,101 @@ public class UserController {
 	@Autowired
 	private UserServiceImpl userServiceImpl;
 
-	private Logger logger = LoggerFactory.getLogger(UserController.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
+	private String message = "";
 
 	@DeleteMapping("/logout")
 	public ResponseEntity<?> revokeToken(HttpServletRequest request) throws AccessTokenRevokeException {
-		logger.info("Log out Request is Called");
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Logging out process");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(userServiceImpl.logout(request));
+		LOGGER.info("Log out Request is Called");
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		message = "Logging out process";
+		String result = userServiceImpl.logout(request);
 
+		LOGGER.info("SuccessFully Logged out user - "+ request.getUserPrincipal().getName());
+
+		return ResponseEntity.ok(responseBuilder(message, result));
 	}
 
 	@GetMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> getUser(@PathVariable("userId") int userId) throws RecordNotFoundException {
-                logger.info("fetching user details of id - "+userId);
+		LOGGER.info("fetching user details of id - " + userId);
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(userServiceImpl.fetchById(userId));
+		message = "Successfully fetched user data of id- " + userId;
+		User result = userServiceImpl.fetchById(userId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		LOGGER.info("SuccessFully Fetched user Data of id -" + userId + " building Success Respone");
+
+		return ResponseEntity.ok(responseBuilder(message, result));
 	}
 
 	@GetMapping("/")
 	@PreAuthorize("hasRole('ROLE_admin')")
 	public ResponseEntity<?> getAllUser() throws EmptyListException, RecordNotFoundException {
-		logger.info("fetching all user details");
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(userServiceImpl.fetchAll());
+		LOGGER.info("fetching all user details");
 
-		return ResponseEntity.ok(response);
+		message = "Successfully fetched Data";
+		List<User> result = userServiceImpl.fetchAll();
+
+		LOGGER.info("SuccessFully Fetched All users. building Success Respone");
+
+		return ResponseEntity.ok(responseBuilder(message, result));
 	}
 
 	@PostMapping("/add")
 	public ResponseEntity<?> addUser(@RequestBody User user) throws RecordNotAddedException {
-			
-		logger.info("Adding user Details "+user.toString());
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully Added Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(userServiceImpl.createUser(user));
 
-		return ResponseEntity.ok(response);
+		LOGGER.info("Adding user Details " + user.toString());
+
+		message = "Successfully Added Data";
+		String result = userServiceImpl.createUser(user);
+
+		LOGGER.info("SuccessFully Added user id -" + user.getId() + " building Success Respone");
+
+		return ResponseEntity.ok(responseBuilder(message, result));
 	}
 
 	@PutMapping("/")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> updateUser(@RequestBody User user) throws RecordNotUpdatedException {
-		logger.info("updating user Details for user id -"+user.getId());
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully Updated Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(userServiceImpl.updateUser(user));
+		LOGGER.info("updating user Details for user id -" + user.getId());
 
-		return ResponseEntity.ok(response);
+		message = "Successfully Updated Data";
+		String result = userServiceImpl.updateUser(user);
+
+		LOGGER.info("SuccessFully Updated user id -" + user.getId() + " building Success Respone");
+
+		return ResponseEntity.ok(responseBuilder(message, result));
 	}
 
 	@DeleteMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_admin')")
 	public ResponseEntity<?> deleteUser(@PathVariable("userId") int userId) throws RecordNotDeletedException {
-		logger.info("Deleting user of id -"+userId);
+		LOGGER.info("Deleting user of id -" + userId);
+
+		message = "Successfully Deleted Data";
+		String result = userServiceImpl.deleteUser(userId);
+
+		LOGGER.info("SuccessFully deleted user id -" + userId + " building Success Respone");
+
+		return ResponseEntity.ok(responseBuilder(message, result));
+	}
+
+	public ApiSuccessResponse responseBuilder(String message, Object body) {
+
+		LOGGER.info("Success Response is Building");
+
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
-		response.setMessage("Successfully Deleted Data");
+		response.setMessage(message);
 		response.setSuccess(true);
 		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(userServiceImpl.deleteUser(userId));
+		response.setBody(body);
 
-		return ResponseEntity.ok(response);
+		return response;
+
 	}
 
 }

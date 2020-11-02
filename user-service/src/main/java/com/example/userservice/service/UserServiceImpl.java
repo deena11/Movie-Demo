@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +38,7 @@ public class UserServiceImpl{
 	@Autowired
 	TokenStore tokenStore;
 
-	
+	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	public String createUser(User user) throws RecordNotAddedException {
 
@@ -45,6 +47,8 @@ public class UserServiceImpl{
 			userRepository.save(user);
 			return "SuccessFully Saved USer Data";
 		} catch (DataAccessException ex) {
+			
+			logger.error("Exception Occured while Creatig a User Record");
 			throw new RecordNotAddedException("Failed to Add ");
 		}
 	}
@@ -56,6 +60,7 @@ public class UserServiceImpl{
 			userRepository.save(user);
 			return "SuccessFully Updated User Data";
 		} catch (DataAccessException ex) {
+			logger.error("Exception occured while Updated user Record of id -"+user.getId());
 			throw new RecordNotUpdatedException("Failed to Update");
 		}
 	}
@@ -66,6 +71,7 @@ public class UserServiceImpl{
 			userRepository.deleteById(userId);
 			return "SuccessFully Deleted User Data";
 		} catch (DataAccessException ex) {
+			logger.error("Exception occured while Deleted user -"+userId);
 			throw new RecordNotDeletedException("Failed to delete", ex.getCause());
 		}
 	}
@@ -81,6 +87,8 @@ public class UserServiceImpl{
 			}
 
 		} catch (DataAccessException ex) {
+			
+			logger.error("Exception occured while Fetching user details of user id -"+userId);
 			throw new RecordNotFoundException("something went wrong");
 		}
 	}
@@ -96,6 +104,8 @@ public class UserServiceImpl{
 			}
 
 		} catch (DataAccessException ex) {
+			
+			logger.error("Exception Occured while Fetching all user Details");
 			throw new RecordNotFoundException("something went wrong");
 		}
 	}
@@ -108,19 +118,23 @@ public class UserServiceImpl{
 			String tokenValue = authHeader.replace("Bearer", "").trim();
 			OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
 			if(accessToken==null) {
-				
+				logger.warn("Invalid Access Token");
 				throw new InvalidTokenException("Invalid Access Token");
 			}
 //			logger.info(tokenValue);
 			System.out.println(accessToken.toString());
 //			logger.info(tokenStore.findTokensByClientIdAndUserName("", "dummy").toString());
 			tokenStore.removeAccessToken(accessToken);
+			logger.info("User Logout Process is done Successfully");
 			
 		}
 		return "Successfully logged out";
 		}
 		
 		catch(Exception ex) {
+			
+			logger.warn("Exception occured while Logging out for user -"+request.getUserPrincipal().getName());
+			
 			throw new AccessTokenRevokeException("Failed to Logout",ex.getCause());
 		}
 	}

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class UserServiceApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
