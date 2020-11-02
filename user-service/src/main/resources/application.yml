@@ -7,12 +7,12 @@ eureka:
         fetch-registry: true
         register-with-eureka: true
         serviceUrl:
-            defaultZone: http://eureka:8761/eureka/
+            defaultZone: http://localhost:8761/eureka/
 logging:
     level:
         com:
             example:
-                movie-inventory-service: =DEBUG
+                userservice: DEBUG
         io:
             swagger:
                 models:
@@ -41,14 +41,15 @@ spring:
     application:
         name: user-service
     datasource:
-        password: root123
+        password: root
         tomcat:
             max-active: 50
             max-idle: 20
             max-wait: 20000
             min-idle: 15
-        url: jdbc:mysql://mysql-container:3306/movieapp?useSSL=true&serverTimezone=UTC
+        url: jdbc:mysql://localhost:3306/movieapp?useSSL=true&serverTimezone=UTC
         username: root
+        initialization-mode: always
     jackson:
         serialization:
             fail-on-empty-beans: false
