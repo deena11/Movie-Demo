@@ -57,19 +57,11 @@ public class SwaggerConfiguration {
 
 		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.example.movieinventoryservice"))
 				.paths(PathSelectors.any()).build().securityContexts(Collections.singletonList(securityContext()))
-				.securitySchemes(Arrays.asList(securitySchema(), apiKey(), apiCookieKey())).apiInfo(apiInfo());
+				.securitySchemes(Arrays.asList(securitySchema())).apiInfo(apiInfo());
 
 	}
 
-	@Bean
-	public SecurityScheme apiKey() {
-		return new ApiKey(HttpHeaders.AUTHORIZATION, "apiKey", "header");
-	}
-
-	@Bean
-	public SecurityScheme apiCookieKey() {
-		return new ApiKey(HttpHeaders.COOKIE, "apiKey", "cookie");
-	}
+	
 
 	private OAuth securitySchema() {
 
