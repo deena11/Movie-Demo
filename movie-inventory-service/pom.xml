@@ -20,7 +20,7 @@
 		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sonar.exclusions>**/dto/*,**/entity/*</sonar.exclusions>
+		<sonar.exclusions>**/dto/*,**/entity/*,**/config/*</sonar.exclusions>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -145,6 +145,7 @@
 						<configuration>
 							<excludes>
 								<exclude>com/example/movieinventoryservice/entity/*</exclude>
+								<exclude>com/example/movieinventoryservice/config/*</exclude>
 							</excludes>
 							<dataFile>target/jacoco.exec</dataFile>
 							<outputDirectory> target/jacoco-ut</outputDirectory>

@@ -55,7 +55,7 @@ public class PlayController {
 
 	}
 
-	@GetMapping("/")
+	@GetMapping("/all")
 	public ResponseEntity<?> getAllPlay() throws EmptyListException {
 
 		logger.info("Fetching All Play Data Request is Processing");
