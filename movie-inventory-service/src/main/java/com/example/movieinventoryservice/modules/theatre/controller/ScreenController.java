@@ -28,79 +28,78 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 @CrossOrigin
 @RequestMapping("/screen")
 public class ScreenController {
-	
+
 	private Logger logger = LoggerFactory.getLogger(ScreenController.class);
-		
-		@Autowired
-		private ScreenService screenService;
 
-		@GetMapping("/{screenId}")
-		public ResponseEntity<?> getScreen(@PathVariable("screenId") int screenId) throws RecordNotFoundException {
+	@Autowired
+	private ScreenService screenService;
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(screenService.getScreenById(screenId));
+	private String message = "";
 
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		}
+	@GetMapping("/{screenId}")
+	public ResponseEntity<ApiSuccessResponse> getScreen(@PathVariable("screenId") int screenId)
+			throws RecordNotFoundException {
 
-		@GetMapping("/")
-		public ResponseEntity<?> getAllScreen() throws EmptyListException {
+		logger.info("Fetching Screen of id - " + screenId + " Request is Processing");
+		message = "Successfully Fetched Screen Data ";
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(screenService.getAllScreens());
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, screenService.getScreenById(screenId)));
 
-			return ResponseEntity.ok(response);
-		}
+	}
 
-		@PostMapping("/")
-		public ResponseEntity<?> addScreen(@RequestBody Screen screen) throws RecordNotAddedException {
+	@GetMapping("/")
+	public ResponseEntity<?> getAllScreen() throws EmptyListException {
 
-			logger.info(screen.toString());
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully Added Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(screenService.addScreen(screen));
+		logger.info("Fetching All Screen Data Request is Processing");
+		message = "Successfully Fetched All Screens ";
 
-			return ResponseEntity.ok(response);
-		}
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, screenService.getAllScreens()));
 
-		@PutMapping("/")
-		public ResponseEntity<?> updateScreen(@RequestBody Screen screen) throws RecordNotUpdatedException {
+	}
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(screenService.updateScreen(screen));
+	@PostMapping("/")
+	public ResponseEntity<?> addScreen(@RequestBody Screen screen) throws RecordNotAddedException {
 
-			return ResponseEntity.ok(response);
-		}
+		logger.info("Adding Screen of id - " + screen.getId() + " Request is Processing");
+		message = "Successfully Added Screen - " + screen.getName();
 
-		@DeleteMapping("/{screenId}")
-		public ResponseEntity<?> deleteScreen(@PathVariable("screenId") int screenId) throws RecordNotDeletedException {
+		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED, message, screenService.addScreen(screen)));
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(screenService.deleteScreen(screenId));
+	}
 
-			return ResponseEntity.ok(response);
-		}
+	@PutMapping("/")
+	public ResponseEntity<?> updateScreen(@RequestBody Screen screen) throws RecordNotUpdatedException {
 
+		logger.info("Updating Screen of id - " + screen.getId() + " Request is Processing");
+		message = "Successfully Updated Screen - " + screen.getName();
 
-	
+		return ResponseEntity.ok(responseBuilder(HttpStatus.ACCEPTED, message, screenService.updateScreen(screen)));
+
+	}
+
+	@DeleteMapping("/{screenId}")
+	public ResponseEntity<?> deleteScreen(@PathVariable("screenId") int screenId) throws RecordNotDeletedException {
+
+		logger.info("Delete Screen of id - " + screenId + " Request is Processing");
+		message = "Successfully Deleted screen id " + screenId;
+
+		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT, message, screenService.deleteScreen(screenId)));
+
+	}
+
+	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
+
+		ApiSuccessResponse response = new ApiSuccessResponse();
+		response.setError(false);
+		response.setMessage(message);
+		response.setHttpStatusCode(status.value());
+		response.setHttpStatus(status.toString());
+		response.setSuccess(true);
+		response.setBody(body);
+
+		logger.info("Request is Processed Successfully");
+
+		return response;
+	}
 
 }

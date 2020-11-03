@@ -30,74 +30,74 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 public class MovieController {
 
 	private Logger logger = LoggerFactory.getLogger(MovieController.class);
-	
+
+	private String message = "";
+
 	@Autowired
 	private MovieService movieService;
 
 	@GetMapping("/{movieId}")
 	public ResponseEntity<?> getMovie(@PathVariable("movieId") int movieId) throws RecordNotFoundException {
 
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(movieService.getMovieById(movieId));
+		logger.info("Fetching Movie of id - " + movieId + " Request is Processing");
+		message = "Successfully Fetched Movie Data ";
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok(responseBuilder(message, movieService.getMovieById(movieId)));
+
 	}
 
 	@GetMapping("/")
 	public ResponseEntity<?> getAllMovie() throws EmptyListException {
 
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(movieService.getAllMovies());
+		logger.info("Fetching All Movie Data Request is Processing");
+		message = "Successfully Fetched All Movies ";
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseBuilder(message, movieService.getAllMovies()));
+
 	}
 
 	@PostMapping("/")
 	public ResponseEntity<?> addMovie(@RequestBody Movie movie) throws RecordNotAddedException {
 
-		logger.info(movie.toString());
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully Added Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(movieService.addMovie(movie));
+		logger.info("Adding Movie of id - " + movie.getId() + " Request is Processing");
+		message = "Successfully Added Movie - " + movie.getName();
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseBuilder(message, movieService.addMovie(movie)));
+
 	}
 
 	@PutMapping("/")
 	public ResponseEntity<?> updateMovie(@RequestBody Movie movie) throws RecordNotUpdatedException {
 
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(movieService.updateMovie(movie));
+		logger.info("Updating Movie of id - " + movie.getId() + " Request is Processing");
+		message = "Successfully Updated Movie - " + movie.getName();
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseBuilder(message, movieService.updateMovie(movie)));
+
 	}
 
 	@DeleteMapping("/{movieId}")
 	public ResponseEntity<?> deleteMovie(@PathVariable("movieId") int movieId) throws RecordNotDeletedException {
 
+		logger.info("Delete Movie of id - " + movieId + " Request is Processing");
+		message = "Successfully Deleted movie id " + movieId;
+
+		return ResponseEntity.ok(responseBuilder(message, movieService.deleteMovie(movieId)));
+	}
+
+	public ApiSuccessResponse responseBuilder(String message, Object body) {
+
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
+		response.setMessage(message);
+		response.setHttpStatusCode(200);
 		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(movieService.deleteMovie(movieId));
+		response.setSuccess(true);
+		response.setBody(body);
 
-		return ResponseEntity.ok(response);
+		logger.info("Request is Processed Successfully");
+
+		return response;
 	}
 
 }

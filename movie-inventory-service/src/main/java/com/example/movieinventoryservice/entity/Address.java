@@ -1,5 +1,7 @@
 package com.example.movieinventoryservice.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +10,7 @@ import javax.persistence.Id;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-public class Address {
+public class Address implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;

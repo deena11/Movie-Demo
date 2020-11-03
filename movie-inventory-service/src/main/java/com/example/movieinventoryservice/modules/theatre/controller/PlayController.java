@@ -1,12 +1,9 @@
 package com.example.movieinventoryservice.modules.theatre.controller;
 
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,87 +30,84 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 @CrossOrigin
 @RequestMapping("/play")
 public class PlayController {
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Value("${kafka.url}")
 	private String kafkaUrl;
-		
+
 	private Logger logger = LoggerFactory.getLogger(PlayController.class);
-		
-		@Autowired
-		private PlayService playService;
 
-		@GetMapping("/{playId}")
-		public ResponseEntity<?> getPlay(@PathVariable("playId") int playId) throws RecordNotFoundException {
+	@Autowired
+	private PlayService playService;
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(playService.getPlayById(playId));
+	private String message = "";
 
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		}
+	@GetMapping("/{playId}")
+	public ResponseEntity<ApiSuccessResponse> getPlay(@PathVariable("playId") int playId)
+			throws RecordNotFoundException {
 
-		@GetMapping("/all")
-		public ResponseEntity<?> getAllPlay() throws EmptyListException {
+		logger.info("Fetching Play of id - " + playId + " Request is Processing");
+		message = "Successfully Fetched Play Data ";
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(playService.getAllPlays());
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, playService.getPlayById(playId)));
 
-			return ResponseEntity.ok(response);
-		}
+	}
 
-		@PostMapping("/")
-		public ResponseEntity<?> addPlay(@RequestBody Play play) throws RecordNotAddedException {
+	@GetMapping("/")
+	public ResponseEntity<?> getAllPlay() throws EmptyListException {
 
-			logger.info(play.toString());
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully Added Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(playService.addPlay(play));
-			
-			  restTemplate.exchange(kafkaUrl+"play/"+"play data Added @"+new Date().toString(), HttpMethod.GET,null,String.class);
-			
-			  return ResponseEntity.ok(response);
-		}
+		logger.info("Fetching All Play Data Request is Processing");
+		message = "Successfully Fetched All Plays ";
 
-		@PutMapping("/")
-		public ResponseEntity<?> updatePlay(@RequestBody Play play) throws RecordNotUpdatedException {
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, playService.getAllPlays()));
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(playService.updatePlay(play));
+	}
 
-			return ResponseEntity.ok(response);
-		}
+	@PostMapping("/")
+	public ResponseEntity<?> addPlay(@RequestBody Play play) throws RecordNotAddedException {
 
-		@DeleteMapping("/{playId}")
-		public ResponseEntity<?> deletePlay(@PathVariable("playId") int playId) throws RecordNotDeletedException {
+		logger.info("Adding Play of id - " + play.getId() + " Request is Processing");
+		message = "Successfully Added Play";
 
-			ApiSuccessResponse response = new ApiSuccessResponse();
-			response.setError(false);
-			response.setMessage("Successfully fetched Data");
-			response.setSuccess(true);
-			response.setHttpStatus(HttpStatus.OK.toString());
-			response.setBody(playService.deletePlay(playId));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED, message, playService.addPlay(play)));
 
-			return ResponseEntity.ok(response);
-		}
+	}
 
+	@PutMapping("/")
+	public ResponseEntity<?> updatePlay(@RequestBody Play play) throws RecordNotUpdatedException {
 
+		logger.info("Updating Play of id - " + play.getId() + " Request is Processing");
+		message = "Successfully Updated Play ";
 
+		return ResponseEntity.ok(responseBuilder(HttpStatus.ACCEPTED, message, playService.updatePlay(play)));
+
+	}
+
+	@DeleteMapping("/{playId}")
+	public ResponseEntity<?> deletePlay(@PathVariable("playId") int playId) throws RecordNotDeletedException {
+
+		logger.info("Delete Play of id - " + playId + " Request is Processing");
+		message = "Successfully Deleted play id " + playId;
+
+		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT, message, playService.deletePlay(playId)));
+
+	}
+
+	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
+
+		ApiSuccessResponse response = new ApiSuccessResponse();
+		response.setError(false);
+		response.setMessage(message);
+		response.setHttpStatusCode(status.value());
+		response.setHttpStatus(status.toString());
+		response.setSuccess(true);
+		response.setBody(body);
+
+		logger.info("Request is Processed Successfully");
+
+		return response;
+	}
 
 }
