@@ -22,13 +22,13 @@ public class SearchBuilder {
     public List<PlayData> getAll(String text) {
 
         QueryBuilder query = QueryBuilders.boolQuery()
-                .should(
+                /*.should(
                         QueryBuilders.queryStringQuery(text)
                                 .lenient(true)
                                 .field("movie.name")
                                 .field("movie.cast.name")
                                 .field("screen.theatre.name")
-                ).should(QueryBuilders.queryStringQuery("*" + text + "*")
+                )*/.should(QueryBuilders.queryStringQuery("*" + text + "*")
                         .lenient(true)
                         .field("movie.name")
                         .field("movie.cast.name")

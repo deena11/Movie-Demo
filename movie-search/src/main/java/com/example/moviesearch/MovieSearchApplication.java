@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class MovieSearchApplication {
 
 	@Bean
-	@LoadBalanced
+//	@LoadBalanced
 	RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}

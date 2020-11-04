@@ -1,9 +1,12 @@
 package com.example.movieinventoryservice.modules.theatre.controller;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -71,6 +74,10 @@ public class PlayController {
 		logger.info("Adding Play of id - " + play.getId() + " Request is Processing");
 		message = "Successfully Added Play";
 
+		String kafkamessage =  restTemplate.exchange(kafkaUrl+"play/"+"play data Added @"+new Date().toString(), HttpMethod.GET,null,String.class).getBody();
+		logger.info(kafkamessage);
+		 
+		 
 		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED, message, playService.addPlay(play)));
 
 	}

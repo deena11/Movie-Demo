@@ -28,7 +28,7 @@ server:
 token:
   url: http://localhost:8091/oauth/token
 play:
-  url: http://localhost:8080/play/all
+  url: http://localhost:8081/play/all
 eureka:
   client:
     register-with-eureka: true
