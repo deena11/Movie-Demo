@@ -6,8 +6,6 @@ public class ApiSuccessResponse {
 
 	private String httpStatus;
 
-	private int httpStatusCode;
-
 	private Object body;
 
 	private boolean success;
@@ -18,12 +16,10 @@ public class ApiSuccessResponse {
 		super();
 	}
 
-	public ApiSuccessResponse(String message, String httpStatus, int httpStatusCode, Object body, boolean success,
-			boolean error) {
+	public ApiSuccessResponse(String message, String httpStatus, Object body, boolean success, boolean error) {
 		super();
 		this.message = message;
 		this.httpStatus = httpStatus;
-		this.httpStatusCode = httpStatusCode;
 		this.body = body;
 		this.success = success;
 		this.error = error;
@@ -43,14 +39,6 @@ public class ApiSuccessResponse {
 
 	public void setHttpStatus(String httpStatus) {
 		this.httpStatus = httpStatus;
-	}
-
-	public int getHttpStatusCode() {
-		return httpStatusCode;
-	}
-
-	public void setHttpStatusCode(int httpStatusCode) {
-		this.httpStatusCode = httpStatusCode;
 	}
 
 	public Object getBody() {
@@ -79,11 +67,9 @@ public class ApiSuccessResponse {
 
 	@Override
 	public String toString() {
-		return "ApiSuccessResponse [message=" + message + ", httpStatus=" + httpStatus + ", httpStatusCode="
-				+ httpStatusCode + ", body=" + body + ", success=" + success + ", error=" + error + "]";
+		return "ApiSuccessResponse [message=" + message + ", httpStatus=" + httpStatus + ", body=" + body + ", success="
+				+ success + ", error=" + error + "]";
 	}
-	
-	
-	
+
 	
 }

@@ -1,7 +1,5 @@
 package com.example.userservice.exception.handler;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -19,10 +17,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.userservice.exception.EmptyListException;
-import com.example.userservice.exception.RecordNotAddedException;
-import com.example.userservice.exception.RecordNotDeletedException;
-import com.example.userservice.exception.RecordNotFoundException;
-import com.example.userservice.exception.RecordNotUpdatedException;
+import com.example.userservice.exception.InValidUserException;
+import com.example.userservice.exception.NoSuchUserException;
+import com.example.userservice.exception.ServiceException;
 import com.example.userservice.restApiConfig.ApiErrorResponse;
 
 
@@ -47,7 +44,6 @@ public class GlobalExceptionHandler {
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
 		response.setError(true);
 
 		
@@ -67,7 +63,6 @@ public class GlobalExceptionHandler {
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -87,7 +82,6 @@ public class GlobalExceptionHandler {
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -105,7 +99,6 @@ public class GlobalExceptionHandler {
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -121,33 +114,12 @@ public class GlobalExceptionHandler {
 		logger.error("exception occured - ");
 		ex.printStackTrace();
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
-
-	@ExceptionHandler(RecordNotFoundException.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public final ResponseEntity<Object> handleRecordNotFoundExceptions(RecordNotFoundException ex, WebRequest request) {
-		ApiErrorResponse response = new ApiErrorResponse();
-
-		if (ex.getCause() != null) {
-			response.setCause(ex.getCause().getMessage());
-		} else {
-			response.setCause(ex.getLocalizedMessage());
-		}
-		response.setMessage("Something went wrong !!. Record not found.");
-		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.NOT_FOUND);
-		response.setHttpStatusCode(404);
-		response.setError(true);
-
-		return buildResponseEntity(response, HttpStatus.NOT_FOUND);
-
-	}
 	
 	@ExceptionHandler(EmptyListException.class)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -162,17 +134,15 @@ public class GlobalExceptionHandler {
 		response.setMessage("Something went wrong !!. Record not found.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.NO_CONTENT);
-		response.setHttpStatusCode(404);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.NO_CONTENT);
 
 	}
 
-	@ExceptionHandler(RecordNotAddedException.class)
-	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(RecordNotAddedException ex,
-			WebRequest request) {
+	@ExceptionHandler(NoSuchUserException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public final ResponseEntity<Object> handleNoSuchUserExceptions(NoSuchUserException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		if (ex.getCause() != null) {
@@ -180,63 +150,20 @@ public class GlobalExceptionHandler {
 		} else {
 			response.setCause(ex.getLocalizedMessage());
 		}
-		response.setMessage("Something went wrong !!. Record not created");
+		response.setMessage("Something went wrong !!. Record not found.");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.UNPROCESSABLE_ENTITY);
-		response.setHttpStatusCode(422);
+		response.setHttpStatus(HttpStatus.NOT_FOUND);
 		response.setError(true);
 
-		return buildResponseEntity(response, HttpStatus.UNPROCESSABLE_ENTITY);
+		return buildResponseEntity(response, HttpStatus.NOT_FOUND);
 
 	}
 
-	@ExceptionHandler(RecordNotDeletedException.class)
-	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public final ResponseEntity<Object> handleRecordNotDeletedExceptions(RecordNotDeletedException ex,
-			WebRequest request) {
-		ApiErrorResponse response = new ApiErrorResponse();
-
-		if (ex.getCause() != null) {
-			response.setCause(ex.getCause().getMessage());
-		} else {
-			response.setCause(ex.getLocalizedMessage());
-		}
-		response.setMessage("Something went wrong !!. Record was not deleted.");
-		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.CONFLICT);
-		response.setHttpStatusCode(409);
-		response.setError(true);
-
-		return buildResponseEntity(response, HttpStatus.CONFLICT);
-
-	}
-
-	@ExceptionHandler(RecordNotUpdatedException.class)
-	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public final ResponseEntity<Object> handleRecordNotUpdatedExceptions(RecordNotUpdatedException ex,
-			WebRequest request) {
-		ApiErrorResponse response = new ApiErrorResponse();
-
-		if (ex.getCause() != null) {
-			response.setCause(ex.getCause().getMessage());
-		} else {
-			response.setCause(ex.getLocalizedMessage());
-		}
-		response.setMessage("Something went wrong !!. Record did not got update.");
-		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.CONFLICT);
-		response.setHttpStatusCode(409);
-		response.setError(true);
-
-		return buildResponseEntity(response, HttpStatus.CONFLICT);
-
-	}
-
-		
 	
-	@ExceptionHandler(IOException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public final ResponseEntity<Object> handleIOException(IOException ex, WebRequest request) {
+	@ExceptionHandler(InValidUserException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(InValidUserException ex,
+			WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		if (ex.getCause() != null) {
@@ -244,18 +171,38 @@ public class GlobalExceptionHandler {
 		} else {
 			response.setCause(ex.getLocalizedMessage());
 		}
-		response.setMessage("IOException - Something went wrong");
+		response.setMessage("Bad input Request");
+		response.setExceptionMessage(ex.getMessage());
+		response.setHttpStatus(HttpStatus.BAD_REQUEST);
+		response.setError(true);
+
+		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
+
+	}
+
+	@ExceptionHandler(ServiceException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	public final ResponseEntity<Object> handleRecordNotDeletedExceptions(ServiceException ex,
+			WebRequest request) {
+		ApiErrorResponse response = new ApiErrorResponse();
+
+		if (ex.getCause() != null) {
+			response.setCause(ex.getCause().getMessage());
+		} else {
+			response.setCause(ex.getLocalizedMessage());
+		}
+		response.setMessage("Something went wrong.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
-	
+
+		
 	@ExceptionHandler(IllegalArgumentException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public final ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
@@ -266,11 +213,10 @@ public class GlobalExceptionHandler {
 		}
 		response.setMessage("IllegalArgumentException - Something went wrong");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
+		response.setHttpStatus(HttpStatus.BAD_REQUEST);
 		response.setError(true);
 
-		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
 
 	}
 	
@@ -290,7 +236,6 @@ public class GlobalExceptionHandler {
 		response.setMessage("Something went wrong. Object is empty or null.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);

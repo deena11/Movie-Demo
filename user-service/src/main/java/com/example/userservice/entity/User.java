@@ -8,12 +8,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
 
+
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -21,32 +28,31 @@ public class User implements Serializable {
 	private Integer id;
 
 	@Column(name = "username")
+	@Pattern(regexp="^[a-zA-Z]{1,30}+$", message="Invalid FirstName")
+	@NotNull
 	private String username;
 
 	@Column(name = "password")
+	@NotNull
+	@Pattern(regexp = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[!@#$%^&*])\\S{8,}\\z",message="Invalid Password")
+	@ApiModelProperty(notes="must contain 1 small and caps letters,number and special characters",example="Dummy@11")
 	private String password;
 
 	@Column(name = "email")
+	@NotNull
+	@Pattern(regexp= "([a-zA-Z]{1}[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[\\.][a-z]+)",
+	message="Invalid Email")
 	private String email;
 
-	@Column(name = "phone_number")
+	@Column(name = "phone_number")	
 	private String phoneNumber;
 
 	@Column(name = "role")
+	@ApiModelProperty(example = "ROLE_admin,ROLE_user")
 	private String role;
 
 	public User() {
 		super();
-	}
-
-	public User(Integer id, String username, String password, String email, String phoneNumber, String role) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.role = role;
 	}
 	
 	public User(User user){
@@ -56,6 +62,21 @@ public class User implements Serializable {
 		this.setPhoneNumber(user.getPhoneNumber());
 		this.setRole(user.getRole());
 		this.setUsername(user.getUsername());
+	}
+
+	public User(Integer id,
+			@Pattern(regexp = "^[a-zA-Z]{1,30}+$", message = "Invalid FirstName") @NotNull String username,
+			String password,
+			@NotNull @Pattern(regexp = "([a-zA-Z]{1}[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[\\.][a-z]+)", message = "Invalid Email") String email,
+			@NotNull @Pattern(regexp = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[!@#$%^&*])\\S{8,}\\z", message = "Invalid Password") String phoneNumber,
+			String role) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.role = role;
 	}
 
 	public Integer getId() {

@@ -35,8 +35,8 @@ import com.example.userservice.config.AuthorizationServerConfiguration;
 import com.example.userservice.entity.User;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.restApiConfig.ApiSuccessResponse;
-import com.example.userservice.service.UserDetailServiceImpl;
-import com.example.userservice.service.UserServiceImpl;
+import com.example.userservice.service.serviceImpl.UserDetailServiceImpl;
+import com.example.userservice.service.serviceImpl.UserServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -78,7 +78,7 @@ public class UserControllerTest {
 	@WithMockUser(username="user",roles="admin")
 	public void testGetUser() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/user/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/users/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("test"));
@@ -88,7 +88,7 @@ public class UserControllerTest {
 	@WithMockUser(username="user",roles="admin")
 	public void testGetUserException() throws Exception {
 		Mockito.when(userRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/user/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/users/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -98,7 +98,7 @@ public class UserControllerTest {
 	@WithMockUser(username="user",roles="admin")
 	public void testGetUserException1() throws Exception {
 		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/user/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/users/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -107,7 +107,7 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser(username="user",roles="admin")
 	public void testGetAllUser() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/user/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/users/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("test"));
@@ -117,7 +117,7 @@ public class UserControllerTest {
 	@WithMockUser(username="user",roles="admin")
 	public void testGetAllUserException() throws Exception {
 		Mockito.when(userRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/user/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/users/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -127,7 +127,7 @@ public class UserControllerTest {
 	@WithMockUser(username="user",roles="admin")
 	public void testGetAllUserException1() throws Exception {
 		Mockito.when(userRepository.findAll()).thenReturn(new ArrayList<User>());
-		MvcResult result = this.mockMvc.perform(get("/user/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/users/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -135,7 +135,8 @@ public class UserControllerTest {
 
 	@Test
 	public void testAddUser() throws Exception {
-		MvcResult result = mockMvc.perform(post("/user/add").contentType(MediaType.APPLICATION_JSON)
+		Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.ofNullable(null));
+		MvcResult result = mockMvc.perform(post("/users/v1/add").contentType(MediaType.APPLICATION_JSON)
 				.content(getUsersAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Successfully Added"));
@@ -144,9 +145,9 @@ public class UserControllerTest {
 
 	@Test
 	public void testAddUserException() throws Exception {
-
+		Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(getUser()));
 		Mockito.when(userRepository.save(Mockito.any(User.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/user/add").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/users/v1/add").contentType(MediaType.APPLICATION_JSON)
 				.content(getUsersAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -156,7 +157,9 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser(username="user",roles="admin")
 	public void testUpdateUser() throws Exception {
-		MvcResult result = mockMvc.perform(put("/user/").contentType(MediaType.APPLICATION_JSON)
+		
+		
+		MvcResult result = mockMvc.perform(put("/users/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getUsersAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Successfully Updated"));
@@ -167,7 +170,7 @@ public class UserControllerTest {
 	@WithMockUser(username="user",roles="admin")
 	public void testUpdateUserException() throws Exception {
 		Mockito.when(userRepository.save(Mockito.any(User.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/user/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/users/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getUsersAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -176,7 +179,7 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser(username="user",roles="admin")
 	public void testDeleteUser() throws Exception {
-		MvcResult result = this.mockMvc.perform(delete("/user/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(delete("/users/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Successfully Deleted"));
@@ -196,10 +199,10 @@ public class UserControllerTest {
 	public User getUser() {
 
 		com.example.userservice.entity.User user = new User();
-
+		user.setId(1);
 		user.setEmail("test@gmail.com");
 		user.setUsername("test");
-		user.setPassword("test");
+		user.setPassword("Test@123");
 
 		return user;
 	}

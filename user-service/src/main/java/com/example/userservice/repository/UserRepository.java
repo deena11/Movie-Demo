@@ -11,5 +11,7 @@ import com.example.userservice.entity.User;
 public interface UserRepository extends JpaRepository<com.example.userservice.entity.User, Integer> {
 	
 	    Optional<User> findByUsername(String name);
+	    
+	    Optional<User> findByEmail(String email);
 
 }
