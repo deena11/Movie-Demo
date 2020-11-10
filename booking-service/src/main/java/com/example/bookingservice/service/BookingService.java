@@ -5,18 +5,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.example.bookingservice.exception.BookingServiceDaoException;
+import com.example.bookingservice.exception.InValidIdException;
+import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.model.Booking;
 
 public interface BookingService {
 
-	Booking addBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException;
+	public Booking addBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException,ServiceException;
 
-	List<Booking> getAllBooking() throws BookingServiceDaoException;
+	public List<Booking> getAllBooking() throws BookingServiceDaoException,ServiceException;
 
-	Booking getBookingById(int bookingId,HttpServletRequest request) throws BookingServiceDaoException;
+	public Booking getBookingById(int bookingId,HttpServletRequest request) throws ServiceException, InValidIdException;
 
-	Booking updateBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException;
+	public Booking updateBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException,ServiceException;
 
-	String deleteBooking(int bookingId,HttpServletRequest request) throws BookingServiceDaoException;
+	public String deleteBooking(int bookingId,HttpServletRequest request) throws BookingServiceDaoException,ServiceException;
 
 }

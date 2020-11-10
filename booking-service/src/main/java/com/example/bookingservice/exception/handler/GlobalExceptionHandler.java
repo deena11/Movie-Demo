@@ -19,6 +19,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.bookingservice.exception.BookingServiceDaoException;
+import com.example.bookingservice.exception.InValidIdException;
+import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.response.ApiErrorResponse;
 
 
@@ -42,8 +44,7 @@ public class GlobalExceptionHandler {
 		String message = error.getDefaultMessage();
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
-		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
+		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -60,8 +61,7 @@ public class GlobalExceptionHandler {
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
-		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
+		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -79,8 +79,7 @@ public class GlobalExceptionHandler {
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
-		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
+		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -96,8 +95,7 @@ public class GlobalExceptionHandler {
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
-		response.setHttpStatus(HttpStatus.BAD_REQUEST);
-		response.setHttpStatusCode(400);
+		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
@@ -112,8 +110,7 @@ public class GlobalExceptionHandler {
 		response.setMessage(ex.getMessage());
 		logger.error("exception occured - ");
 		ex.printStackTrace();
-		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
+		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,7 +118,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(BookingServiceDaoException.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public final ResponseEntity<ApiErrorResponse> handleRecordNotFoundExceptions(BookingServiceDaoException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
@@ -130,17 +127,52 @@ public class GlobalExceptionHandler {
 		} else {
 			response.setCause(ex.getLocalizedMessage());
 		}
-		response.setMessage("Something went wrong !!. Record not found.");
+		response.setMessage("Something went wrong !!. Record not Processed.");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.NOT_FOUND);
-		response.setHttpStatusCode(404);
+		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
+		response.setError(true);
+
+		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
+
+	}
+	
+	@ExceptionHandler(InValidIdException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public final ResponseEntity<ApiErrorResponse> handleInVaidIdExceptions(InValidIdException ex, WebRequest request) {
+		ApiErrorResponse response = new ApiErrorResponse();
+
+		if (ex.getCause() != null) {
+			response.setCause(ex.getCause().getMessage());
+		} else {
+			response.setCause(ex.getLocalizedMessage());
+		}
+		response.setMessage("Something went wrong !!. Record not Found.");
+		response.setExceptionMessage(ex.getMessage());
+		response.setHttpStatus(HttpStatus.NOT_FOUND.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.NOT_FOUND);
 
 	}
 
-	
+	@ExceptionHandler(ServiceException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	public final ResponseEntity<ApiErrorResponse> handleServiceException(ServiceException ex, WebRequest request) {
+		ApiErrorResponse response = new ApiErrorResponse();
+
+		if (ex.getCause() != null) {
+			response.setCause(ex.getCause().getMessage());
+		} else {
+			response.setCause(ex.getLocalizedMessage());
+		}
+		response.setMessage("Service Exception - Something went wrong");
+		response.setExceptionMessage(ex.getMessage());
+		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+		response.setError(true);
+
+		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
 
 	
 
@@ -156,8 +188,7 @@ public class GlobalExceptionHandler {
 		}
 		response.setMessage("IOException - Something went wrong");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
+		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -177,8 +208,7 @@ public class GlobalExceptionHandler {
 		}
 		response.setMessage("IllegalArgumentException - Something went wrong");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
+		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -199,8 +229,7 @@ public class GlobalExceptionHandler {
 		ex.printStackTrace();
 		response.setMessage("Something went wrong. ApiErrorResponse is empty or null.");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		response.setHttpStatusCode(500);
+		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		response.setError(true);
 
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);

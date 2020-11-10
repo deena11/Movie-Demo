@@ -100,7 +100,7 @@ public class BookingControllerTest {
 	@Test
 	public void testGetBooking() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/booking/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/bookings/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("1007"));
@@ -109,7 +109,7 @@ public class BookingControllerTest {
 	@Test
 	public void testGetBookingException() throws Exception {
 		Mockito.when(bookingRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/booking/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/bookings/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -118,7 +118,7 @@ public class BookingControllerTest {
 	@Test
 	public void testGetBookingException1() throws Exception {
 		Mockito.when(bookingRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/booking/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/bookings/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -127,7 +127,7 @@ public class BookingControllerTest {
 	@WithMockUser
 	@Test
 	public void testGetAllBooking() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/booking/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/bookings/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("1007"));
@@ -136,7 +136,7 @@ public class BookingControllerTest {
 	@Test
 	public void testGetAllBookingException() throws Exception {
 		Mockito.when(bookingRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/booking/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/bookings/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -145,7 +145,7 @@ public class BookingControllerTest {
 	@Test
 	public void testGetAllBookingException1() throws Exception {
 		Mockito.when(bookingRepository.findAll()).thenReturn(new ArrayList<Booking>());
-		MvcResult result = this.mockMvc.perform(get("/booking/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/bookings/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -153,7 +153,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void testAddBooking() throws Exception {
-		MvcResult result = mockMvc.perform(post("/booking/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/bookings/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getBookingsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("1007"));
@@ -164,7 +164,7 @@ public class BookingControllerTest {
 	public void testAddBookingException() throws Exception {
 
 		Mockito.when(bookingRepository.save(Mockito.any(Booking.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/booking/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/bookings/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getBookingsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -173,7 +173,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void testUpdateBooking() throws Exception {
-		MvcResult result = mockMvc.perform(put("/booking/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/bookings/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getBookingsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Successfull"));
@@ -183,7 +183,7 @@ public class BookingControllerTest {
 	@Test
 	public void testUpdateBookingException() throws Exception {
 		Mockito.when(bookingRepository.save(Mockito.any(Booking.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/booking/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/bookings/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getBookingsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -191,7 +191,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void testDeleteBooking() throws Exception {
-		MvcResult result = this.mockMvc.perform(delete("/booking/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(delete("/bookings/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Successfully deleted"));

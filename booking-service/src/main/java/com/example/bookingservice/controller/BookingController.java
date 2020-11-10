@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bookingservice.exception.BookingServiceDaoException;
+import com.example.bookingservice.exception.InValidIdException;
+import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.model.Booking;
 import com.example.bookingservice.response.APISuccessResponse;
 import com.example.bookingservice.response.ApiErrorResponse;
@@ -30,7 +32,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/booking")
+@RequestMapping("/bookings/v1")
 public class BookingController {
 
 	private Logger logger = LoggerFactory.getLogger(BookingController.class);
@@ -44,7 +46,7 @@ public class BookingController {
 	@HystrixCommand(fallbackMethod = "fallBackResponseBooking", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
 	public ResponseEntity<?> addBooking(@RequestBody Booking booking, HttpServletRequest request)
-			throws BookingServiceDaoException {
+			throws BookingServiceDaoException, ServiceException {
 
 		logger.info("Adding booking Data Request is Processing ");
 
@@ -61,7 +63,7 @@ public class BookingController {
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
 //	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
-	public ResponseEntity<?> getAllBooking() throws BookingServiceDaoException {
+	public ResponseEntity<?> getAllBooking() throws BookingServiceDaoException, ServiceException {
 
 		logger.info("Get All booking Data Request is Processing");
 
@@ -79,7 +81,7 @@ public class BookingController {
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
 	public ResponseEntity<?> getBookingById(@PathVariable int bookingId, HttpServletRequest request)
-			throws BookingServiceDaoException {
+			throws ServiceException, InValidIdException {
 
 		logger.info("Fetching booking Data of id - "+bookingId);
 
@@ -96,7 +98,7 @@ public class BookingController {
 	@HystrixCommand(fallbackMethod = "fallBackResponseBooking", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
 	public ResponseEntity<?> updateBooking(@RequestBody Booking booking, HttpServletRequest request)
-			throws BookingServiceDaoException {
+			throws BookingServiceDaoException, ServiceException {
 
 		logger.info("Update booking Data Request is processing ");
 
@@ -113,7 +115,7 @@ public class BookingController {
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
 	public ResponseEntity<?> deleteUser(@PathVariable int bookingId, HttpServletRequest request)
-			throws BookingServiceDaoException {
+			throws BookingServiceDaoException, ServiceException {
 
 		logger.info("Delete booking Request is Processing");
 
@@ -168,8 +170,7 @@ public class BookingController {
 		logger.info("Fallback Response Builder Method processing started");
 
 		ApiErrorResponse response = new ApiErrorResponse();
-		response.setHttpStatus(HttpStatus.REQUEST_TIMEOUT);
-		response.setHttpStatusCode(408);
+		response.setHttpStatus(HttpStatus.REQUEST_TIMEOUT.toString());
 		response.setMessage("Service Takes More time than Expected");
 		response.setError(true);
 		response.setSuccess(false);

@@ -22,6 +22,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.bookingservice.dto.Play;
 import com.example.bookingservice.exception.BookingServiceDaoException;
+import com.example.bookingservice.exception.InValidIdException;
+import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.model.Booking;
 import com.example.bookingservice.repository.BookingRepository;
 import com.example.bookingservice.response.APISuccessResponse;
@@ -57,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	@Transactional
-	public Booking addBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException {
+	public Booking addBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException, ServiceException {
 		try {
 			logger.info("Entered into booking services");
 			String authorization = request.getHeader("Authorization");
@@ -120,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
 			
             
 		} catch (DataAccessException ex) {
-			throw new BookingServiceDaoException("Failed to Book", ex.getCause());
+			throw new ServiceException("Failed to Book", ex.getCause());
 		}
 		catch(Exception ex) {
 			throw new BookingServiceDaoException(ex.getMessage(), ex.getCause());
@@ -130,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	@Transactional
-	public List<Booking> getAllBooking() throws BookingServiceDaoException {
+	public List<Booking> getAllBooking() throws BookingServiceDaoException, ServiceException {
 		try {
 			List<Booking> bookings = bookingRepository.findAll();
 			if (bookings.size() > 0) {
@@ -139,28 +141,28 @@ public class BookingServiceImpl implements BookingService {
 				throw new BookingServiceDaoException("No Bookings Data the list is empty");
 			}
 		} catch (DataAccessException ex) {
-			throw new BookingServiceDaoException("Failed to fetch all Booking ", ex.getCause());
+			throw new ServiceException("Failed to fetch all Booking ", ex.getCause());
 		}
 	}
 
 	@Override
 	@Transactional
-	public Booking getBookingById(int bookingId, HttpServletRequest request) throws BookingServiceDaoException {
+	public Booking getBookingById(int bookingId, HttpServletRequest request) throws InValidIdException, ServiceException {
 		try {
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (booking.isPresent()) {
 				return booking.get();
 			} else {
-				throw new BookingServiceDaoException("No Record Found for the id - " + bookingId);
+				throw new InValidIdException("No Record Found for the id - " + bookingId);
 			}
 		} catch (DataAccessException ex) {
-			throw new BookingServiceDaoException("Failed to fetch Booking of id " + bookingId, ex.getCause());
+			throw new ServiceException("Failed to fetch Booking of id " + bookingId, ex.getCause());
 		}
 	}
 
 	@Override
 	@Transactional
-	public Booking updateBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException {
+	public Booking updateBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException, ServiceException {
 		try {
 			logger.info("Entered into update booking services");
 			String authorization = request.getHeader("Authorization");
@@ -212,7 +214,7 @@ public class BookingServiceImpl implements BookingService {
 			
             
 		} catch (DataAccessException ex) {
-			throw new BookingServiceDaoException("Failed to update Booking", ex.getCause());
+			throw new ServiceException("Failed to update Booking", ex.getCause());
 		}
 		catch(Exception ex) {
 			throw new BookingServiceDaoException(ex.getMessage(), ex.getCause());
@@ -223,7 +225,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	@Transactional
-	public String deleteBooking(int bookingId,HttpServletRequest request) throws BookingServiceDaoException {
+	public String deleteBooking(int bookingId,HttpServletRequest request) throws BookingServiceDaoException, ServiceException {
 		try {
 			logger.info("Entered into booking services");
 			
@@ -277,7 +279,7 @@ public class BookingServiceImpl implements BookingService {
 			
             
 		} catch (DataAccessException ex) {
-			throw new BookingServiceDaoException("Failed to Delete Booking", ex.getCause());
+			throw new ServiceException("Failed to Delete Booking", ex.getCause());
 		}
 		catch(Exception ex) {
 			throw new BookingServiceDaoException(ex.getMessage(), ex.getCause());
