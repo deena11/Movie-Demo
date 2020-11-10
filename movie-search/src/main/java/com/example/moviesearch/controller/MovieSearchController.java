@@ -26,6 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/search")
@@ -66,6 +70,9 @@ public class MovieSearchController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
+    /**
+     * @param message
+     */
     @KafkaListener(topics = "${kafka.topic.name}", groupId = "${kafka.consumer.group.id")
     public void consume(String message) {
      logger.info("Consumed message: " + message);
@@ -90,7 +97,7 @@ public class MovieSearchController {
 		System.out.printf("Loading Completed");
     }
 
-	
+	//optimisation
 	
 //	@GetMapping("/hello")
 //	public ResponseEntity<?> searchMovies(){

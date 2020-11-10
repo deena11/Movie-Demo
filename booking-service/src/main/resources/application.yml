@@ -26,7 +26,7 @@ eureka:
 server:
   port: 8085
 play:
-  url: http://movie-inventory-service/play/
+  url: http://movie-inventory-service/plays/v1
 kafka:
   url: http://kafka-service/kafka/publish/
 token:
