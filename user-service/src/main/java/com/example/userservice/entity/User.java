@@ -13,6 +13,8 @@ import javax.validation.constraints.Pattern;
 
 import io.swagger.annotations.ApiModelProperty;
 
+
+
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
@@ -64,12 +66,13 @@ public class User implements Serializable {
 		this.setUsername(user.getUsername());
 	}
 
+	
+
 	public User(Integer id,
 			@Pattern(regexp = "^[a-zA-Z]{1,30}+$", message = "Invalid FirstName") @NotNull String username,
-			String password,
+			@NotNull @Pattern(regexp = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[!@#$%^&*])\\S{8,}\\z", message = "Invalid Password") String password,
 			@NotNull @Pattern(regexp = "([a-zA-Z]{1}[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[\\.][a-z]+)", message = "Invalid Email") String email,
-			@NotNull @Pattern(regexp = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[!@#$%^&*])\\S{8,}\\z", message = "Invalid Password") String phoneNumber,
-			String role) {
+			String phoneNumber, String role) {
 		super();
 		this.id = id;
 		this.username = username;
