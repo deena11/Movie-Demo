@@ -33,6 +33,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author M1053559
+ *
+ */
 @Service
 public class BookingServiceImpl implements BookingService {
 	
@@ -57,6 +61,15 @@ public class BookingServiceImpl implements BookingService {
 	
 	private Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param booking
+	 * @param request
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@Override
 	@Transactional
 	public Booking addBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException, ServiceException {
@@ -130,6 +143,16 @@ public class BookingServiceImpl implements BookingService {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.example.bookingservice.service.BookingService#getAllBooking()
+	 */
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@Override
 	@Transactional
 	public List<Booking> getAllBooking() throws BookingServiceDaoException, ServiceException {
@@ -145,6 +168,18 @@ public class BookingServiceImpl implements BookingService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.example.bookingservice.service.BookingService#getBookingById(int, javax.servlet.http.HttpServletRequest)
+	 */
+	/**
+	 * @author M1053559
+	 *
+	 * @param bookingId
+	 * @param request
+	 * @return
+	 * @throws InValidIdException
+	 * @throws ServiceException
+	 */
 	@Override
 	@Transactional
 	public Booking getBookingById(int bookingId, HttpServletRequest request) throws InValidIdException, ServiceException {
@@ -160,6 +195,15 @@ public class BookingServiceImpl implements BookingService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param booking
+	 * @param request
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@Override
 	@Transactional
 	public Booking updateBooking(Booking booking,HttpServletRequest request) throws BookingServiceDaoException, ServiceException {
@@ -223,6 +267,15 @@ public class BookingServiceImpl implements BookingService {
 
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param bookingId
+	 * @param request
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@Override
 	@Transactional
 	public String deleteBooking(int bookingId,HttpServletRequest request) throws BookingServiceDaoException, ServiceException {
@@ -289,6 +342,14 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 
+	
+	/**
+	 * @param response
+	 * @return
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
 	public Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(response, Play.class);

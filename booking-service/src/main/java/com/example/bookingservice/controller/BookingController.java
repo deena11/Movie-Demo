@@ -30,6 +30,10 @@ import com.example.bookingservice.service.BookingService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/bookings/v1")
@@ -42,6 +46,13 @@ public class BookingController {
 	@Autowired
 	private BookingService bookingService;
 
+	/**
+	 * @param booking
+	 * @param request
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponseBooking", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
@@ -59,6 +70,11 @@ public class BookingController {
 				.body(responseBuilder(message, bookingDetails));
 	}
 
+	/**
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
@@ -77,6 +93,13 @@ public class BookingController {
 				.body(responseBuilder(message, bookingList));
 	}
 
+	/**
+	 * @param bookingId
+	 * @param request
+	 * @return
+	 * @throws ServiceException
+	 * @throws InValidIdException
+	 */
 	@GetMapping("/{bookingId}")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
@@ -94,6 +117,13 @@ public class BookingController {
 				.body(responseBuilder(message, booking));
 	}
 
+	/**
+	 * @param booking
+	 * @param request
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponseBooking", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
@@ -111,6 +141,13 @@ public class BookingController {
 				.body(responseBuilder(message, bookingDetails));
 	}
 
+	/**
+	 * @param bookingId
+	 * @param request
+	 * @return
+	 * @throws BookingServiceDaoException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{bookingId}")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
@@ -128,6 +165,12 @@ public class BookingController {
 				.body(responseBuilder(message, result));
 	}
 
+	/**
+	 * @param bookingId
+	 * @param request
+	 * @return
+	 * fallback response
+	 */
 	public ResponseEntity<?> fallBackResponse(int bookingId, HttpServletRequest request) {
 		
 		logger.info("Fallback Service is Called  ");
@@ -135,6 +178,11 @@ public class BookingController {
 				.body(fallbackResponseBuilder());
 	}
 
+	/**
+	 * @param booking
+	 * @param request
+	 * @return
+	 */
 	public ResponseEntity<?> fallBackResponseBooking(Booking booking, HttpServletRequest request) {
 		
 		logger.info("Fallback Service is Called  ");
@@ -142,6 +190,9 @@ public class BookingController {
 				.body(fallbackResponseBuilder());
 	}
 
+	/**
+	 * @return
+	 */
 	public ResponseEntity<?> fallBackResponse() {
 		
 		logger.info("Fallback Service is Called  ");
@@ -149,6 +200,13 @@ public class BookingController {
 				.body(fallbackResponseBuilder());
 	}
 
+	/**
+	 * @param message
+	 * @param body
+	 * @return
+	 * 
+	 * fallback success response
+	 */
 	public APISuccessResponse responseBuilder(String message, Object body) {
 
 		logger.info("Success Response is Building");
@@ -165,6 +223,9 @@ public class BookingController {
 
 	}
 
+	/**
+	 * @return
+	 */
 	public ApiErrorResponse fallbackResponseBuilder() {
 		
 		logger.info("Fallback Response Builder Method processing started");
