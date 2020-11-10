@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @RequestMapping("/kafka")
 public class PublishController {
@@ -27,6 +31,10 @@ public class PublishController {
 	
 	
 	
+	/**
+	 * @param message
+	 * @return
+	 */
 	@GetMapping("/publish/{message}")
 	public String publishMessage(@PathVariable("message") String message) {
 		try {
@@ -41,6 +49,10 @@ public class PublishController {
 		return message;
 	}
 	
+	/**
+	 * @param message
+	 * @return
+	 */
 	@GetMapping("/publish/play/{message}")
 	public String publishMessagetoSearchService(@PathVariable("message") String message) {
 		try {
