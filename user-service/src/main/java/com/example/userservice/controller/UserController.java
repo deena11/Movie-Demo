@@ -33,8 +33,16 @@ import com.example.userservice.exception.ServiceException;
 import com.example.userservice.restApiConfig.ApiSuccessResponse;
 import com.example.userservice.service.serviceImpl.UserServiceImpl;
 
+/**
+ * @author M1053559
+ *
+ */
+/**
+ * @author M1053559
+ *
+ */
 @RestController
-@RequestMapping("users/v1")  //plural
+@RequestMapping("users/v1")  
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserController {
@@ -46,6 +54,11 @@ public class UserController {
 
 	private String message = "";
 
+	/**
+	 * @param request
+	 * @return
+	 * @throws AccessTokenRevokeException
+	 */
 	@DeleteMapping("/logout")  
 	public ResponseEntity<?> revokeToken(HttpServletRequest request) throws AccessTokenRevokeException {
 		LOGGER.info("Log out Request is Called");
@@ -58,6 +71,12 @@ public class UserController {
 		return ResponseEntity.ok(responseBuilder(message, null,HttpStatus.OK));
 	}
 
+	/**
+	 * @param userId
+	 * @return
+	 * @throws ServiceException
+	 * @throws NoSuchUserException
+	 */
 	@GetMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> getUser(@PathVariable("userId") int userId) throws ServiceException, NoSuchUserException   {
@@ -72,6 +91,11 @@ public class UserController {
 		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
 	}
 
+	/**
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/")  // ()
 	@PreAuthorize("hasRole('ROLE_admin')")
 	public ResponseEntity<?> getAllUser() throws EmptyListException, ServiceException   {
@@ -85,6 +109,13 @@ public class UserController {
 		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
 	}
 
+	/**
+	 * @param user
+	 * @param bindingResult
+	 * @return
+	 * @throws InValidUserException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/add")
 	public ResponseEntity<?> addUser(@Valid @RequestBody User user,BindingResult bindingResult) throws InValidUserException, ServiceException   {
 
@@ -107,6 +138,12 @@ public class UserController {
 		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
 	}
 
+	/**
+	 * @param user
+	 * @return
+	 * @throws InValidUserException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> updateUser(@RequestBody User user) throws InValidUserException, ServiceException  {
@@ -120,6 +157,12 @@ public class UserController {
 		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
 	}
 
+	/**
+	 * @param userId
+	 * @return
+	 * @throws InValidUserException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_admin')")
 	public ResponseEntity<?> deleteUser(@PathVariable("userId") int userId) throws InValidUserException, ServiceException {
@@ -133,6 +176,12 @@ public class UserController {
 		return ResponseEntity.ok(responseBuilder(message, null,HttpStatus.NO_CONTENT));
 	}
 
+	/**
+	 * @param message
+	 * @param body
+	 * @param status
+	 * @return
+	 */
 	public ApiSuccessResponse responseBuilder(String message, Object body,HttpStatus status) {
 
 		LOGGER.info("Success Response is Building");

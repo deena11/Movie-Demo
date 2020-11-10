@@ -25,6 +25,10 @@ import com.example.userservice.exception.ServiceException;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.UserService;
 
+/**
+ * @author M1053559
+ *
+ */
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -40,6 +44,14 @@ public class UserServiceImpl implements UserService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+	
+	/* @author M1053559
+	 *
+	 * @param user
+	 * @return
+	 * @throws InValidUserException
+	 * @throws ServiceException
+	 */
 	@Override
 	public User createUser(User user) throws InValidUserException, ServiceException {
 
@@ -56,8 +68,15 @@ public class UserServiceImpl implements UserService {
 			logger.error("Exception message - " + ex.getMessage());
 			throw new ServiceException("Failed to Add due to internal server err");
 		} 
-	} // versioning
+	} 
 
+	/* @author M1053559
+	 *
+	 * @param user
+	 * @return
+	 * @throws InValidUserException
+	 * @throws ServiceException
+	 */
 	@Override
 	public User updateUser(User user) throws InValidUserException, ServiceException {
 
@@ -80,6 +99,12 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	/* @author M1053559
+	 *
+	 * @param userId
+	 * @throws InValidUserException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteUser(int userId) throws InValidUserException, ServiceException {
 
@@ -100,6 +125,13 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	/* @author M1053559
+	 *
+	 * @param userId
+	 * @return
+	 * @throws ServiceException
+	 * @throws NoSuchUserException
+	 */
 	@Override
 	public User fetchById(int userId) throws ServiceException, NoSuchUserException {
 
@@ -118,6 +150,12 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	/* @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<User> fetchAll() throws EmptyListException, ServiceException {
 
@@ -136,6 +174,11 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	/* @author M1053559
+	 *
+	 * @param request
+	 * @throws AccessTokenRevokeException
+	 */
 	@Override
 	public void logout(HttpServletRequest request) throws AccessTokenRevokeException {
 		try {
@@ -162,6 +205,12 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	/* @author M1053559
+	 *
+	 * @param email
+	 * @return
+	 * @throws ServiceException
+	 */
 	@Override
 	public boolean validUser(String email) throws ServiceException {
 		try {

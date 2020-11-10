@@ -13,12 +13,17 @@ import com.example.userservice.entity.AuthUserDetails;
 import com.example.userservice.entity.User;
 import com.example.userservice.repository.UserRepository;
 
+/**
+ * @author M1053559
+ *
+ */
 @Service("userDetailsService")
 public class UserDetailServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
 
+	
 	@Override
 	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
