@@ -80,7 +80,7 @@ public class MovieControllerTest {
 	@Test
 	public void testGetMovie() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/movie/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/movies/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Aladdin"));
@@ -89,7 +89,7 @@ public class MovieControllerTest {
 	@Test
 	public void testGetMovieException() throws Exception {
 		Mockito.when(movieRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/movie/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/movies/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -98,7 +98,7 @@ public class MovieControllerTest {
 	@Test
 	public void testGetMovieException1() throws Exception {
 		Mockito.when(movieRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/movie/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/movies/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -106,7 +106,7 @@ public class MovieControllerTest {
 
 	@Test
 	public void testGetAllMovie() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/movie/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/movies/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Aladdin"));
@@ -115,7 +115,7 @@ public class MovieControllerTest {
 	@Test
 	public void testGetAllMovieException() throws Exception {
 		Mockito.when(movieRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/movie/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/movies/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -124,7 +124,7 @@ public class MovieControllerTest {
 	@Test
 	public void testGetAllMovieException1() throws Exception {
 		Mockito.when(movieRepository.findAll()).thenReturn(new ArrayList<Movie>());
-		MvcResult result = this.mockMvc.perform(get("/movie/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/movies/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -132,7 +132,7 @@ public class MovieControllerTest {
 
 	@Test
 	public void testAddMovie() throws Exception {
-		MvcResult result = mockMvc.perform(post("/movie/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/movies/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getMoviesAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Aladdin"));
@@ -143,7 +143,7 @@ public class MovieControllerTest {
 	public void testAddMovieException() throws Exception {
 
 		Mockito.when(movieRepository.save(Mockito.any(Movie.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/movie/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/movies/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getMoviesAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -152,17 +152,17 @@ public class MovieControllerTest {
 
 	@Test
 	public void testUpdateMovie() throws Exception {
-		MvcResult result = mockMvc.perform(put("/movie/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/movies/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getMoviesAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully updated"));
+		assertTrue(result.getResponse().getContentAsString().contains("Aladdin"));
 
 	}
 
 	@Test
 	public void testUpdateMovieException() throws Exception {
 		Mockito.when(movieRepository.save(Mockito.any(Movie.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/movie/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/movies/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getMoviesAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -170,10 +170,10 @@ public class MovieControllerTest {
 
 	@Test
 	public void testDeleteMovie() throws Exception {
-		MvcResult result = this.mockMvc.perform(delete("/movie/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(delete("/movies/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully deleted"));
+		assertTrue(result.getResponse().getContentAsString().contains("NO_CONTENT"));
 
 	}
 

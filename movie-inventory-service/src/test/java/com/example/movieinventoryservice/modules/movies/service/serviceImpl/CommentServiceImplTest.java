@@ -20,6 +20,7 @@ import com.example.movieinventoryservice.exception.EmptyListException;
 import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CommentRepository;
 import com.example.movieinventoryservice.modules.movies.service.CommentService;
 
@@ -41,7 +42,7 @@ public class CommentServiceImplTest {
 		Comment comment = commentService.getCommentById(1);
 		assertTrue(comment.toString().contains("test"));
 	}
-	@Test(expected=RecordNotFoundException.class)
+	@Test(expected=ServiceException.class)
 	public void testGetCommentException() throws Exception {
 		Mockito.when(commentRepository.findById(Mockito.anyInt()))
 		.thenThrow(Mockito.mock(DataAccessException.class));
@@ -57,7 +58,7 @@ public class CommentServiceImplTest {
 		assertTrue(comments.toString().contains("test"));
 	}
 	
-	@Test(expected=EmptyListException.class)
+	@Test(expected=ServiceException.class)
 	public void testGetAllCommentException() throws Exception {
 		Mockito.when(commentRepository.findAll())
 		.thenThrow(Mockito.mock(DataAccessException.class));
@@ -73,7 +74,7 @@ public class CommentServiceImplTest {
 		assertTrue(comment.toString().contains("test"));
 
 	}
-	@Test(expected=RecordNotAddedException.class)
+	@Test(expected=ServiceException.class)
 	public void testAddCommentException() throws Exception {
 		Mockito.when(commentRepository.save(Mockito.any(Comment.class)))
 		.thenThrow(Mockito.mock(DataAccessException.class));
@@ -85,13 +86,20 @@ public class CommentServiceImplTest {
 
 	@Test
 	public void testUpdateComment() throws Exception {
-		String response = commentService.updateComment(getComment());
-		assertTrue(response.contains("Successfully updated"));
+		Mockito.when(commentRepository.getOne(Mockito.anyInt())).thenReturn(getComment());
+		Mockito.when(commentRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getComment()));
+		
+		Mockito.when(commentRepository.save(Mockito.any(Comment.class))).thenReturn(getComment());
+		Comment comment = commentService.updateComment(getComment());
+		assertTrue(comment.toString().contains("test"));
 
 	}
 	
-	@Test(expected=RecordNotUpdatedException.class)
+	@Test(expected=ServiceException.class)
 	public void testUpdateCommentException() throws Exception {
+		Mockito.when(commentRepository.getOne(Mockito.anyInt())).thenReturn(getComment());
+		Mockito.when(commentRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getComment()));
+		
 		Mockito.when(commentRepository.save(Mockito.any(Comment.class)))
 		.thenThrow(Mockito.mock(DataAccessException.class));
 		commentService.updateComment(getComment());
@@ -102,8 +110,11 @@ public class CommentServiceImplTest {
 
 	@Test
 	public void testDeleteComment() throws Exception {
-		String response = commentService.deleteComment(1);
-		assertTrue(response.contains("Successfully deleted"));
+		Mockito.when(commentRepository.getOne(Mockito.anyInt())).thenReturn(getComment());
+		Mockito.when(commentRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getComment()));
+		
+		commentService.deleteComment(1);
+		Mockito.verify(commentRepository, Mockito.times(1)).deleteById(Mockito.any());
 
 	}
 

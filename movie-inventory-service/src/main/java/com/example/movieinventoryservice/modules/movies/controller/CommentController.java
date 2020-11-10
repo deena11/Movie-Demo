@@ -21,83 +21,84 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.service.CommentService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/comment")
+@RequestMapping("/comments/v1")
 public class CommentController {
 
 	private Logger logger = LoggerFactory.getLogger(CommentController.class);
-	
+	private String message = "";
+
 	@Autowired
 	private CommentService commentService;
 
 	@GetMapping("/{commentId}")
-	public ResponseEntity<?> getComment(@PathVariable("commentId") int commentId) throws RecordNotFoundException {
+	public ResponseEntity<?> getComment(@PathVariable("commentId") int commentId) throws RecordNotFoundException, ServiceException {
 
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(commentService.getCommentById(commentId));
+		logger.info("Fetching Comment of id - " + commentId + " Request is Processing");
+		message = "Successfully Fetched Comment Data ";
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, commentService.getCommentById(commentId)));
+
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<?> getAllComment() throws EmptyListException {
+	public ResponseEntity<?> getAllComment() throws EmptyListException, ServiceException {
 
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(commentService.getAllComments());
+		logger.info("Fetching All Comment Data Request is Processing");
+		message = "Successfully Fetched All Comments ";
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, commentService.getAllComments()));
+
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> addComment(@RequestBody Comment comment) throws RecordNotAddedException {
+	public ResponseEntity<?> addComment(@RequestBody Comment comment) throws RecordNotAddedException, ServiceException {
 
-		logger.info(comment.toString());
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully Added Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(commentService.addComment(comment));
+		logger.info("Adding Comment of id - " + comment.getId() + " Request is Processing");
+		message = "Successfully Added Comment for movie" ;
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED,message, commentService.addComment(comment)));
+
 	}
 
 	@PutMapping("/")
-	public ResponseEntity<?> updateComment(@RequestBody Comment comment) throws RecordNotUpdatedException {
+	public ResponseEntity<?> updateComment(@RequestBody Comment comment) throws RecordNotUpdatedException, ServiceException {
 
-		ApiSuccessResponse response = new ApiSuccessResponse();
-		response.setError(false);
-		response.setMessage("Successfully fetched Data");
-		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(commentService.updateComment(comment));
+		logger.info("Updating Comment of id - " + comment.getId() + " Request is Processing");
+		message = "Successfully Updated Comment ";
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, commentService.updateComment(comment)));
+
 	}
 
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity<?> deleteComment(@PathVariable("commentId") int commentId) throws RecordNotDeletedException {
+	public ResponseEntity<?> deleteComment(@PathVariable("commentId") int commentId) throws RecordNotDeletedException, ServiceException {
+
+		logger.info("Delete Comment of id - " + commentId + " Request is Processing");
+		message = "Successfully Deleted comment id " + commentId;
+		commentService.deleteComment(commentId);
+
+		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message,null ));
+	}
+
+	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
-		response.setMessage("Successfully fetched Data");
+		response.setMessage(message);
+		response.setHttpStatusCode(200);
+		response.setHttpStatus(status.toString());
 		response.setSuccess(true);
-		response.setHttpStatus(HttpStatus.OK.toString());
-		response.setBody(commentService.deleteComment(commentId));
+		response.setBody(body);
 
-		return ResponseEntity.ok(response);
+		logger.info("Request is Processed Successfully");
+
+		return response;
 	}
 
 }

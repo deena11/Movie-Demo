@@ -9,7 +9,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/play/all","/v2/api-docs",
+		web.ignoring().antMatchers("/plays/v1/all","/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
                 "/configuration/security",

@@ -87,7 +87,7 @@ public class ScreenControllerTest {
 	@Test
 	public void testGetScreen() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/screen/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/screens/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
@@ -96,7 +96,7 @@ public class ScreenControllerTest {
 	@Test
 	public void testGetScreenException() throws Exception {
 		Mockito.when(screenRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/screen/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/screens/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -105,7 +105,7 @@ public class ScreenControllerTest {
 	@Test
 	public void testGetScreenException1() throws Exception {
 		Mockito.when(screenRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/screen/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/screens/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -113,7 +113,7 @@ public class ScreenControllerTest {
 
 	@Test
 	public void testGetAllScreen() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/screen/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/screens/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
@@ -122,7 +122,7 @@ public class ScreenControllerTest {
 	@Test
 	public void testGetAllScreenException() throws Exception {
 		Mockito.when(screenRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/screen/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/screens/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -131,7 +131,7 @@ public class ScreenControllerTest {
 	@Test
 	public void testGetAllScreenException1() throws Exception {
 		Mockito.when(screenRepository.findAll()).thenReturn(new ArrayList<Screen>());
-		MvcResult result = this.mockMvc.perform(get("/screen/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/screens/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -139,7 +139,7 @@ public class ScreenControllerTest {
 
 	@Test
 	public void testAddScreen() throws Exception {
-		MvcResult result = mockMvc.perform(post("/screen/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/screens/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getScreensAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
@@ -151,7 +151,7 @@ public class ScreenControllerTest {
 
 		Mockito.when(screenRepository.save(Mockito.any(Screen.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/screen/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/screens/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getScreensAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -160,10 +160,10 @@ public class ScreenControllerTest {
 
 	@Test
 	public void testUpdateScreen() throws Exception {
-		MvcResult result = mockMvc.perform(put("/screen/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/screens/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getScreensAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully updated"));
+		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
 
 	}
 
@@ -171,7 +171,7 @@ public class ScreenControllerTest {
 	public void testUpdateScreenException() throws Exception {
 		Mockito.when(screenRepository.save(Mockito.any(Screen.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/screen/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/screens/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getScreensAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -179,7 +179,7 @@ public class ScreenControllerTest {
 
 	@Test
 	public void testDeleteScreen() throws Exception {
-		this.mockMvc.perform(delete("/screen/1"))
+		this.mockMvc.perform(delete("/screens/v1/1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		Mockito.verify(screenRepository).deleteById(Mockito.anyInt());
 	}

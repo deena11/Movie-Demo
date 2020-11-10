@@ -21,12 +21,13 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.service.TheatreService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/theatre")
+@RequestMapping("/theatres/v1")
 public class TheatreController {
 
 	private Logger logger = LoggerFactory.getLogger(TheatreController.class);
@@ -38,7 +39,7 @@ public class TheatreController {
 
 	@GetMapping("/{theatreId}")
 	public ResponseEntity<ApiSuccessResponse> getTheatre(@PathVariable("theatreId") int theatreId)
-			throws RecordNotFoundException {
+			throws RecordNotFoundException, ServiceException {
 
 
 		logger.info("Fetching Theatre of id - " + theatreId + " Request is Processing");
@@ -49,17 +50,17 @@ public class TheatreController {
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<?> getAllTheatre() throws EmptyListException {
+	public ResponseEntity<?> getAllTheatre() throws EmptyListException, ServiceException {
 
 		logger.info("Fetching All Theatre Data Request is Processing");
 		message = "Successfully Fetched All Theatres ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, theatreService.getAllTheatres()));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, theatreService.getAllTheatre()));
 
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> addTheatre(@RequestBody Theatre theatre) throws RecordNotAddedException {
+	public ResponseEntity<?> addTheatre(@RequestBody Theatre theatre) throws RecordNotAddedException, ServiceException {
 
 		logger.info("Adding Theatre of id - " + theatre.getId() + " Request is Processing");
 		message = "Successfully Added Theatre - " + theatre.getName();
@@ -69,22 +70,23 @@ public class TheatreController {
 	}
 
 	@PutMapping("/")
-	public ResponseEntity<?> updateTheatre(@RequestBody Theatre theatre) throws RecordNotUpdatedException {
+	public ResponseEntity<?> updateTheatre(@RequestBody Theatre theatre) throws RecordNotUpdatedException, ServiceException {
 
 		logger.info("Updating Theatre of id - " + theatre.getId() + " Request is Processing");
 		message = "Successfully Updated Theatre - " + theatre.getName();
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.ACCEPTED,message, theatreService.updateTheatre(theatre)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, theatreService.updateTheatre(theatre)));
 
 	}
 
 	@DeleteMapping("/{theatreId}")
-	public ResponseEntity<?> deleteTheatre(@PathVariable("theatreId") int theatreId) throws RecordNotDeletedException {
+	public ResponseEntity<?> deleteTheatre(@PathVariable("theatreId") int theatreId) throws RecordNotDeletedException, ServiceException {
 
 		logger.info("Delete Theatre of id - " + theatreId + " Request is Processing");
 		message = "Successfully Deleted theatre id " + theatreId;
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message, theatreService.deleteTheatre(theatreId)));
+		theatreService.deleteTheatre(theatreId);
+		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message, null));
 	
 	}
 
@@ -93,7 +95,6 @@ public class TheatreController {
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
 		response.setMessage(message);
-		response.setHttpStatusCode(status.value());
 		response.setHttpStatus(status.toString());
 		response.setSuccess(true);
 		response.setBody(body);

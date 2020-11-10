@@ -17,9 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.movieinventoryservice.entity.Cast;
 import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CastRepository;
 import com.example.movieinventoryservice.modules.movies.service.CastService;
 
@@ -41,10 +41,18 @@ public class CastServiceImplTest {
 		Cast cast = castService.getCastById(1);
 		assertTrue(cast.toString().contains("test"));
 	}
-	@Test(expected=RecordNotFoundException.class)
+	@Test(expected=ServiceException.class)
 	public void testGetCastException() throws Exception {
 		Mockito.when(castRepository.findById(Mockito.anyInt()))
 		.thenThrow(Mockito.mock(DataAccessException.class));
+		castService.getCastById(1);
+
+	}
+	
+	@Test(expected=RecordNotFoundException.class)
+	public void testGetNoCastException() throws Exception {
+		Mockito.when(castRepository.findById(Mockito.anyInt()))
+		.thenReturn(Optional.ofNullable(null));
 		castService.getCastById(1);
 
 	}
@@ -58,6 +66,12 @@ public class CastServiceImplTest {
 	}
 	
 	@Test(expected=EmptyListException.class)
+	public void testGetAllCastEmptyList() throws Exception {
+		Mockito.when(castRepository.findAll()).thenReturn(new ArrayList<Cast>());
+		List<Cast> casts = castService.getAllCasts();
+	}
+	
+	@Test(expected=ServiceException.class)
 	public void testGetAllCastException() throws Exception {
 		Mockito.when(castRepository.findAll())
 		.thenThrow(Mockito.mock(DataAccessException.class));
@@ -73,7 +87,7 @@ public class CastServiceImplTest {
 		assertTrue(cast.toString().contains("test"));
 
 	}
-	@Test(expected=RecordNotAddedException.class)
+	@Test(expected=ServiceException.class)
 	public void testAddCastException() throws Exception {
 		Mockito.when(castRepository.save(Mockito.any(Cast.class)))
 		.thenThrow(Mockito.mock(DataAccessException.class));
@@ -85,8 +99,11 @@ public class CastServiceImplTest {
 
 	@Test
 	public void testUpdateCast() throws Exception {
-		String response = castService.updateCast(getCast());
-		assertTrue(response.contains("Successfully updated"));
+		Mockito.when(castRepository.save(Mockito.any(Cast.class))).thenReturn(getCast());
+		Mockito.when(castRepository.getOne(Mockito.anyInt())).thenReturn(getCast());
+		Mockito.when(castRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCast()));
+		Cast cast = castService.updateCast(getCast());
+		assertTrue(cast.toString().contains("test"));
 
 	}
 	
@@ -97,13 +114,24 @@ public class CastServiceImplTest {
 		castService.updateCast(getCast());
 
 	}
+	@Test(expected=ServiceException.class)
+	public void testUpdateCastServiceException() throws Exception {
+		Mockito.when(castRepository.getOne(Mockito.anyInt())).thenReturn(getCast());
+		Mockito.when(castRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCast()));
+		Mockito.when(castRepository.save(Mockito.any(Cast.class)))
+		.thenThrow(Mockito.mock(DataAccessException.class));
+		castService.updateCast(getCast());
+
+	}
 
 
 
 	@Test
 	public void testDeleteCast() throws Exception {
-		String response = castService.deleteCast(1);
-		assertTrue(response.contains("Successfully deleted"));
+		Mockito.when(castRepository.getOne(Mockito.anyInt())).thenReturn(getCast());
+		Mockito.when(castRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCast()));
+		castService.deleteCast(1);
+		Mockito.verify(castRepository, Mockito.times(1)).deleteById(Mockito.any());
 
 	}
 
@@ -114,6 +142,7 @@ public class CastServiceImplTest {
 
 		Cast cast = new Cast();
 
+		cast.setId(1);
 		cast.setName("test");
 
 		return cast;
@@ -124,6 +153,7 @@ public class CastServiceImplTest {
 
 		Cast cast = new Cast();
 
+		cast.setId(1);
 		cast.setName("test");
 
 		List<Cast> casts = new ArrayList<>();

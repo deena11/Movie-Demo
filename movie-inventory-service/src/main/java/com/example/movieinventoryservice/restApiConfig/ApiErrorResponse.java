@@ -6,8 +6,6 @@ public class ApiErrorResponse {
 
 	private Object httpStatus;
 
-	private int httpStatusCode;
-
 	private boolean success;
 
 	private boolean error;
@@ -21,23 +19,15 @@ public class ApiErrorResponse {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ApiErrorResponse(String message, Object httpStatus, int httpStatusCode, boolean success, boolean error,
-			Object cause, Object exceptionMessage) {
+	public ApiErrorResponse(String message, Object httpStatus, boolean success, boolean error, Object cause,
+			Object exceptionMessage) {
 		super();
 		this.message = message;
 		this.httpStatus = httpStatus;
-		this.httpStatusCode = httpStatusCode;
 		this.success = success;
 		this.error = error;
 		this.cause = cause;
 		this.exceptionMessage = exceptionMessage;
-	}
-
-	@Override
-	public String toString() {
-		return "ApErrorResponse [message=" + message + ", httpStatus=" + httpStatus + ", httpStatusCode="
-				+ httpStatusCode + ", success=" + success + ", error=" + error + ", cause=" + cause
-				+ ", exceptionMessage=" + exceptionMessage + "]";
 	}
 
 	public String getMessage() {
@@ -54,14 +44,6 @@ public class ApiErrorResponse {
 
 	public void setHttpStatus(Object httpStatus) {
 		this.httpStatus = httpStatus;
-	}
-
-	public int getHttpStatusCode() {
-		return httpStatusCode;
-	}
-
-	public void setHttpStatusCode(int httpStatusCode) {
-		this.httpStatusCode = httpStatusCode;
 	}
 
 	public boolean isSuccess() {

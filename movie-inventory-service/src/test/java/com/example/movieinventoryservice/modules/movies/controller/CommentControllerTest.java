@@ -67,7 +67,7 @@ public class CommentControllerTest {
 	@Test
 	public void testGetComment() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/comment/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/comments/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("test"));
@@ -76,7 +76,7 @@ public class CommentControllerTest {
 	@Test
 	public void testGetCommentException() throws Exception {
 		Mockito.when(commentRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/comment/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/comments/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -85,7 +85,7 @@ public class CommentControllerTest {
 	@Test
 	public void testGetCommentException1() throws Exception {
 		Mockito.when(commentRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/comment/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/comments/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -93,7 +93,7 @@ public class CommentControllerTest {
 
 	@Test
 	public void testGetAllComment() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/comment/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/comments/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("test"));
@@ -102,7 +102,7 @@ public class CommentControllerTest {
 	@Test
 	public void testGetAllCommentException() throws Exception {
 		Mockito.when(commentRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/comment/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/comments/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -111,7 +111,7 @@ public class CommentControllerTest {
 	@Test
 	public void testGetAllCommentException1() throws Exception {
 		Mockito.when(commentRepository.findAll()).thenReturn(new ArrayList<Comment>());
-		MvcResult result = this.mockMvc.perform(get("/comment/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/comments/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -119,7 +119,7 @@ public class CommentControllerTest {
 
 	@Test
 	public void testAddComment() throws Exception {
-		MvcResult result = mockMvc.perform(post("/comment/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/comments/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getCommentsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("test"));
@@ -130,7 +130,7 @@ public class CommentControllerTest {
 	public void testAddCommentException() throws Exception {
 
 		Mockito.when(commentRepository.save(Mockito.any(Comment.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/comment/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/comments/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getCommentsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -139,17 +139,17 @@ public class CommentControllerTest {
 
 	@Test
 	public void testUpdateComment() throws Exception {
-		MvcResult result = mockMvc.perform(put("/comment/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/comments/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getCommentsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully updated"));
+		assertTrue(result.getResponse().getContentAsString().contains("test"));
 
 	}
 
 	@Test
 	public void testUpdateCommentException() throws Exception {
 		Mockito.when(commentRepository.save(Mockito.any(Comment.class))).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/comment/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/comments/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getCommentsAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -157,10 +157,10 @@ public class CommentControllerTest {
 
 	@Test
 	public void testDeleteComment() throws Exception {
-		MvcResult result = this.mockMvc.perform(delete("/comment/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(delete("/comments/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully deleted"));
+		assertTrue(result.getResponse().getContentAsString().contains("NO_CONTENT"));
 
 	}
 

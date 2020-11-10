@@ -16,6 +16,7 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.repository.ScreenRepository;
 import com.example.movieinventoryservice.modules.theatre.service.ScreenService;
 import com.example.movieinventoryservice.modules.theatre.service.TheatreService;
@@ -33,61 +34,73 @@ public class ScreenServiceImpl implements ScreenService {
 	@Autowired
 	private TheatreService theatreService;
 	
-	private String message= "";
 
 	@Override
-	public Screen addScreen(Screen screen) throws RecordNotAddedException {
+	public Screen addScreen(Screen screen) throws RecordNotAddedException, ServiceException {
 		try {
 			logger.info(screen.toString());
 			screen.setTheatre(theatreService.getTheatreById(screen.getTheatre().getId()));
 			return screenRepository.save(screen);
-		} catch (DataAccessException | RecordNotFoundException ex) {
+		} catch (RecordNotFoundException ex) {
 			logger.info(ex.getLocalizedMessage());
-			throw new RecordNotAddedException("Failed To Add Screen", ex.getCause());
+			throw new RecordNotAddedException("Failed To Add Screen -invalid data", ex.getCause());
+		}
+		catch(DataAccessException ex) {
+			throw new ServiceException("Record Not Added due to internal server");
 		}
 	}
-
 	@Override
-	public String deleteScreen(int screenId) throws RecordNotDeletedException {
+	public void deleteScreen(int screenId) throws RecordNotDeletedException,ServiceException {
 		try {
+			if(getScreenById(screenId)!=null) {
 			screenRepository.deleteById(screenId);
-			message = "Successfully deleted Screen of id - " + screenId;
-			return message;
-		} catch (DataAccessException ex) {
-			throw new RecordNotDeletedException("Failed to Delete", ex.getCause());
+			}
+			}catch (RecordNotFoundException e) {
+				throw new RecordNotDeletedException("screend id - "+screenId+" not found");
+			}
+		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Delete id-"+screenId, ex.getCause());
 		}
 	}
 
 	@Override
-	public String updateScreen(Screen screen) throws RecordNotUpdatedException {
+	public Screen updateScreen(Screen screen) throws RecordNotUpdatedException,ServiceException {
 		try {
-
-			screenRepository.save(screen);
-			message = "Successfully updated Screen";
-			return message;
+			if(getScreenById(screen.getId())!=null) {
+			return screenRepository.save(screen);
+			}
+		}catch(RecordNotFoundException ex) {
+			throw new RecordNotUpdatedException("screend id - "+screen.getId()+" not found");
 		}
 
 		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Update", ex.getCause());
+		}
+		catch(Exception ex) {
 			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
 		}
+		return screen;
 	}
 
 	@Override
-	public Screen getScreenById(int screenId) throws RecordNotFoundException {
+	public Screen getScreenById(int screenId) throws RecordNotFoundException ,ServiceException{
 		try {
+			logger.info("Entered into Screen Service - getByid "+screenId);
+			logger.info(screenRepository.findAll().toString());
 			Optional<Screen> screen = screenRepository.findById(screenId);
 			if (screen.isPresent()) {
+				logger.info(screen.get().toString());
 				return screen.get();
 			} else {
 				throw new RecordNotFoundException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new RecordNotFoundException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
 	}
 
 	@Override
-	public List<Screen> getAllScreens() throws EmptyListException {
+	public List<Screen> getAllScreen() throws EmptyListException,ServiceException {
 		try {
 			List<Screen> screens = screenRepository.findAll();
 			if (screens.size()>0) {
@@ -96,10 +109,8 @@ public class ScreenServiceImpl implements ScreenService {
 				throw new EmptyListException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new EmptyListException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
-	}
-
-	
+	}	
 
 }

@@ -17,6 +17,7 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.service.MovieService;
 import com.example.movieinventoryservice.modules.theatre.repository.PlayRepository;
 import com.example.movieinventoryservice.modules.theatre.service.PlayService;
@@ -41,7 +42,7 @@ public class PlayServiceImpl implements PlayService{
 	private String message="";
 
 	@Override
-	public Play addPlay(Play play) throws RecordNotAddedException {
+	public Play addPlay(Play play) throws RecordNotAddedException,ServiceException {
 		try {
 			Screen screen = screenService.getScreenById(play.getScreen().getId());
 			play.setScreen(screen);
@@ -51,7 +52,7 @@ public class PlayServiceImpl implements PlayService{
 			logger.info(play.toString());
 			return playRepository.save(play);
 		} catch (DataAccessException ex) {
-			throw new RecordNotAddedException("Failed To Add Play", ex.getCause());
+			throw new ServiceException("Failed To Add Play Internal error", ex.getCause());
 		}
 		catch(Exception ex) {
 			throw new RecordNotAddedException("Failed To Add Play", ex.getCause());
@@ -59,34 +60,40 @@ public class PlayServiceImpl implements PlayService{
 	}
 
 	@Override
-	public String deletePlay(int playId) throws RecordNotDeletedException {
+	public void deletePlay(int playId) throws RecordNotDeletedException,ServiceException {
 		try {
+			if(getPlayById(playId)!=null) {
 			playRepository.deleteById(playId);
-			message = "Successfully deleted Play of id - " + playId;
-			return message;
-		} catch (DataAccessException ex) {
-			throw new RecordNotDeletedException("Failed to Delete", ex.getCause());
+			}
+			}catch (RecordNotFoundException e) {
+				throw new RecordNotDeletedException("playd id - "+playId+" not found");
+			}
+		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Delete id-"+playId, ex.getCause());
 		}
 	}
 
 	@Override
-	public String updatePlay(Play play) throws RecordNotUpdatedException {
+	public Play updatePlay(Play play) throws RecordNotUpdatedException,ServiceException {
 		try {
-			playRepository.save(play);
-			message = "Successfully updated theatre";
-			return message;
+			if(getPlayById(play.getId())!=null) {
+			return playRepository.save(play);
+			}
+		}catch(RecordNotFoundException ex) {
+			throw new RecordNotUpdatedException("playd id - "+play.getId()+" not found");
 		}
 
 		catch (DataAccessException ex) {
-			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
+			throw new ServiceException("Failed to Update", ex.getCause());
 		}
 		catch(Exception ex) {
 			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
 		}
+		return play;
 	}
 
 	@Override
-	public Play getPlayById(int playId) throws RecordNotFoundException {
+	public Play getPlayById(int playId) throws RecordNotFoundException ,ServiceException{
 		try {
 			logger.info("Entered into Play Service - getByid "+playId);
 			logger.info(playRepository.findAll().toString());
@@ -98,12 +105,12 @@ public class PlayServiceImpl implements PlayService{
 				throw new RecordNotFoundException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new RecordNotFoundException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
 	}
 
 	@Override
-	public List<Play> getAllPlays() throws EmptyListException {
+	public List<Play> getAllPlay() throws EmptyListException,ServiceException {
 		try {
 			List<Play> plays = playRepository.findAll();
 			if (plays.size()>0) {
@@ -112,7 +119,7 @@ public class PlayServiceImpl implements PlayService{
 				throw new EmptyListException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new EmptyListException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
 	}
 

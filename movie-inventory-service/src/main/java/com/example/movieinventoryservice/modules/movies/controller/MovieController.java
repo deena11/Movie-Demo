@@ -21,12 +21,13 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.service.MovieService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/movie")
+@RequestMapping("/movies/v1")
 public class MovieController {
 
 	private Logger logger = LoggerFactory.getLogger(MovieController.class);
@@ -37,61 +38,62 @@ public class MovieController {
 	private MovieService movieService;
 
 	@GetMapping("/{movieId}")
-	public ResponseEntity<?> getMovie(@PathVariable("movieId") int movieId) throws RecordNotFoundException {
+	public ResponseEntity<?> getMovie(@PathVariable("movieId") int movieId) throws RecordNotFoundException, ServiceException {
 
 		logger.info("Fetching Movie of id - " + movieId + " Request is Processing");
 		message = "Successfully Fetched Movie Data ";
 
-		return ResponseEntity.ok(responseBuilder(message, movieService.getMovieById(movieId)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, movieService.getMovieById(movieId)));
 
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<?> getAllMovie() throws EmptyListException {
+	public ResponseEntity<?> getAllMovie() throws EmptyListException, ServiceException {
 
 		logger.info("Fetching All Movie Data Request is Processing");
 		message = "Successfully Fetched All Movies ";
 
-		return ResponseEntity.ok(responseBuilder(message, movieService.getAllMovies()));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, movieService.getAllMovies()));
 
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> addMovie(@RequestBody Movie movie) throws RecordNotAddedException {
+	public ResponseEntity<?> addMovie(@RequestBody Movie movie) throws RecordNotAddedException, ServiceException {
 
 		logger.info("Adding Movie of id - " + movie.getId() + " Request is Processing");
 		message = "Successfully Added Movie - " + movie.getName();
 
-		return ResponseEntity.ok(responseBuilder(message, movieService.addMovie(movie)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED,message, movieService.addMovie(movie)));
 
 	}
 
 	@PutMapping("/")
-	public ResponseEntity<?> updateMovie(@RequestBody Movie movie) throws RecordNotUpdatedException {
+	public ResponseEntity<?> updateMovie(@RequestBody Movie movie) throws RecordNotUpdatedException, ServiceException {
 
 		logger.info("Updating Movie of id - " + movie.getId() + " Request is Processing");
 		message = "Successfully Updated Movie - " + movie.getName();
 
-		return ResponseEntity.ok(responseBuilder(message, movieService.updateMovie(movie)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, movieService.updateMovie(movie)));
 
 	}
 
 	@DeleteMapping("/{movieId}")
-	public ResponseEntity<?> deleteMovie(@PathVariable("movieId") int movieId) throws RecordNotDeletedException {
+	public ResponseEntity<?> deleteMovie(@PathVariable("movieId") int movieId) throws RecordNotDeletedException, ServiceException {
 
 		logger.info("Delete Movie of id - " + movieId + " Request is Processing");
 		message = "Successfully Deleted movie id " + movieId;
+		movieService.deleteMovie(movieId);
 
-		return ResponseEntity.ok(responseBuilder(message, movieService.deleteMovie(movieId)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message,null ));
 	}
 
-	public ApiSuccessResponse responseBuilder(String message, Object body) {
-
+	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
+		
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
 		response.setMessage(message);
 		response.setHttpStatusCode(200);
-		response.setHttpStatus(HttpStatus.OK.toString());
+		response.setHttpStatus(status.toString());
 		response.setSuccess(true);
 		response.setBody(body);
 

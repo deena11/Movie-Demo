@@ -3,6 +3,8 @@ package com.example.movieinventoryservice.modules.theatre.service.serviceImpl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.repository.AddressRepository;
 import com.example.movieinventoryservice.modules.theatre.repository.LocationRepository;
 import com.example.movieinventoryservice.modules.theatre.repository.TheatreRepository;
@@ -32,51 +35,62 @@ public class TheatreServiceImpl implements TheatreService {
 	@Autowired
 	private LocationRepository locationRepository;
 	
-	private String message = "";
 
+	private Logger logger = LoggerFactory.getLogger(TheatreServiceImpl.class);
 	
 
 	@Override
-	public String deleteTheatre(int theatreId) throws RecordNotDeletedException {
+	public void deleteTheatre(int theatreId) throws RecordNotDeletedException,ServiceException {
 		try {
+			if(getTheatreById(theatreId)!=null) {
 			theatreRepository.deleteById(theatreId);
-			message = "Successfully deleted Theatre of id - " + theatreId;
-			return message;
-		} catch (DataAccessException ex) {
-			throw new RecordNotDeletedException("Failed to Delete", ex.getCause());
+			}
+			}catch (RecordNotFoundException e) {
+				throw new RecordNotDeletedException("theatred id - "+theatreId+" not found");
+			}
+		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Delete id-"+theatreId, ex.getCause());
 		}
 	}
 
 	@Override
-	public String updateTheatre(Theatre theatre) throws RecordNotUpdatedException {
+	public Theatre updateTheatre(Theatre theatre) throws RecordNotUpdatedException,ServiceException {
 		try {
-
-			theatreRepository.save(theatre);
-			message = "Successfully updated theatre";
-			return message;
+			if(getTheatreById(theatre.getId())!=null) {
+			return theatreRepository.save(theatre);
+			}
+		}catch(RecordNotFoundException ex) {
+			throw new RecordNotUpdatedException("theatred id - "+theatre.getId()+" not found");
 		}
 
 		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Update", ex.getCause());
+		}
+		catch(Exception ex) {
 			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
 		}
+		return theatre;
 	}
 
 	@Override
-	public Theatre getTheatreById(int theatreId) throws RecordNotFoundException {
+	public Theatre getTheatreById(int theatreId) throws RecordNotFoundException ,ServiceException{
 		try {
+			logger.info("Entered into Theatre Service - getByid "+theatreId);
+			logger.info(theatreRepository.findAll().toString());
 			Optional<Theatre> theatre = theatreRepository.findById(theatreId);
 			if (theatre.isPresent()) {
+				logger.info(theatre.get().toString());
 				return theatre.get();
 			} else {
 				throw new RecordNotFoundException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new RecordNotFoundException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
 	}
 
 	@Override
-	public List<Theatre> getAllTheatres() throws EmptyListException {
+	public List<Theatre> getAllTheatre() throws EmptyListException,ServiceException {
 		try {
 			List<Theatre> theatres = theatreRepository.findAll();
 			if (theatres.size()>0) {
@@ -85,18 +99,23 @@ public class TheatreServiceImpl implements TheatreService {
 				throw new EmptyListException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new EmptyListException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
-	}
+	}	
+
+	
 
 	@Override
-	public Theatre addTheatre(Theatre theatre) throws RecordNotAddedException {
+	public Theatre addTheatre(Theatre theatre) throws RecordNotAddedException, ServiceException {
 		try {
 			theatre.setAddress(addressRepository.save(theatre.getAddress()));
 			theatre.setLocation(locationRepository.save(theatre.getLocation()));
 			return theatreRepository.save(theatre);
 		} catch (DataAccessException ex) {
-			throw new RecordNotAddedException("Failed To Add Theatre", ex.getCause());
+			throw new ServiceException("Failed To Add Theatre", ex.getCause());
 		}
+	     catch(Exception ex) {
+	    	 throw new RecordNotAddedException(ex.getMessage(),ex.getCause());
+	     }
 	}
 }

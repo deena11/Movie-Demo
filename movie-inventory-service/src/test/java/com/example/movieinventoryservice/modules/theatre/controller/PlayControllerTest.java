@@ -132,7 +132,7 @@ public class PlayControllerTest {
 	@Test
 	public void testGetPlay() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/play/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/plays/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("1234"));
@@ -141,7 +141,7 @@ public class PlayControllerTest {
 	@Test
 	public void testGetPlayException() throws Exception {
 		Mockito.when(playRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/play/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/plays/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -150,7 +150,7 @@ public class PlayControllerTest {
 	@Test
 	public void testGetPlayException1() throws Exception {
 		Mockito.when(playRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/play/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/plays/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -158,7 +158,7 @@ public class PlayControllerTest {
 
 	@Test
 	public void testGetAllPlay() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/play/all")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/plays/v1/all")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("1234"));
@@ -167,7 +167,7 @@ public class PlayControllerTest {
 	@Test
 	public void testGetAllPlayException() throws Exception {
 		Mockito.when(playRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/play/all")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/plays/v1/all")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -176,7 +176,7 @@ public class PlayControllerTest {
 	@Test
 	public void testGetAllPlayException1() throws Exception {
 		Mockito.when(playRepository.findAll()).thenReturn(new ArrayList<Play>());
-		MvcResult result = this.mockMvc.perform(get("/play/all")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/plays/v1/all")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -184,7 +184,7 @@ public class PlayControllerTest {
 
 	@Test
 	public void testAddPlay() throws Exception {
-		MvcResult result = mockMvc.perform(post("/play/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/plays/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getPlaysAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("1234"));
@@ -196,7 +196,7 @@ public class PlayControllerTest {
 
 		Mockito.when(playRepository.save(Mockito.any(Play.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/play/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/plays/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getPlaysAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -205,10 +205,10 @@ public class PlayControllerTest {
 
 	@Test
 	public void testUpdatePlay() throws Exception {
-		MvcResult result = mockMvc.perform(put("/play/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/plays/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getPlaysAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully updated"));
+		assertTrue(result.getResponse().getContentAsString().contains("1234"));
 
 	}
 
@@ -216,7 +216,7 @@ public class PlayControllerTest {
 	public void testUpdatePlayException() throws Exception {
 		Mockito.when(playRepository.save(Mockito.any(Play.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/play/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/plays/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getPlaysAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -224,10 +224,10 @@ public class PlayControllerTest {
 
 	@Test
 	public void testDeletePlay() throws Exception {
-		MvcResult result = this.mockMvc.perform(delete("/play/1"))
+		MvcResult result = this.mockMvc.perform(delete("/plays/v1/1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully deleted"));
+		assertTrue(result.getResponse().getContentAsString().contains("NO_CONTENT"));
 
 	}
 

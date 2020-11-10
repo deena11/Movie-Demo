@@ -20,6 +20,7 @@ import com.example.movieinventoryservice.exception.EmptyListException;
 import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.GenreRepository;
 import com.example.movieinventoryservice.modules.movies.service.GenreService;
 
@@ -41,7 +42,7 @@ public class GenreServiceImplTest {
 		assertTrue(genre.toString().contains("test"));
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = ServiceException.class)
 	public void testGetGenreException() throws Exception {
 		Mockito.when(genreRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
 		genreService.getGenreById(1);
@@ -55,7 +56,7 @@ public class GenreServiceImplTest {
 		assertTrue(genres.toString().contains("test"));
 	}
 
-	@Test(expected = EmptyListException.class)
+	@Test(expected = ServiceException.class)
 	public void testGetAllGenreException() throws Exception {
 		Mockito.when(genreRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
 		genreService.getAllGenres();
@@ -70,7 +71,7 @@ public class GenreServiceImplTest {
 
 	}
 
-	@Test(expected = RecordNotAddedException.class)
+	@Test(expected = ServiceException.class)
 	public void testAddGenreException() throws Exception {
 		Mockito.when(genreRepository.save(Mockito.any(Genre.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
@@ -80,13 +81,16 @@ public class GenreServiceImplTest {
 
 	@Test
 	public void testUpdateGenre() throws Exception {
-		String response = genreService.updateGenre(getGenre());
-		assertTrue(response.contains("Successfully updated"));
+		Mockito.when(genreRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getGenre()));
+		Mockito.when(genreRepository.save(Mockito.any(Genre.class))).thenReturn(getGenre());
+		Genre genre = genreService.updateGenre(getGenre());
+		assertTrue(genre.toString().contains("test"));
 
 	}
 
-	@Test(expected = RecordNotUpdatedException.class)
+	@Test(expected = ServiceException.class)
 	public void testUpdateGenreException() throws Exception {
+		Mockito.when(genreRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getGenre()));
 		Mockito.when(genreRepository.save(Mockito.any(Genre.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
 		genreService.updateGenre(getGenre());
@@ -95,8 +99,9 @@ public class GenreServiceImplTest {
 
 	@Test
 	public void testDeleteGenre() throws Exception {
-		String response = genreService.deleteGenre(1);
-		assertTrue(response.contains("Successfully deleted"));
+		Mockito.when(genreRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getGenre()));
+		genreService.deleteGenre(1);
+		Mockito.verify(genreRepository, Mockito.times(1)).deleteById(Mockito.any());
 
 	}
 

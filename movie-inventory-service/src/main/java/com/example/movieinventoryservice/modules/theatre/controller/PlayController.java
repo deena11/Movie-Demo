@@ -26,12 +26,13 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.service.PlayService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/play")
+@RequestMapping("/plays/v1")
 public class PlayController {
 
 	@Autowired
@@ -49,7 +50,7 @@ public class PlayController {
 
 	@GetMapping("/{playId}")
 	public ResponseEntity<ApiSuccessResponse> getPlay(@PathVariable("playId") int playId)
-			throws RecordNotFoundException {
+			throws RecordNotFoundException, ServiceException {
 
 		logger.info("Fetching Play of id - " + playId + " Request is Processing");
 		message = "Successfully Fetched Play Data ";
@@ -59,17 +60,17 @@ public class PlayController {
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<?> getAllPlay() throws EmptyListException {
+	public ResponseEntity<?> getAllPlay() throws EmptyListException, ServiceException {
 
 		logger.info("Fetching All Play Data Request is Processing");
 		message = "Successfully Fetched All Plays ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, playService.getAllPlays()));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, playService.getAllPlay()));
 
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> addPlay(@RequestBody Play play) throws RecordNotAddedException {
+	public ResponseEntity<?> addPlay(@RequestBody Play play) throws RecordNotAddedException, ServiceException {
 
 		logger.info("Adding Play of id - " + play.getId() + " Request is Processing");
 		message = "Successfully Added Play";
@@ -83,22 +84,23 @@ public class PlayController {
 	}
 
 	@PutMapping("/")
-	public ResponseEntity<?> updatePlay(@RequestBody Play play) throws RecordNotUpdatedException {
+	public ResponseEntity<?> updatePlay(@RequestBody Play play) throws RecordNotUpdatedException, ServiceException {
 
 		logger.info("Updating Play of id - " + play.getId() + " Request is Processing");
 		message = "Successfully Updated Play ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.ACCEPTED, message, playService.updatePlay(play)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, playService.updatePlay(play)));
 
 	}
 
 	@DeleteMapping("/{playId}")
-	public ResponseEntity<?> deletePlay(@PathVariable("playId") int playId) throws RecordNotDeletedException {
+	public ResponseEntity<?> deletePlay(@PathVariable("playId") int playId) throws RecordNotDeletedException, ServiceException {
 
 		logger.info("Delete Play of id - " + playId + " Request is Processing");
 		message = "Successfully Deleted play id " + playId;
+		playService.deletePlay(playId);
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT, message, playService.deletePlay(playId)));
+		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT, message, null));
 
 	}
 
@@ -107,7 +109,6 @@ public class PlayController {
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
 		response.setMessage(message);
-		response.setHttpStatusCode(status.value());
 		response.setHttpStatus(status.toString());
 		response.setSuccess(true);
 		response.setBody(body);

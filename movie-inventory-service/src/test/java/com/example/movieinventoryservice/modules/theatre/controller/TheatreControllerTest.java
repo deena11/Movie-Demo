@@ -73,7 +73,7 @@ public class TheatreControllerTest {
 	@Test
 	public void testGetTheatre() throws Exception {
 
-		MvcResult result = this.mockMvc.perform(get("/theatre/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/theatres/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
@@ -82,7 +82,7 @@ public class TheatreControllerTest {
 	@Test
 	public void testGetTheatreException() throws Exception {
 		Mockito.when(theatreRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/theatre/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/theatres/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -91,7 +91,7 @@ public class TheatreControllerTest {
 	@Test
 	public void testGetTheatreException1() throws Exception {
 		Mockito.when(theatreRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-		MvcResult result = this.mockMvc.perform(get("/theatre/1")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/theatres/v1/1")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -99,7 +99,7 @@ public class TheatreControllerTest {
 
 	@Test
 	public void testGetAllTheatre() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/theatre/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/theatres/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
@@ -108,7 +108,7 @@ public class TheatreControllerTest {
 	@Test
 	public void testGetAllTheatreException() throws Exception {
 		Mockito.when(theatreRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = this.mockMvc.perform(get("/theatre/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/theatres/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -117,7 +117,7 @@ public class TheatreControllerTest {
 	@Test
 	public void testGetAllTheatreException1() throws Exception {
 		Mockito.when(theatreRepository.findAll()).thenReturn(new ArrayList<Theatre>());
-		MvcResult result = this.mockMvc.perform(get("/theatre/")).andExpect(MockMvcResultMatchers.status().isOk())
+		MvcResult result = this.mockMvc.perform(get("/theatres/v1/")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -125,7 +125,7 @@ public class TheatreControllerTest {
 
 	@Test
 	public void testAddTheatre() throws Exception {
-		MvcResult result = mockMvc.perform(post("/theatre/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/theatres/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getTheatresAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
@@ -137,7 +137,7 @@ public class TheatreControllerTest {
 
 		Mockito.when(theatreRepository.save(Mockito.any(Theatre.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(post("/theatre/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(post("/theatres/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getTheatresAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -146,10 +146,10 @@ public class TheatreControllerTest {
 
 	@Test
 	public void testUpdateTheatre() throws Exception {
-		MvcResult result = mockMvc.perform(put("/theatre/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/theatres/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getTheatresAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully updated"));
+		assertTrue(result.getResponse().getContentAsString().contains("sampleText"));
 
 	}
 
@@ -157,7 +157,7 @@ public class TheatreControllerTest {
 	public void testUpdateTheatreException() throws Exception {
 		Mockito.when(theatreRepository.save(Mockito.any(Theatre.class)))
 				.thenThrow(Mockito.mock(DataAccessException.class));
-		MvcResult result = mockMvc.perform(put("/theatre/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult result = mockMvc.perform(put("/theatres/v1/").contentType(MediaType.APPLICATION_JSON)
 				.content(getTheatresAsJson()).characterEncoding("utf-8")).andExpect(status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("\"error\":true"));
@@ -165,10 +165,10 @@ public class TheatreControllerTest {
 
 	@Test
 	public void testDeleteTheatre() throws Exception {
-		MvcResult result = this.mockMvc.perform(delete("/theatre/1"))
+		MvcResult result = this.mockMvc.perform(delete("/theatres/v1/1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
-		assertTrue(result.getResponse().getContentAsString().contains("Successfully deleted"));
+		assertTrue(result.getResponse().getContentAsString().contains("NO_CONTENT"));
 
 	}
 

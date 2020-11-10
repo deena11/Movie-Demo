@@ -8,17 +8,18 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 
 public interface MovieService {
 	
-	public Movie addMovie(Movie movie) throws RecordNotAddedException;
+	public Movie addMovie(Movie movie) throws RecordNotAddedException,ServiceException;
 	
-	public String deleteMovie(int movieId) throws RecordNotDeletedException;
+	public void deleteMovie(int movieId) throws RecordNotDeletedException,ServiceException;
 	
-	public String updateMovie(Movie movie) throws RecordNotUpdatedException;
+	public Movie updateMovie(Movie movie) throws RecordNotUpdatedException,ServiceException;
 	
-	public Movie getMovieById(int movieId) throws RecordNotFoundException;
+	public Movie getMovieById(int movieId) throws RecordNotFoundException,ServiceException;
 	
-	public List<Movie> getAllMovies() throws EmptyListException;
+	public List<Movie> getAllMovies() throws EmptyListException,ServiceException;
 
 }

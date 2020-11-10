@@ -3,6 +3,8 @@ package com.example.movieinventoryservice.modules.movies.service.serviceImpl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CastRepository;
 import com.example.movieinventoryservice.modules.movies.service.CastService;
 
@@ -24,51 +27,62 @@ public class CastServiceImpl implements CastService{
 	@Autowired
 	private CastRepository castRepository;
 	
-	private String message = "";
+private Logger logger = LoggerFactory.getLogger(CastServiceImpl.class);
 
 	
 
 	@Override
-	public String deleteCast(int castId) throws RecordNotDeletedException {
+	public void deleteCast(int castId) throws RecordNotDeletedException,ServiceException {
 		try {
+			if(getCastById(castId)!=null) {
 			castRepository.deleteById(castId);
-			message = "Successfully deleted Cast of id - " + castId;
-			return message;
-		} catch (DataAccessException ex) {
-			throw new RecordNotDeletedException("Failed to Delete", ex.getCause());
+			}
+			}catch (RecordNotFoundException e) {
+				throw new RecordNotDeletedException("castd id - "+castId+" not found");
+			}
+		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Delete id-"+castId, ex.getCause());
 		}
 	}
 
 	@Override
-	public String updateCast(Cast cast) throws RecordNotUpdatedException {
+	public Cast updateCast(Cast cast) throws RecordNotUpdatedException,ServiceException {
 		try {
-
-			castRepository.save(cast);
-			message = "Successfully updated cast of name - " + cast.getName();
-			return message;
+			if(getCastById(cast.getId())!=null) {
+			return castRepository.save(cast);
+			}
+		}catch(RecordNotFoundException ex) {
+			throw new RecordNotUpdatedException("castd id - "+cast.getId()+" not found");
 		}
 
 		catch (DataAccessException ex) {
+			throw new ServiceException("Failed to Update", ex.getCause());
+		}
+		catch(Exception ex) {
 			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
 		}
+		return cast;
 	}
 
 	@Override
-	public Cast getCastById(int castId) throws RecordNotFoundException {
+	public Cast getCastById(int castId) throws RecordNotFoundException ,ServiceException{
 		try {
+			logger.info("Entered into Cast Service - getByid "+castId);
+			logger.info(castRepository.findAll().toString());
 			Optional<Cast> cast = castRepository.findById(castId);
 			if (cast.isPresent()) {
+				logger.info(cast.get().toString());
 				return cast.get();
 			} else {
-				throw new RecordNotFoundException("No Record to Fetch");
+				throw new RecordNotFoundException("Cast id -"+castId+"is not present");
 			}
 		} catch (DataAccessException ex) {
-			throw new RecordNotFoundException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
 	}
 
 	@Override
-	public List<Cast> getAllCasts() throws EmptyListException {
+	public List<Cast> getAllCasts() throws EmptyListException,ServiceException {
 		try {
 			List<Cast> casts = castRepository.findAll();
 			if (casts.size()>0) {
@@ -77,18 +91,21 @@ public class CastServiceImpl implements CastService{
 				throw new EmptyListException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
-			throw new EmptyListException("Failed to Fetch", ex.getCause());
+			throw new ServiceException("Failed to Fetch", ex.getCause());
 		}
-	}
+	}	
 
 	@Override
-	public Cast addCast(Cast cast) throws RecordNotAddedException {
+	public Cast addCast(Cast cast) throws RecordNotAddedException, ServiceException {
 		try {
 			return castRepository.save(cast);
 		} catch (DataAccessException ex) {
-			throw new RecordNotAddedException("Failed To Add Cast", ex.getCause());
+			throw new ServiceException("Failed To Add Cast", ex.getCause());
+		}catch(Exception ex) {
+			throw new RecordNotAddedException("Invalid Data");
 		}
 	}
 
-
 }
+
+

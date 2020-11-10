@@ -8,18 +8,19 @@ import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.ServiceException;
 
 public interface CommentService {
 
-	public Comment addComment(Comment comment) throws RecordNotAddedException;
+	public Comment addComment(Comment comment) throws RecordNotAddedException,ServiceException;
 	
-	public String deleteComment(int commentId) throws RecordNotDeletedException;
+	public void deleteComment(int commentId) throws RecordNotDeletedException,ServiceException;
 	
-	public String updateComment(Comment comment) throws RecordNotUpdatedException;
+	public Comment updateComment(Comment comment) throws RecordNotUpdatedException,ServiceException;
 	
-	public Comment getCommentById(int commentId) throws RecordNotFoundException;
+	public Comment getCommentById(int commentId) throws RecordNotFoundException,ServiceException;
 	
-	public List<Comment> getAllComments() throws EmptyListException;
+	public List<Comment> getAllComments() throws EmptyListException,ServiceException;
 
 
 }
