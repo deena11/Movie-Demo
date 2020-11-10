@@ -39,6 +39,13 @@ public class TheatreServiceImpl implements TheatreService {
 	private Logger logger = LoggerFactory.getLogger(TheatreServiceImpl.class);
 	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param theatreId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteTheatre(int theatreId) throws RecordNotDeletedException,ServiceException {
 		try {
@@ -53,6 +60,14 @@ public class TheatreServiceImpl implements TheatreService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param theatre
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Theatre updateTheatre(Theatre theatre) throws RecordNotUpdatedException,ServiceException {
 		try {
@@ -72,6 +87,14 @@ public class TheatreServiceImpl implements TheatreService {
 		return theatre;
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param theatreId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Theatre getTheatreById(int theatreId) throws RecordNotFoundException ,ServiceException{
 		try {
@@ -89,6 +112,13 @@ public class TheatreServiceImpl implements TheatreService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Theatre> getAllTheatre() throws EmptyListException,ServiceException {
 		try {
@@ -105,6 +135,14 @@ public class TheatreServiceImpl implements TheatreService {
 
 	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param theatre
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Theatre addTheatre(Theatre theatre) throws RecordNotAddedException, ServiceException {
 		try {

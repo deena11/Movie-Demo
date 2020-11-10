@@ -20,6 +20,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CastRepository;
 import com.example.movieinventoryservice.modules.movies.service.CastService;
 
+/**
+ * @author M1053559
+ *
+ */
 @Service
 @Transactional
 public class CastServiceImpl implements CastService{
@@ -31,6 +35,13 @@ private Logger logger = LoggerFactory.getLogger(CastServiceImpl.class);
 
 	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param castId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteCast(int castId) throws RecordNotDeletedException,ServiceException {
 		try {
@@ -45,6 +56,14 @@ private Logger logger = LoggerFactory.getLogger(CastServiceImpl.class);
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param cast
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Cast updateCast(Cast cast) throws RecordNotUpdatedException,ServiceException {
 		try {
@@ -64,6 +83,14 @@ private Logger logger = LoggerFactory.getLogger(CastServiceImpl.class);
 		return cast;
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param castId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Cast getCastById(int castId) throws RecordNotFoundException ,ServiceException{
 		try {
@@ -81,6 +108,13 @@ private Logger logger = LoggerFactory.getLogger(CastServiceImpl.class);
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Cast> getAllCasts() throws EmptyListException,ServiceException {
 		try {
@@ -95,6 +129,14 @@ private Logger logger = LoggerFactory.getLogger(CastServiceImpl.class);
 		}
 	}	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param cast
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Cast addCast(Cast cast) throws RecordNotAddedException, ServiceException {
 		try {

@@ -25,6 +25,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.service.TheatreService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/theatres/v1")
@@ -37,6 +41,12 @@ public class TheatreController {
 
 	private String message = "";
 
+	/**
+	 * @param theatreId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/{theatreId}")
 	public ResponseEntity<ApiSuccessResponse> getTheatre(@PathVariable("theatreId") int theatreId)
 			throws RecordNotFoundException, ServiceException {
@@ -49,6 +59,11 @@ public class TheatreController {
 
 	}
 
+	/**
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/")
 	public ResponseEntity<?> getAllTheatre() throws EmptyListException, ServiceException {
 
@@ -59,6 +74,12 @@ public class TheatreController {
 
 	}
 
+	/**
+	 * @param theatre
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/")
 	public ResponseEntity<?> addTheatre(@RequestBody Theatre theatre) throws RecordNotAddedException, ServiceException {
 
@@ -69,6 +90,12 @@ public class TheatreController {
 
 	}
 
+	/**
+	 * @param theatre
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	public ResponseEntity<?> updateTheatre(@RequestBody Theatre theatre) throws RecordNotUpdatedException, ServiceException {
 
@@ -79,6 +106,12 @@ public class TheatreController {
 
 	}
 
+	/**
+	 * @param theatreId
+	 * @return
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{theatreId}")
 	public ResponseEntity<?> deleteTheatre(@PathVariable("theatreId") int theatreId) throws RecordNotDeletedException, ServiceException {
 
@@ -90,6 +123,12 @@ public class TheatreController {
 	
 	}
 
+	/**
+	 * @param status
+	 * @param message
+	 * @param body
+	 * @return
+	 */
 	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();

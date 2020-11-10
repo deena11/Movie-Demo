@@ -35,6 +35,14 @@ public class ScreenServiceImpl implements ScreenService {
 	private TheatreService theatreService;
 	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param screen
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Screen addScreen(Screen screen) throws RecordNotAddedException, ServiceException {
 		try {
@@ -49,6 +57,13 @@ public class ScreenServiceImpl implements ScreenService {
 			throw new ServiceException("Record Not Added due to internal server");
 		}
 	}
+	/**
+	 * @author M1053559
+	 *
+	 * @param screenId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteScreen(int screenId) throws RecordNotDeletedException,ServiceException {
 		try {
@@ -63,6 +78,14 @@ public class ScreenServiceImpl implements ScreenService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param screen
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Screen updateScreen(Screen screen) throws RecordNotUpdatedException,ServiceException {
 		try {
@@ -82,6 +105,14 @@ public class ScreenServiceImpl implements ScreenService {
 		return screen;
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param screenId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Screen getScreenById(int screenId) throws RecordNotFoundException ,ServiceException{
 		try {
@@ -99,6 +130,13 @@ public class ScreenServiceImpl implements ScreenService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Screen> getAllScreen() throws EmptyListException,ServiceException {
 		try {

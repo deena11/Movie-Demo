@@ -25,6 +25,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.service.CommentService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/comments/v1")
@@ -36,6 +40,12 @@ public class CommentController {
 	@Autowired
 	private CommentService commentService;
 
+	/**
+	 * @param commentId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/{commentId}")
 	public ResponseEntity<?> getComment(@PathVariable("commentId") int commentId) throws RecordNotFoundException, ServiceException {
 
@@ -46,6 +56,11 @@ public class CommentController {
 
 	}
 
+	/**
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/")
 	public ResponseEntity<?> getAllComment() throws EmptyListException, ServiceException {
 
@@ -56,6 +71,12 @@ public class CommentController {
 
 	}
 
+	/**
+	 * @param comment
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/")
 	public ResponseEntity<?> addComment(@RequestBody Comment comment) throws RecordNotAddedException, ServiceException {
 
@@ -66,6 +87,12 @@ public class CommentController {
 
 	}
 
+	/**
+	 * @param comment
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	public ResponseEntity<?> updateComment(@RequestBody Comment comment) throws RecordNotUpdatedException, ServiceException {
 
@@ -76,6 +103,12 @@ public class CommentController {
 
 	}
 
+	/**
+	 * @param commentId
+	 * @return
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{commentId}")
 	public ResponseEntity<?> deleteComment(@PathVariable("commentId") int commentId) throws RecordNotDeletedException, ServiceException {
 
@@ -86,6 +119,12 @@ public class CommentController {
 		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message,null ));
 	}
 
+	/**
+	 * @param status
+	 * @param message
+	 * @param body
+	 * @return
+	 */
 	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();

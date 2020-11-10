@@ -23,8 +23,12 @@ import com.example.movieinventoryservice.modules.movies.repository.GenreReposito
 import com.example.movieinventoryservice.modules.movies.repository.MovieRepository;
 import com.example.movieinventoryservice.modules.movies.service.MovieService;
 
+/**
+ * @author M1053559
+ *
+ */
 @Service
-
+@Transactional
 public class MovieServiceImpl implements MovieService {
 
 	private Logger logger = LoggerFactory.getLogger(MovieServiceImpl.class);
@@ -38,6 +42,14 @@ public class MovieServiceImpl implements MovieService {
 	@Autowired
 	private GenreRepository genreRepository;
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param movie
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	@Transactional
 	public Movie addMovie(Movie movie) throws RecordNotAddedException, ServiceException {
@@ -69,6 +81,13 @@ public class MovieServiceImpl implements MovieService {
 
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param movieId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteMovie(int movieId) throws RecordNotDeletedException, ServiceException {
 		try {
@@ -83,6 +102,14 @@ public class MovieServiceImpl implements MovieService {
 
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param movie
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Movie updateMovie(Movie movie) throws RecordNotUpdatedException, ServiceException {
 		try {
@@ -112,6 +139,14 @@ public class MovieServiceImpl implements MovieService {
 
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param movieId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Movie getMovieById(int movieId) throws RecordNotFoundException, ServiceException {
 
@@ -127,6 +162,13 @@ public class MovieServiceImpl implements MovieService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Movie> getAllMovies() throws EmptyListException, ServiceException {
 		try {

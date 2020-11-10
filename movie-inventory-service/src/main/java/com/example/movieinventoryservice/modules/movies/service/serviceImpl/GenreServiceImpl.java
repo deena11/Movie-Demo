@@ -31,6 +31,13 @@ public class GenreServiceImpl implements GenreService {
 
 	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param genreId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteGenre(int genreId) throws RecordNotDeletedException,ServiceException {
 		try {
@@ -45,6 +52,14 @@ public class GenreServiceImpl implements GenreService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param genre
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Genre updateGenre(Genre genre) throws RecordNotUpdatedException,ServiceException {
 		try {
@@ -64,6 +79,14 @@ public class GenreServiceImpl implements GenreService {
 		return genre;
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param genreId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Genre getGenreById(int genreId) throws RecordNotFoundException ,ServiceException{
 		try {
@@ -81,6 +104,13 @@ public class GenreServiceImpl implements GenreService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Genre> getAllGenres() throws EmptyListException,ServiceException {
 		try {
@@ -95,6 +125,14 @@ public class GenreServiceImpl implements GenreService {
 		}
 	}	
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param genre
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Genre addGenre(Genre genre) throws RecordNotAddedException, ServiceException {
 		try {

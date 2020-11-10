@@ -30,6 +30,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.service.PlayService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/plays/v1")
@@ -48,6 +52,12 @@ public class PlayController {
 
 	private String message = "";
 
+	/**
+	 * @param playId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/{playId}")
 	public ResponseEntity<ApiSuccessResponse> getPlay(@PathVariable("playId") int playId)
 			throws RecordNotFoundException, ServiceException {
@@ -59,6 +69,11 @@ public class PlayController {
 
 	}
 
+	/**
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/all")
 	public ResponseEntity<?> getAllPlay() throws EmptyListException, ServiceException {
 
@@ -69,6 +84,12 @@ public class PlayController {
 
 	}
 
+	/**
+	 * @param play
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/")
 	public ResponseEntity<?> addPlay(@RequestBody Play play) throws RecordNotAddedException, ServiceException {
 
@@ -83,6 +104,12 @@ public class PlayController {
 
 	}
 
+	/**
+	 * @param play
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	public ResponseEntity<?> updatePlay(@RequestBody Play play) throws RecordNotUpdatedException, ServiceException {
 
@@ -93,6 +120,12 @@ public class PlayController {
 
 	}
 
+	/**
+	 * @param playId
+	 * @return
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{playId}")
 	public ResponseEntity<?> deletePlay(@PathVariable("playId") int playId) throws RecordNotDeletedException, ServiceException {
 
@@ -104,6 +137,12 @@ public class PlayController {
 
 	}
 
+	/**
+	 * @param status
+	 * @param message
+	 * @param body
+	 * @return
+	 */
 	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();

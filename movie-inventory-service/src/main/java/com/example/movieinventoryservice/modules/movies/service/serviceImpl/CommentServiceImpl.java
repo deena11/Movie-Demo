@@ -20,6 +20,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CommentRepository;
 import com.example.movieinventoryservice.modules.movies.service.CommentService;
 
+/**
+ * @author M1053559
+ *
+ */
 @Service
 @Transactional
 public class CommentServiceImpl implements CommentService {
@@ -29,6 +33,13 @@ public class CommentServiceImpl implements CommentService {
 
 	private Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param commentId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deleteComment(int commentId) throws RecordNotDeletedException, ServiceException {
 		try {
@@ -42,6 +53,14 @@ public class CommentServiceImpl implements CommentService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param comment
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Comment updateComment(Comment comment) throws RecordNotUpdatedException, ServiceException {
 		try {
@@ -60,6 +79,14 @@ public class CommentServiceImpl implements CommentService {
 		return comment;
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param commentId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Comment getCommentById(int commentId) throws RecordNotFoundException, ServiceException {
 		try {
@@ -77,6 +104,13 @@ public class CommentServiceImpl implements CommentService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Comment> getAllComments() throws EmptyListException, ServiceException {
 		try {
@@ -91,6 +125,14 @@ public class CommentServiceImpl implements CommentService {
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param comment
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Comment addComment(Comment comment) throws RecordNotAddedException, ServiceException {
 		try {

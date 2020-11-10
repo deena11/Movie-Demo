@@ -25,6 +25,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.service.ScreenService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/screens/v1")
@@ -37,6 +41,12 @@ public class ScreenController {
 
 	private String message = "";
 
+	/**
+	 * @param screenId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/{screenId}")
 	public ResponseEntity<ApiSuccessResponse> getScreen(@PathVariable("screenId") int screenId)
 			throws RecordNotFoundException, ServiceException {
@@ -48,6 +58,11 @@ public class ScreenController {
 
 	}
 
+	/**
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/")
 	public ResponseEntity<?> getAllScreen() throws EmptyListException, ServiceException {
 
@@ -58,6 +73,12 @@ public class ScreenController {
 
 	}
 
+	/**
+	 * @param screen
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/")
 	public ResponseEntity<?> addScreen(@RequestBody Screen screen) throws RecordNotAddedException, ServiceException {
 
@@ -68,6 +89,12 @@ public class ScreenController {
 
 	}
 
+	/**
+	 * @param screen
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	public ResponseEntity<?> updateScreen(@RequestBody Screen screen)
 			throws RecordNotUpdatedException, ServiceException {
@@ -79,6 +106,12 @@ public class ScreenController {
 
 	}
 
+	/**
+	 * @param screenId
+	 * @return
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{screenId}")
 	public ResponseEntity<?> deleteScreen(@PathVariable("screenId") int screenId) throws RecordNotDeletedException, ServiceException {
 
@@ -89,6 +122,12 @@ public class ScreenController {
 
 	}
 
+	/**
+	 * @param status
+	 * @param message
+	 * @param body
+	 * @return
+	 */
 	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();

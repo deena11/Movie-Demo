@@ -41,6 +41,14 @@ public class PlayServiceImpl implements PlayService{
 	
 	private String message="";
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param play
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Play addPlay(Play play) throws RecordNotAddedException,ServiceException {
 		try {
@@ -59,6 +67,13 @@ public class PlayServiceImpl implements PlayService{
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param playId
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public void deletePlay(int playId) throws RecordNotDeletedException,ServiceException {
 		try {
@@ -73,6 +88,14 @@ public class PlayServiceImpl implements PlayService{
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param play
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Play updatePlay(Play play) throws RecordNotUpdatedException,ServiceException {
 		try {
@@ -92,6 +115,14 @@ public class PlayServiceImpl implements PlayService{
 		return play;
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @param playId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@Override
 	public Play getPlayById(int playId) throws RecordNotFoundException ,ServiceException{
 		try {
@@ -109,6 +140,13 @@ public class PlayServiceImpl implements PlayService{
 		}
 	}
 
+	/**
+	 * @author M1053559
+	 *
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@Override
 	public List<Play> getAllPlay() throws EmptyListException,ServiceException {
 		try {

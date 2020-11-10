@@ -25,6 +25,10 @@ import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.service.MovieService;
 import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
+/**
+ * @author M1053559
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/movies/v1")
@@ -37,6 +41,12 @@ public class MovieController {
 	@Autowired
 	private MovieService movieService;
 
+	/**
+	 * @param movieId
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/{movieId}")
 	public ResponseEntity<?> getMovie(@PathVariable("movieId") int movieId) throws RecordNotFoundException, ServiceException {
 
@@ -47,6 +57,11 @@ public class MovieController {
 
 	}
 
+	/**
+	 * @return
+	 * @throws EmptyListException
+	 * @throws ServiceException
+	 */
 	@GetMapping("/")
 	public ResponseEntity<?> getAllMovie() throws EmptyListException, ServiceException {
 
@@ -57,6 +72,12 @@ public class MovieController {
 
 	}
 
+	/**
+	 * @param movie
+	 * @return
+	 * @throws RecordNotAddedException
+	 * @throws ServiceException
+	 */
 	@PostMapping("/")
 	public ResponseEntity<?> addMovie(@RequestBody Movie movie) throws RecordNotAddedException, ServiceException {
 
@@ -67,6 +88,12 @@ public class MovieController {
 
 	}
 
+	/**
+	 * @param movie
+	 * @return
+	 * @throws RecordNotUpdatedException
+	 * @throws ServiceException
+	 */
 	@PutMapping("/")
 	public ResponseEntity<?> updateMovie(@RequestBody Movie movie) throws RecordNotUpdatedException, ServiceException {
 
@@ -77,6 +104,12 @@ public class MovieController {
 
 	}
 
+	/**
+	 * @param movieId
+	 * @return
+	 * @throws RecordNotDeletedException
+	 * @throws ServiceException
+	 */
 	@DeleteMapping("/{movieId}")
 	public ResponseEntity<?> deleteMovie(@PathVariable("movieId") int movieId) throws RecordNotDeletedException, ServiceException {
 
@@ -87,6 +120,12 @@ public class MovieController {
 		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message,null ));
 	}
 
+	/**
+	 * @param status
+	 * @param message
+	 * @param body
+	 * @return
+	 */
 	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
 		
 		ApiSuccessResponse response = new ApiSuccessResponse();
