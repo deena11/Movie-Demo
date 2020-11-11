@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("/search")
+@RequestMapping("/search/v1/")
 public class MovieSearchController {
 	
 	private Logger logger = LoggerFactory.getLogger(MovieSearchController.class);
