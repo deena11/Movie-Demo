@@ -1,6 +1,8 @@
 package com.example.bookingservice.dto;
 
-public class Comment {
+import java.io.Serializable;
+
+public class Comment implements Serializable{
 	private int id;
 	private String comments;
 	private double rating;
@@ -50,6 +52,22 @@ public class Comment {
 		this.movie = movie;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Comment [id=");
+		builder.append(id);
+		builder.append(", comments=");
+		builder.append(comments);
+		builder.append(", rating=");
+		builder.append(rating);
+		builder.append(", movie=");
+		builder.append(movie);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	
 	
 	
 }

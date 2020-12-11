@@ -56,7 +56,7 @@ public class SwaggerConfiguration {
 
 		List<AuthorizationScope> authorizationScopeList = newArrayList();
 		authorizationScopeList.add(new AuthorizationScope("read", "read all"));
-		authorizationScopeList.add(new AuthorizationScope("write", "access all"));
+		authorizationScopeList.add(new AuthorizationScope("write", "access all"));    // need to use constants
 
 		List<GrantType> grantTypes = newArrayList();
 		GrantType passwordCredentialsGrant = new ResourceOwnerPasswordCredentialsGrant(accessTokenUri);

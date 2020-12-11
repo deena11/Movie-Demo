@@ -25,24 +25,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.userservice.entity.User;
-import com.example.userservice.exception.AccessTokenRevokeException;
-import com.example.userservice.exception.EmptyListException;
-import com.example.userservice.exception.InValidUserException;
-import com.example.userservice.exception.NoSuchUserException;
+import com.example.userservice.exception.BusinessException;
 import com.example.userservice.exception.ServiceException;
 import com.example.userservice.restApiConfig.ApiSuccessResponse;
 import com.example.userservice.service.serviceImpl.UserServiceImpl;
 
 /**
  * @author M1053559
- *
- */
-/**
- * @author M1053559
- *
+ * @version v1
+ * @description user controller for Accessing user Records
+ * 
  */
 @RestController
-@RequestMapping("users/v1")  
+@RequestMapping("users/v1")
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserController {
@@ -52,34 +47,35 @@ public class UserController {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-	private String message = "";
-
 	/**
 	 * @param request
 	 * @return
-	 * @throws AccessTokenRevokeException
+	 * @throws BusinessException
 	 */
-	@DeleteMapping("/logout")  
-	public ResponseEntity<?> revokeToken(HttpServletRequest request) throws AccessTokenRevokeException {
+	@DeleteMapping("/logout")
+	public ResponseEntity<?> revokeToken(HttpServletRequest request) throws BusinessException {
+
+		String message = "";
 		LOGGER.info("Log out Request is Called");
 
 		message = "Logging out process";
 		userServiceImpl.logout(request);
 
-		LOGGER.info("SuccessFully Logged out user - "+ request.getUserPrincipal().getName());
+		LOGGER.info("SuccessFully Logged out user - " + request.getUserPrincipal().getName());
 
-		return ResponseEntity.ok(responseBuilder(message, null,HttpStatus.OK));
+		return responseBuilder(message, null, HttpStatus.OK);
 	}
 
 	/**
 	 * @param userId
 	 * @return
 	 * @throws ServiceException
-	 * @throws NoSuchUserException
+	 * @throws BusinessException
 	 */
 	@GetMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
-	public ResponseEntity<?> getUser(@PathVariable("userId") int userId) throws ServiceException, NoSuchUserException   {
+	public ResponseEntity<?> getUser(@PathVariable("userId") int userId) throws ServiceException, BusinessException {
+		String message = "";
 		LOGGER.info("fetching user details of id - " + userId);
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
@@ -88,17 +84,19 @@ public class UserController {
 
 		LOGGER.info("SuccessFully Fetched user Data of id -" + userId + " building Success Respone");
 
-		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
+		return responseBuilder(message, result, HttpStatus.OK);
 	}
 
 	/**
 	 * @return
-	 * @throws EmptyListException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
-	@GetMapping("/")  // ()
+	@GetMapping("/") // ()
 	@PreAuthorize("hasRole('ROLE_admin')")
-	public ResponseEntity<?> getAllUser() throws EmptyListException, ServiceException   {
+	public ResponseEntity<?> getAllUser() throws BusinessException, ServiceException {
+
+		String message = "";
 		LOGGER.info("fetching all user details");
 
 		message = "Successfully fetched Data";
@@ -106,18 +104,19 @@ public class UserController {
 
 		LOGGER.info("SuccessFully Fetched All users. building Success Respone");
 
-		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
+		return responseBuilder(message, result, HttpStatus.OK);
 	}
 
 	/**
 	 * @param user
 	 * @param bindingResult
 	 * @return
-	 * @throws InValidUserException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@PostMapping("/add")
-	public ResponseEntity<?> addUser(@Valid @RequestBody User user,BindingResult bindingResult) throws InValidUserException, ServiceException   {
+	public ResponseEntity<?> addUser(@Valid @RequestBody User user, BindingResult bindingResult)
+			throws BusinessException, ServiceException {
 
 		if (bindingResult.hasErrors()) {
 			StringBuilder errorMessage = new StringBuilder();
@@ -126,8 +125,9 @@ public class UserController {
 				errorMessage.append(error.getDefaultMessage() + " ");
 			}
 			LOGGER.error("Error: {}", errorMessage);
-			throw new InValidUserException(errorMessage.toString());
+			throw new BusinessException(errorMessage.toString());
 		}
+		String message = "";
 		LOGGER.info("Adding user Details " + user.toString());
 
 		message = "Successfully Added Data";
@@ -135,18 +135,19 @@ public class UserController {
 
 		LOGGER.info("SuccessFully Added user id -" + user.getId() + " building Success Respone");
 
-		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
+		return responseBuilder(message, result, HttpStatus.OK);
 	}
 
 	/**
 	 * @param user
 	 * @return
-	 * @throws InValidUserException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
-	public ResponseEntity<?> updateUser(@RequestBody User user) throws InValidUserException, ServiceException  {
+	public ResponseEntity<?> updateUser(@RequestBody User user) throws BusinessException, ServiceException {
+		String message = "";
 		LOGGER.info("updating user Details for user id -" + user.getId());
 
 		message = "Successfully Updated Data";
@@ -154,18 +155,19 @@ public class UserController {
 
 		LOGGER.info("SuccessFully Updated user id -" + user.getId() + " building Success Respone");
 
-		return ResponseEntity.ok(responseBuilder(message, result,HttpStatus.OK));
+		return responseBuilder(message, result, HttpStatus.OK);
 	}
 
 	/**
 	 * @param userId
 	 * @return
-	 * @throws InValidUserException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_admin')")
-	public ResponseEntity<?> deleteUser(@PathVariable("userId") int userId) throws InValidUserException, ServiceException {
+	public ResponseEntity<?> deleteUser(@PathVariable("userId") int userId) throws BusinessException, ServiceException {
+		String message = "";
 		LOGGER.info("Deleting user of id -" + userId);
 
 		message = "Successfully Deleted Data";
@@ -173,7 +175,7 @@ public class UserController {
 
 		LOGGER.info("SuccessFully deleted user id -" + userId + " building Success Respone");
 
-		return ResponseEntity.ok(responseBuilder(message, null,HttpStatus.NO_CONTENT));
+		return responseBuilder(message, null, HttpStatus.NO_CONTENT);
 	}
 
 	/**
@@ -182,7 +184,7 @@ public class UserController {
 	 * @param status
 	 * @return
 	 */
-	public ApiSuccessResponse responseBuilder(String message, Object body,HttpStatus status) {
+	public ResponseEntity<ApiSuccessResponse> responseBuilder(String message, Object body, HttpStatus status) {
 
 		LOGGER.info("Success Response is Building");
 
@@ -193,7 +195,7 @@ public class UserController {
 		response.setHttpStatus(status.toString());
 		response.setBody(body);
 
-		return response;
+		return ResponseEntity.ok(response);
 
 	}
 

@@ -1,16 +1,18 @@
 package com.example.bookingservice.dto;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Cast {
+public class Cast implements Serializable{
 	private int id;
-    private String name;
-    private String role;
-    private byte[] picture;
+	private String name;
+	private String role;
+	private byte[] picture;
+
 	public Cast() {
 		super();
 	}
-	
+
 	public Cast(int id, String name, String role, byte[] picture) {
 		super();
 		this.id = id;
@@ -53,12 +55,15 @@ public class Cast {
 
 	@Override
 	public String toString() {
-		return "Cast [id=" + id + ", name=" + name + ", role=" + role + ", picture=" + Arrays.toString(picture) + "]";
-	}
-	
-	
-	
-	
 
-	
+		StringBuilder sb = new StringBuilder();
+		sb.append("Cast [ id : " + id);
+		sb.append(", name : " + name);
+		sb.append(", role : " + role);
+		sb.append(", picture : " + Arrays.toString(picture));
+		sb.append(" ]");
+
+		return sb.toString();
+	}
+
 }

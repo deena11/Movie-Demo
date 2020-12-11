@@ -19,7 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.bookingservice.exception.BookingServiceDaoException;
-import com.example.bookingservice.exception.InValidIdException;
+import com.example.bookingservice.exception.InValidRequestException;
 import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.response.ApiErrorResponse;
 
@@ -118,7 +118,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(BookingServiceDaoException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public final ResponseEntity<ApiErrorResponse> handleRecordNotFoundExceptions(BookingServiceDaoException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
@@ -129,16 +129,16 @@ public class GlobalExceptionHandler {
 		}
 		response.setMessage("Something went wrong !!. Record not Processed.");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
+		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		response.setError(true);
 
-		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
+		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 	
-	@ExceptionHandler(InValidIdException.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public final ResponseEntity<ApiErrorResponse> handleInVaidIdExceptions(InValidIdException ex, WebRequest request) {
+	@ExceptionHandler(InValidRequestException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public final ResponseEntity<ApiErrorResponse> handleInVaidIdExceptions(InValidRequestException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		if (ex.getCause() != null) {
@@ -148,10 +148,10 @@ public class GlobalExceptionHandler {
 		}
 		response.setMessage("Something went wrong !!. Record not Found.");
 		response.setExceptionMessage(ex.getMessage());
-		response.setHttpStatus(HttpStatus.NOT_FOUND.toString());
+		response.setHttpStatus(HttpStatus.BAD_REQUEST.toString());
 		response.setError(true);
 
-		return buildResponseEntity(response, HttpStatus.NOT_FOUND);
+		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
 
 	}
 

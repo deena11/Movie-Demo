@@ -1,6 +1,8 @@
 package com.example.bookingservice.dto;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable{
 	private int id;
 	private String latitude;
 	private String longitude;
@@ -36,6 +38,20 @@ public class Location {
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Location [id=");
+		builder.append(id);
+		builder.append(", latitude=");
+		builder.append(latitude);
+		builder.append(", longitude=");
+		builder.append(longitude);
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	
 	
 
 }

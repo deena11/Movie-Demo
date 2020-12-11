@@ -88,13 +88,21 @@ public class Booking {
 
 	@Override
 	public String toString() {
-		return "Booking [id=" + id + ", playId=" + playId + ", totalPrice=" + totalPrice + ", userId=" + userId
-				+ ", seatCount=" + seatCount + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Booking [id=");
+		builder.append(id);
+		builder.append(", playId=");
+		builder.append(playId);
+		builder.append(", totalPrice=");
+		builder.append(totalPrice);
+		builder.append(", userId=");
+		builder.append(userId);
+		builder.append(", seatCount=");
+		builder.append(seatCount);
+		builder.append("]");
+		return builder.toString();
 	}
 
 
 	
-	
-	
-
 }

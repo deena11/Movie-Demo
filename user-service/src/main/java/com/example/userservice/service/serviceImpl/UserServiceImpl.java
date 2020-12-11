@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.userservice.entity.User;
-import com.example.userservice.exception.AccessTokenRevokeException;
-import com.example.userservice.exception.EmptyListException;
-import com.example.userservice.exception.InValidUserException;
-import com.example.userservice.exception.NoSuchUserException;
+import com.example.userservice.exception.BusinessException;
 import com.example.userservice.exception.ServiceException;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.UserService;
@@ -49,19 +46,20 @@ public class UserServiceImpl implements UserService {
 	 *
 	 * @param user
 	 * @return
-	 * @throws InValidUserException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public User createUser(User user) throws InValidUserException, ServiceException {
+	public User createUser(User user) throws BusinessException, ServiceException {
 
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			if (!validUser(user.getEmail())) {
+				logger.info("email id - "+user.getEmail()+" is valid");
 				
 				return userRepository.save(user);
 			} else {
-				throw new InValidUserException("Email Already Exist");
+				throw new BusinessException("Email Already Exist");
 			}
 		} catch (DataAccessException ex) {
 
@@ -74,11 +72,11 @@ public class UserServiceImpl implements UserService {
 	 *
 	 * @param user
 	 * @return
-	 * @throws InValidUserException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public User updateUser(User user) throws InValidUserException, ServiceException {
+	public User updateUser(User user) throws BusinessException, ServiceException {
 
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -87,10 +85,11 @@ public class UserServiceImpl implements UserService {
 				return userRepository.save(user);
 			}
 			else {
-				throw new InValidUserException("User Id does not exist cannot update");
+				logger.error("user of id "+user.getId()+" does not exist in database");
+				throw new BusinessException("User Id does not exist cannot update");
 			}
-		} catch (NoSuchUserException ex) {
-			throw new InValidUserException("User Id does not exist cannot update");
+		} catch (BusinessException ex) {
+			throw new BusinessException("User Id does not exist cannot update");
 
 		} catch (DataAccessException ex) {
 			logger.error("Exception message -" + ex.getMessage());
@@ -102,21 +101,21 @@ public class UserServiceImpl implements UserService {
 	/* @author M1053559
 	 *
 	 * @param userId
-	 * @throws InValidUserException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public void deleteUser(int userId) throws InValidUserException, ServiceException {
+	public void deleteUser(int userId) throws BusinessException, ServiceException {
 
 		try {
 			if (fetchById(userId) != null) {
 				userRepository.deleteById(userId);
 			}
 			else {
-				throw new InValidUserException("User Id does not exist cannot delete");
+				throw new BusinessException("User Id does not exist cannot delete");
 			}
-		} catch (NoSuchUserException ex) {
-			throw new InValidUserException("User Id does not exist cannot delete");
+		} catch (BusinessException ex) {
+			throw new BusinessException("User Id does not exist cannot delete");
 		}
 
 		catch (DataAccessException ex) {
@@ -130,17 +129,17 @@ public class UserServiceImpl implements UserService {
 	 * @param userId
 	 * @return
 	 * @throws ServiceException
-	 * @throws NoSuchUserException
+	 * @throws BusinessException
 	 */
 	@Override
-	public User fetchById(int userId) throws ServiceException, NoSuchUserException {
+	public User fetchById(int userId) throws ServiceException, BusinessException {
 
 		try {
 			Optional<User> user = userRepository.findById(userId);
 			if (user.isPresent()) {
 				return user.get();
 			} else {
-				throw new NoSuchUserException("user id does not exist");
+				throw new BusinessException("user id does not exist");
 			}
 
 		} catch (DataAccessException ex) {
@@ -153,18 +152,18 @@ public class UserServiceImpl implements UserService {
 	/* @author M1053559
 	 *
 	 * @return
-	 * @throws EmptyListException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public List<User> fetchAll() throws EmptyListException, ServiceException {
+	public List<User> fetchAll() throws BusinessException, ServiceException {
 
 		try {
 			List<User> user = userRepository.findAll();
 			if (user.size() > 0) {
 				return user;
 			} else {
-				throw new EmptyListException("No Data Available");
+				throw new BusinessException("No Data Available");
 			}
 
 		} catch (DataAccessException ex) {
@@ -177,10 +176,10 @@ public class UserServiceImpl implements UserService {
 	/* @author M1053559
 	 *
 	 * @param request
-	 * @throws AccessTokenRevokeException
+	 * @throws BusinessException
 	 */
 	@Override
-	public void logout(HttpServletRequest request) throws AccessTokenRevokeException {
+	public void logout(HttpServletRequest request) throws BusinessException {
 		try {
 			String authHeader = request.getHeader("Authorization");
 			if (authHeader != null) {
@@ -199,9 +198,9 @@ public class UserServiceImpl implements UserService {
 
 		catch (Exception ex) {
 
-			logger.warn("Exception occured while Logging out for user -" + request.getUserPrincipal().getName());
+			logger.error("Exception occured while Logging out for user -" + request.getUserPrincipal().getName());
 
-			throw new AccessTokenRevokeException("Failed to Logout", ex.getCause());
+			throw new BusinessException("Failed to Logout", ex.getCause());
 		}
 	}
 
@@ -221,6 +220,7 @@ public class UserServiceImpl implements UserService {
 			}
 			return false;
 		} catch (DataAccessException ex) {
+			logger.error("exception occured while trying to find user by email -"+email);
 			throw new ServiceException("Unable to Access database");
 		}
 	}

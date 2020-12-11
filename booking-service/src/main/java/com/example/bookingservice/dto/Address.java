@@ -1,6 +1,8 @@
 package com.example.bookingservice.dto;
 
-public class Address {
+import java.io.Serializable;
+
+public class Address implements Serializable{
 	private int id;
 	private String street;
 	private String city;
@@ -62,8 +64,14 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return "Address [id=" + id + ", street=" + street + ", city=" + city + ", state=" + state + ", pincode="
-				+ pincode + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Address [ id : "+id);
+		sb.append(", street : "+street);
+		sb.append(", city : "+city);
+		sb.append(", state : "+state);
+		sb.append(", pincode : "+pincode);
+		sb.append(" ]");
+		return sb.toString();
 	}
 	
 	

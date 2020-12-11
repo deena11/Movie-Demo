@@ -1,7 +1,8 @@
 package com.example.bookingservice.dto;
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Play {
+public class Play implements Serializable{
 	private int id;
     private Date startTiming;
     private  Date endTiming;
@@ -83,9 +84,26 @@ public class Play {
 
 	@Override
 	public String toString() {
-		return "Play [id=" + id + ", startTiming=" + startTiming + ", endTiming=" + endTiming + ", movie=" + movie
-				+ ", screen=" + screen + ", date=" + date + ", seatsAvailable=" + seatsAvailable + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Play [id=");
+		builder.append(id);
+		builder.append(", startTiming=");
+		builder.append(startTiming);
+		builder.append(", endTiming=");
+		builder.append(endTiming);
+		builder.append(", movie=");
+		builder.append(movie);
+		builder.append(", screen=");
+		builder.append(screen);
+		builder.append(", date=");
+		builder.append(date);
+		builder.append(", seatsAvailable=");
+		builder.append(seatsAvailable);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 	
 	
 }

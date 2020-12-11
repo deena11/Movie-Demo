@@ -20,9 +20,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.userservice.entity.User;
-import com.example.userservice.exception.EmptyListException;
-import com.example.userservice.exception.InValidUserException;
-import com.example.userservice.exception.NoSuchUserException;
+import com.example.userservice.exception.BusinessException;
 import com.example.userservice.exception.ServiceException;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.UserService;
@@ -67,7 +65,7 @@ public class UserServiceImplTest {
 		userService.fetchById(1);
 	}
 
-	@Test(expected=NoSuchUserException.class)
+	@Test(expected=BusinessException.class)
 	public void testGetUserException1() throws Exception {
 		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 		userService.fetchById(1);
@@ -86,7 +84,7 @@ public class UserServiceImplTest {
 		List<User> users=userService.fetchAll();
 	}
 
-	@Test(expected=EmptyListException.class)
+	@Test(expected=BusinessException.class)
 	public void testGetAllUserException1() throws Exception {
 		Mockito.when(userRepository.findAll()).thenReturn(new ArrayList<User>());
 		userService.fetchAll();
@@ -101,7 +99,7 @@ public class UserServiceImplTest {
 
 	}
 
-	@Test(expected=InValidUserException.class)
+	@Test(expected=BusinessException.class)
 	public void testAddUserException() throws Exception {
 		Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(getUser()));
 		userService.createUser(getUser());

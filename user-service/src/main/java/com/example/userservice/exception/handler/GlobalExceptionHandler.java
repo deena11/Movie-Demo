@@ -17,7 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.userservice.exception.EmptyListException;
-import com.example.userservice.exception.InValidUserException;
+import com.example.userservice.exception.BusinessException;
 import com.example.userservice.exception.NoSuchUserException;
 import com.example.userservice.exception.ServiceException;
 import com.example.userservice.restApiConfig.ApiErrorResponse;
@@ -160,9 +160,9 @@ public class GlobalExceptionHandler {
 	}
 
 	
-	@ExceptionHandler(InValidUserException.class)
+	@ExceptionHandler(BusinessException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(InValidUserException ex,
+	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(BusinessException ex,
 			WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
