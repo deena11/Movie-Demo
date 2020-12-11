@@ -23,7 +23,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.bookingservice.dto.Play;
 import com.example.bookingservice.exception.BookingServiceDaoException;
 import com.example.bookingservice.exception.InValidRequestException;
-import com.example.bookingservice.exception.BookingServiceDaoException;
 import com.example.bookingservice.model.Booking;
 import com.example.bookingservice.repository.BookingRepository;
 import com.example.bookingservice.response.APISuccessResponse;
@@ -35,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author M1053559
+ * @description business logics for booking service
  *
  */
 @Service
@@ -71,41 +71,25 @@ public class BookingServiceImpl implements BookingService {
 	 */
 	@Override
 	@Transactional
-	public Booking addBooking(Booking booking, HttpServletRequest request)
-			throws BookingServiceDaoException {
+	public Booking addBooking(Booking booking, HttpServletRequest request) throws BookingServiceDaoException {
 		try {
-			logger.info("Entered into booking services");
+			logger.info("Adding booking data for play id -"+booking.getPlayId());
 
-//			HttpEntity requestEntity = new HttpEntity(buildHeader(request));
-//
-//			APISuccessResponse response = restTemplate
-//					.exchange(playUrl + booking.getPlayId(), HttpMethod.GET, requestEntity, APISuccessResponse.class)
-//					.getBody();
-//
-//			Play play = objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
-//			});
-			
-			Play play=getPlayById(booking.getPlayId(), request);
+			Play play = getPlayById(booking.getPlayId(), request);
 
 			if (play.getSeatsAvailable() - booking.getSeatCount() >= 0) {
 
 				play.setSeatsAvailable(play.getSeatsAvailable() - booking.getSeatCount());
 
-//				HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
-//
-//				APISuccessResponse apiResponse = restTemplate
-//						.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
-//
-//				logger.info(apiResponse.toString());
 				APISuccessResponse apiResponse = updateSeatsInPlay(play, request);
 				try {
 					restTemplate.exchange(kafkaUrl + apiResponse.getBody().toString(), HttpMethod.GET, null,
 							String.class);
 				} catch (Exception ex) {
-					logger.info("message " + ex.getMessage() + "cause " + ex.getCause());
+					logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
 				}
 				Booking bookingResponse = bookingRepository.save(booking);
-//            		
+
 //            	  webClientBuilder.build().get().uri("http://kafka-service/kafka/publish/"+bookingResponse.toString()).retrieve().bodyToMono(String.class);
 
 				return bookingResponse;
@@ -114,34 +98,28 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException(" Required Seats are  Unavailable seats are full");
 			}
 
-//            Play play = getPlayObjcetMapper(response.getBody().getBody().toString());
-
-			// logger.info(play.toString());
-
 		} catch (DataAccessException ex) {
+			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
 			throw new BookingServiceDaoException("Failed to Book", ex.getCause());
 		} catch (Exception ex) {
+			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
 			throw new BookingServiceDaoException(ex.getMessage(), ex.getCause());
 		}
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.example.bookingservice.service.BookingService#getAllBooking()
-	 */
 	/**
 	 * @author M1053559
 	 *
-	 * @return
+	 * @return List of bookings
 	 * @throws BookingServiceDaoException
-	 * @throws InValidRequestException 
+	 * @throws InValidRequestException
 	 */
 	@Override
 	@Transactional
 	public List<Booking> getAllBooking() throws BookingServiceDaoException, InValidRequestException {
 		try {
+			logger.info("fetching all booking service request is processing");
 			List<Booking> bookings = bookingRepository.findAll();
 			if (bookings.size() > 0) {
 				return bookings;
@@ -149,22 +127,17 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException("No Bookings Data the list is empty");
 			}
 		} catch (DataAccessException ex) {
+			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
 			throw new BookingServiceDaoException("Failed to fetch all Booking ", ex.getCause());
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.example.bookingservice.service.BookingService#getBookingById(int,
-	 * javax.servlet.http.HttpServletRequest)
-	 */
 	/**
 	 * @author M1053559
 	 *
 	 * @param bookingId
 	 * @param request
-	 * @return
+	 * @return booking information of requested id
 	 * @throws InValidRequestException
 	 * @throws BookingServiceDaoException
 	 */
@@ -173,6 +146,7 @@ public class BookingServiceImpl implements BookingService {
 	public Booking getBookingById(int bookingId, HttpServletRequest request)
 			throws InValidRequestException, BookingServiceDaoException {
 		try {
+			logger.info("fetching booking details fof id - "+bookingId);
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (booking.isPresent()) {
 				return booking.get();
@@ -180,6 +154,7 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException("No Record Found for the id - " + bookingId);
 			}
 		} catch (DataAccessException ex) {
+			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
 			throw new BookingServiceDaoException("Failed to fetch Booking of id " + bookingId, ex.getCause());
 		}
 	}
@@ -189,40 +164,24 @@ public class BookingServiceImpl implements BookingService {
 	 *
 	 * @param booking
 	 * @param request
-	 * @return
+	 * @return updated booking data
 	 * @throws BookingServiceDaoException
 	 * @throws BookingServiceDaoException
-	 * @throws InValidRequestException 
+	 * @throws InValidRequestException
 	 */
 	@Override
 	@Transactional
 	public Booking updateBooking(Booking booking, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("Entered into update booking services");
+			logger.info("updating booking of id "+booking.getId());
 
-//			HttpEntity requestEntity = new HttpEntity(buildHeader(request));
-//
-//			APISuccessResponse response = restTemplate
-//					.exchange(playUrl + booking.getPlayId(), HttpMethod.GET, requestEntity, APISuccessResponse.class)
-//					.getBody();
-//
-//			Play play = objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
-//			});
-//			
-			Play play=getPlayById(booking.getPlayId(), request);
+			Play play = getPlayById(booking.getPlayId(), request);
 
 			if (play.getSeatsAvailable() - booking.getSeatCount() >= 0) {
 
 				play.setSeatsAvailable(play.getSeatsAvailable() - booking.getSeatCount());
 
-//				HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
-//
-//				APISuccessResponse apiResponse = restTemplate
-//						.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
-//
-//				logger.info(apiResponse.toString());
-				
 				updateSeatsInPlay(play, request);
 
 				return bookingRepository.save(booking);
@@ -231,13 +190,9 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException(" Required Seats are  Unavailable seats are full");
 			}
 
-//            Play play = getPlayObjcetMapper(response.getBody().getBody().toString());
-
-			// logger.info(play.toString());
-
 		} catch (DataAccessException ex) {
 			throw new BookingServiceDaoException("Failed to update Booking", ex.getCause());
-		} 
+		}
 
 	}
 
@@ -246,17 +201,17 @@ public class BookingServiceImpl implements BookingService {
 	 *
 	 * @param bookingId
 	 * @param request
-	 * @return
+	 * @return message indicating successfully deleted
 	 * @throws BookingServiceDaoException
 	 * @throws BookingServiceDaoException
-	 * @throws InValidRequestException 
+	 * @throws InValidRequestException
 	 */
 	@Override
 	@Transactional
 	public String deleteBooking(int bookingId, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("Entered into booking services");
+			logger.info("deleting booking of id -"+bookingId);
 
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (!booking.isPresent()) {
@@ -265,43 +220,27 @@ public class BookingServiceImpl implements BookingService {
 
 			logger.info(booking.get().toString());
 
-//			HttpEntity requestEntity = new HttpEntity(buildHeader(request));
-//
-//			APISuccessResponse response = restTemplate.exchange(playUrl + booking.get().getPlayId(), HttpMethod.GET,
-//					requestEntity, APISuccessResponse.class).getBody();
-//
-//			Play play = objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
-//			});
-			
-			Play play = getPlayById(booking.get().getPlayId(),request);
+
+			Play play = getPlayById(booking.get().getPlayId(), request);
 
 			play.setSeatsAvailable(play.getSeatsAvailable() + booking.get().getSeatCount());
 
-//			HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
-//
-//			APISuccessResponse apiResponse = restTemplate
-//					.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
-			
 			updateSeatsInPlay(play, request);
 
-//			logger.info(apiResponse.toString());
 
 			bookingRepository.deleteById(bookingId);
 
 			return "Successfully deleted booking of id - " + bookingId;
 
-//            Play play = getPlayObjcetMapper(response.getBody().getBody().toString());
-
-			// logger.info(play.toString());
 
 		} catch (DataAccessException ex) {
 			throw new BookingServiceDaoException("Failed to Delete Booking", ex.getCause());
-		} 
+		}
 	}
 
 	/**
 	 * @param response
-	 * @return
+	 * @return play
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
@@ -313,8 +252,7 @@ public class BookingServiceImpl implements BookingService {
 
 	/**
 	 * @param request
-	 * @return HttpHeader
-	 * to build header for RestTemplate
+	 * @return HttpHeader to build header for RestTemplate
 	 */
 	public HttpHeaders buildHeader(HttpServletRequest request) {
 
@@ -330,38 +268,35 @@ public class BookingServiceImpl implements BookingService {
 	/**
 	 * @param playId
 	 * @param request
-	 * @return Play
-	 * to fetch play data by playid
+	 * @return Play to fetch play data by playid
 	 */
 	public Play getPlayById(int playId, HttpServletRequest request) {
 
 		HttpEntity requestEntity = new HttpEntity(buildHeader(request));
 
 		APISuccessResponse response = restTemplate
-				.exchange(playUrl + playId, HttpMethod.GET, requestEntity, APISuccessResponse.class)
-				.getBody();
+				.exchange(playUrl + playId, HttpMethod.GET, requestEntity, APISuccessResponse.class).getBody();
 
 		Play play = objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
 		});
-		
+
 		return play;
 	}
-	
+
 	/**
 	 * @param play
 	 * @param request
-	 * @return SuccessRespone
-	 * to update Play Record
+	 * @return SuccessRespone to update Play Record
 	 */
-	public APISuccessResponse updateSeatsInPlay(Play play,HttpServletRequest request) {
-		
+	public APISuccessResponse updateSeatsInPlay(Play play, HttpServletRequest request) {
+
 		HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
 
 		APISuccessResponse apiResponse = restTemplate
 				.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
 
 		logger.info(apiResponse.toString());
-		
+
 		return apiResponse;
 	}
 

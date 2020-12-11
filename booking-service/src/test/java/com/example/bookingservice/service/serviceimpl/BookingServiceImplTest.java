@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +21,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.bookingservice.dto.Play;
 import com.example.bookingservice.dto.Screen;
-import com.example.bookingservice.exception.InValidIdException;
-import com.example.bookingservice.exception.ServiceException;
+import com.example.bookingservice.exception.BookingServiceDaoException;
+import com.example.bookingservice.exception.InValidRequestException;
 import com.example.bookingservice.model.Booking;
 import com.example.bookingservice.repository.BookingRepository;
 import com.example.bookingservice.response.APISuccessResponse;
@@ -106,13 +104,13 @@ public class BookingServiceImplTest {
 		assertEquals(1,booking.getId());
 	}
 	
-	@Test(expected=ServiceException.class)
+	@Test(expected=BookingServiceDaoException.class)
 	public void addBookingTestError() throws Exception {
 		Mockito.when(bookingRepository.save(Mockito.any())).thenThrow(Mockito.mock(DataAccessException.class));
 		Booking booking=bookingService.addBooking(getBooking(),httpServletRequest);
 	}
 	
-	@Test(expected=ServiceException.class)
+	@Test(expected = BookingServiceDaoException.class)
 	public void updateBookingTestError() throws Exception {
 		Mockito.when(bookingRepository.save(Mockito.any())).thenThrow(Mockito.mock(DataAccessException.class));
 		Booking booking=bookingService.addBooking(getBooking(),httpServletRequest);
@@ -144,7 +142,7 @@ public class BookingServiceImplTest {
 		assertEquals(1,bookingList.size());
 	}
 	
-	@Test(expected=ServiceException.class)
+	@Test(expected=BookingServiceDaoException.class)
 	public void getAllBookingException() throws Exception{
 		Mockito.when(bookingRepository.findAll()).thenThrow(Mockito.mock(DataAccessException.class));
 		List<Booking> bookingList=bookingService.getAllBooking();
@@ -165,7 +163,7 @@ public class BookingServiceImplTest {
 		assertEquals(1,booking.getId());
 	}
 	
-	@Test(expected=InValidIdException.class)
+	@Test(expected=InValidRequestException.class)
 	public void getBookingByIdTestError() throws Exception{
 		Mockito.when(bookingRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 		Booking booking=bookingService.getBookingById(1,httpServletRequest);
@@ -178,7 +176,7 @@ public class BookingServiceImplTest {
 		Mockito.verify(bookingRepository,Mockito.times(1)).deleteById(Mockito.any());
 	}
 	
-	@Test(expected=ServiceException.class)
+	@Test(expected=BookingServiceDaoException.class)
 	public void deleteBookingException() throws Exception {
 		Mockito.doThrow(Mockito.mock(DataAccessException.class)).when(bookingRepository).deleteById(Mockito.anyInt());
 		bookingService.deleteBooking(1, httpServletRequest);

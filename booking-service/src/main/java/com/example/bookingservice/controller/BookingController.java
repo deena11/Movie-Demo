@@ -1,5 +1,7 @@
 package com.example.bookingservice.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -39,7 +41,6 @@ public class BookingController {
 
 	private Logger logger = LoggerFactory.getLogger(BookingController.class);
 
-//	private String message = "";  // no need to declare at class level
 
 	@Autowired
 	private BookingService bookingService;
@@ -59,7 +60,7 @@ public class BookingController {
 
 		String message = "";
 
-		logger.info("Adding booking Data Request is Processing "+request.getUserPrincipal().getName());
+		logger.info("Adding booking Data Request is Processing ");
 
 		Booking bookingDetails = bookingService.addBooking(booking, request);
 		message = "Booking Data Saved Successfull";
@@ -78,7 +79,6 @@ public class BookingController {
 	@GetMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
-//	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> getAllBooking() throws BookingServiceDaoException, InValidRequestException {
 		String message = "";
 
@@ -86,9 +86,11 @@ public class BookingController {
 
 		message = "Fetching all Booking Data is Successfull";
 
+		List<Booking> bookings=bookingService.getAllBooking();
+		
 		logger.info("Successfully fetched All Booking Data");
 
-		return responseBuilder(message, bookingService.getAllBooking()); // can be written inside responseBuilder
+		return responseBuilder(message, bookings); 
 	}
 
 	/**
@@ -174,9 +176,8 @@ public class BookingController {
 	 */
 	public ResponseEntity<?> fallBackResponse(int bookingId, HttpServletRequest request) {
 
-		logger.info("Fallback Service is Called  "+request.getUserPrincipal().toString());
-		return ResponseEntity.status(HttpStatus.OK).header("message", String.valueOf(HttpStatus.GATEWAY_TIMEOUT))
-				.body(fallbackResponseBuilder());
+		logger.info("Fallback Service is Called  for booking id -"+bookingId);
+		return fallbackResponseBuilder();
 	}
 
 	/**
@@ -186,19 +187,17 @@ public class BookingController {
 	 */
 	public ResponseEntity<?> fallBackResponseBooking(Booking booking, HttpServletRequest request) {
 
-		logger.info("Fallback Service is Called  "+request);
-		return ResponseEntity.status(HttpStatus.OK).header("message", String.valueOf(HttpStatus.GATEWAY_TIMEOUT))
-				.body(fallbackResponseBuilder());
+		logger.info("Fallback Service is Called for booking id - "+booking.getId());
+		return fallbackResponseBuilder();
 	}
 
 	/**
-	 * @return
+	 * @Description fall
 	 */
 	public ResponseEntity<?> fallBackResponse() {
 
 		logger.info("Fallback Service is Called  ");
-		return ResponseEntity.status(HttpStatus.OK).header("message", String.valueOf(HttpStatus.GATEWAY_TIMEOUT))
-				.body(fallbackResponseBuilder());
+		return fallbackResponseBuilder();
 	}
 
 	/**
@@ -206,7 +205,7 @@ public class BookingController {
 	 * @param body
 	 * @return
 	 * 
-	 * 		fallback success response
+	 * 	@Description	fallback success response
 	 */
 	private ResponseEntity<APISuccessResponse> responseBuilder(String message, Object body) {
 
@@ -226,7 +225,8 @@ public class BookingController {
 	}
 
 	/**
-	 * @return
+	 * @description ApiResponse Builder method
+	 * @return ResponseEntity
 	 */
 	private ResponseEntity<ApiErrorResponse> fallbackResponseBuilder() {
 
