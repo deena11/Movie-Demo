@@ -1,6 +1,8 @@
 package com.example.moviesearch.dto;
 
-public class Screen {
+import java.io.Serializable;
+
+public class Screen implements Serializable {
 	private int id;
 	private String name;
 	private Theatre theatre;
@@ -53,9 +55,20 @@ public class Screen {
 
 	@Override
 	public String toString() {
-		return "Screen [id=" + id + ", name=" + name + ", theatre=" + theatre + ", totalSeatsPerScreen="
-				+ totalSeatsPerScreen + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Screen [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", theatre=");
+		builder.append(theatre);
+		builder.append(", totalSeatsPerScreen=");
+		builder.append(totalSeatsPerScreen);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 
 	
 

@@ -20,6 +20,10 @@ import com.example.moviesearch.restApiConfig.ApiSuccessResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author M1053559
+ * @description Load data into elastic search
+ */
 @Component
 public class LoadData {
 
@@ -48,7 +52,7 @@ public class LoadData {
 		operations.putMapping(PlayData.class);
 		System.out.println("Loading Data");
 
-		logger.info("Entered into Loading Data services");
+		logger.info("Loading Data into elastic search");
 
 		ApiSuccessResponse response = restTemplate
 				.exchange(playUrl, HttpMethod.GET, null, ApiSuccessResponse.class)
@@ -61,7 +65,7 @@ public class LoadData {
 
 		playDataRepository.saveAll(play);
 		
-		logger.info(play.toString());
+		logger.info("Loaded data = { "+play.toString()+" }");
 
 		System.out.printf("Loading Completed");
 

@@ -1,10 +1,11 @@
 package com.example.moviesearch.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
-public class Movie {
+public class Movie implements Serializable{
 	private int id;
 
 	private String name;
@@ -148,10 +149,35 @@ public class Movie {
 
 	@Override
 	public String toString() {
-		return "Movie [id=" + id + ", name=" + name + ", cast=" + cast + ", duration=" + duration + ", genre=" + genre
-				+ ", synopsis=" + synopsis + ", facts=" + facts + ", trailer=" + Arrays.toString(trailer)
-				+ ", language=" + language + ", releaseDate=" + releaseDate + ", picture=" + Arrays.toString(picture)
-				+ ", frequentView=" + frequentView + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Movie [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", cast=");
+		builder.append(cast);
+		builder.append(", duration=");
+		builder.append(duration);
+		builder.append(", genre=");
+		builder.append(genre);
+		builder.append(", synopsis=");
+		builder.append(synopsis);
+		builder.append(", facts=");
+		builder.append(facts);
+		builder.append(", trailer=");
+		builder.append(Arrays.toString(trailer));
+		builder.append(", language=");
+		builder.append(language);
+		builder.append(", releaseDate=");
+		builder.append(releaseDate);
+		builder.append(", picture=");
+		builder.append(Arrays.toString(picture));
+		builder.append(", frequentView=");
+		builder.append(frequentView);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 
 }

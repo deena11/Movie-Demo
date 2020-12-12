@@ -1,6 +1,8 @@
 package com.example.moviesearch.dto;
 
-public class Comment {
+import java.io.Serializable;
+
+public class Comment implements Serializable{
 	private int id;
 	private String comments;
 	private double rating;

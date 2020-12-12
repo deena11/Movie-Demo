@@ -29,6 +29,10 @@ import springfox.documentation.swagger.web.ApiKeyVehicle;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * @author M1053559
+ * @description configuration for swagger 
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration {
@@ -40,6 +44,11 @@ public class SwaggerConfiguration {
 
 	@Value("${token.url}")
 	private String accessTokenUri;
+	
+	private static final String READ="read";
+	private static final String WRITE="write";
+	private static final String TRUST="trust";
+	
 
 	@Bean
 	public Docket searchApi() {
@@ -54,8 +63,8 @@ public class SwaggerConfiguration {
 	private OAuth securitySchema() {
 
 		List<AuthorizationScope> authorizationScopeList = newArrayList();
-		authorizationScopeList.add(new AuthorizationScope("read", "read all"));
-		authorizationScopeList.add(new AuthorizationScope("write", "access all"));
+		authorizationScopeList.add(new AuthorizationScope(READ, "read all"));
+		authorizationScopeList.add(new AuthorizationScope(WRITE, "access all"));
 
 		List<GrantType> grantTypes = newArrayList();
 		GrantType passwordCredentialsGrant = new ResourceOwnerPasswordCredentialsGrant(accessTokenUri);
@@ -71,9 +80,9 @@ public class SwaggerConfiguration {
 	private List<SecurityReference> defaultAuth() {
 
 		final AuthorizationScope[] authorizationScopes = new AuthorizationScope[3];
-		authorizationScopes[0] = new AuthorizationScope("read", "read all");
-		authorizationScopes[1] = new AuthorizationScope("trust", "trust all");
-		authorizationScopes[2] = new AuthorizationScope("write", "write all");
+		authorizationScopes[0] = new AuthorizationScope(READ, "read all");
+		authorizationScopes[1] = new AuthorizationScope(TRUST, "trust all");
+		authorizationScopes[2] = new AuthorizationScope(WRITE, "write all");
 
 		return Collections.singletonList(new SecurityReference("oauth2", authorizationScopes));
 	}

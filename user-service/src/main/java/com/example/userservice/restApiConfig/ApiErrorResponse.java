@@ -1,6 +1,8 @@
 package com.example.userservice.restApiConfig;
 
-public class ApiErrorResponse {
+import java.io.Serializable;
+
+public class ApiErrorResponse implements Serializable{
 	
 	private String message;
 

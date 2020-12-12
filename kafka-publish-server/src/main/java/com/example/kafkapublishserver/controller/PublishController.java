@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author M1053559
- *
+ * @description kafka server 
  */
 @RestController
 @RequestMapping("/kafka")
@@ -44,6 +44,7 @@ public class PublishController {
 		message="Published Successfully";
 		}
 		catch(Exception ex){
+			logger.error("failed to publish cause- "+ex.getMessage());
 			message="failed to publish cause- "+ex.getMessage();
 		}
 		return message;
@@ -62,6 +63,7 @@ public class PublishController {
 			message="Published Successfully";
 			}
 			catch(Exception ex){
+				logger.error("failed to publish cause- "+ex.getMessage());
 				message="failed to publish cause- "+ex.getMessage();
 			}
 			return message;

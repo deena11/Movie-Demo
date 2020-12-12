@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.example.moviesearch.model.PlayData;
 
+/**
+ * @author M1053559
+ * @version v1
+ * @description search builder class to search key on required fields 
+ */
 @Component
 public class SearchBuilder {
 

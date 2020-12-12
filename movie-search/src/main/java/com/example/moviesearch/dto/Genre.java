@@ -1,6 +1,8 @@
 package com.example.moviesearch.dto;
 
-public class Genre {
+import java.io.Serializable;
+
+public class Genre implements Serializable{
 	private int id;
 	private String name;
 	public Genre() {
@@ -29,8 +31,15 @@ public class Genre {
 	}
 	@Override
 	public String toString() {
-		return "Genre [id=" + id + ", name=" + name + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Genre [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append("]");
+		return builder.toString();
 	}
+	
 	
 
 }

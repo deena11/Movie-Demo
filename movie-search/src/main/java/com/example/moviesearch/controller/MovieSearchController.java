@@ -25,24 +25,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 
-
 /**
  * @author M1053559
- *
+ * @version v1 RestApi to access search services
  */
 @RestController
 @CrossOrigin
 @RequestMapping("/search/v1/")
 public class MovieSearchController {
-	
+
 	private Logger logger = LoggerFactory.getLogger(MovieSearchController.class);
 
 	@Value("${play.url}")
 	String playUrl;
-	
-	@Autowired
-    	private SearchBuilder searchBuilder;
 
+	@Autowired
+	private SearchBuilder searchBuilder;
 
 	@Autowired
 	private ElasticsearchOperations operations;
@@ -52,56 +50,51 @@ public class MovieSearchController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	private PlayDataRepository playDataRepository;
 
-    @GetMapping(value = "/{searchText}")
-    public ResponseEntity<?> getAll(@PathVariable final String searchText) {
-    	
-    	ApiSuccessResponse response = new ApiSuccessResponse();
-    	response.setError(false);
-    	response.setHttpStatus("Success");
-    	response.setHttpStatusCode(200);
-    	response.setMessage("Sucessfully Fetched Data");
-    	response.setBody(searchBuilder.getAll(searchText));
-    	
-    	
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-    
-    /**
-     * @param message
-     */
-    @KafkaListener(topics = "${kafka.topic.name}", groupId = "${kafka.consumer.group.id")
-    public void consume(String message) {
-     logger.info("Consumed message: " + message);
-     operations.putMapping(PlayData.class);
-		System.out.println("Loading Data");
+	@GetMapping(value = "/{searchText}")
+	public ResponseEntity<?> getAll(@PathVariable final String searchText) {
+
+		ApiSuccessResponse response = new ApiSuccessResponse();
+		response.setError(false);
+		response.setHttpStatus("Success");
+		response.setHttpStatusCode(200);
+		response.setMessage("Sucessfully Fetched Data");
+		response.setBody(searchBuilder.getAll(searchText));
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	/**@Description this api is created just to experiment kafka. whenever a data is posted in play. 
+	 * it will send a message in kafka to a specific topic. this api listens to the topic. 
+	 * so every time  a new data is posted in mysql database. this api is triggered which loads the data into elastic search
+	 * @param message
+	 */
+	@KafkaListener(topics = "${kafka.topic.name}", groupId = "${kafka.consumer.group.id")
+	public void consume(String message) {
+		logger.info("Consumed message: " + message);
+		operations.putMapping(PlayData.class);
+//		System.out.println("Loading Data");
 
 		logger.info("Entered into Loading Data services");
 
-		ApiSuccessResponse response = restTemplate
-				.exchange(playUrl, HttpMethod.GET, null, ApiSuccessResponse.class)
+		ApiSuccessResponse response = restTemplate.exchange(playUrl, HttpMethod.GET, null, ApiSuccessResponse.class)
 				.getBody();
 
-		logger.info(response.getBody().toString());
+		logger.info("Data : { "+response.getBody().toString()+" }");
 
 		List<PlayData> play = objectMapper.convertValue(response.getBody(), new TypeReference<List<PlayData>>() {
 		});
 
 		playDataRepository.saveAll(play);
-		
-		logger.info(play.toString());
 
-		System.out.printf("Loading Completed");
-    }
+//		logger.info(play.toString());
 
-	//optimisation
-	
-//	@GetMapping("/hello")
-//	public ResponseEntity<?> searchMovies(){
-//		return ResponseEntity.status(HttpStatus.OK).body(playDataRepository.findAll());
-//	}
+		System.out.printf("Play data updation Completed");
+	}
+
+
 
 }

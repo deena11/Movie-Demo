@@ -1,6 +1,8 @@
 package com.example.userservice.restApiConfig;
 
-public class ApiSuccessResponse {
+import java.io.Serializable;
+
+public class ApiSuccessResponse implements Serializable{
 
 	private String message;
 
@@ -67,9 +69,22 @@ public class ApiSuccessResponse {
 
 	@Override
 	public String toString() {
-		return "ApiSuccessResponse [message=" + message + ", httpStatus=" + httpStatus + ", body=" + body + ", success="
-				+ success + ", error=" + error + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("ApiSuccessResponse [message=");
+		builder.append(message);
+		builder.append(", httpStatus=");
+		builder.append(httpStatus);
+		builder.append(", body=");
+		builder.append(body);
+		builder.append(", success=");
+		builder.append(success);
+		builder.append(", error=");
+		builder.append(error);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 
 	
 }

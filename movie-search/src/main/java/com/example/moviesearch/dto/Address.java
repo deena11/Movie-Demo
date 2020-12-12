@@ -1,6 +1,8 @@
 package com.example.moviesearch.dto;
 
-public class Address {
+import java.io.Serializable;
+
+public class Address implements Serializable{
 	private int id;
 	private String street;
 	private String city;
@@ -62,9 +64,22 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return "Address [id=" + id + ", street=" + street + ", city=" + city + ", state=" + state + ", pincode="
-				+ pincode + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Address [id=");
+		builder.append(id);
+		builder.append(", street=");
+		builder.append(street);
+		builder.append(", city=");
+		builder.append(city);
+		builder.append(", state=");
+		builder.append(state);
+		builder.append(", pincode=");
+		builder.append(pincode);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 	
 	
 	

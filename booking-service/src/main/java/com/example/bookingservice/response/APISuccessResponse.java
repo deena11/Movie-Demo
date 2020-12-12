@@ -1,6 +1,8 @@
 package com.example.bookingservice.response;
 
-public class APISuccessResponse {
+import java.io.Serializable;
+
+public class APISuccessResponse implements Serializable{
 	private String httpStatus;
 	private int statusCode;
 	private String message;
@@ -41,10 +43,20 @@ public class APISuccessResponse {
 	}
 	@Override
 	public String toString() {
-		return "APISuccessResponse [httpStatus=" + httpStatus + ", statusCode=" + statusCode + ", message=" + message
-				+ ", body=" + body + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("APISuccessResponse [httpStatus=");
+		builder.append(httpStatus);
+		builder.append(", statusCode=");
+		builder.append(statusCode);
+		builder.append(", message=");
+		builder.append(message);
+		builder.append(", body=");
+		builder.append(body);
+		builder.append("]");
+		return builder.toString();
 	}
-
+	
+	
 	
 	
 }

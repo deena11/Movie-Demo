@@ -1,6 +1,8 @@
 package com.example.moviesearch.restApiConfig;
 
-public class ApiErrorResponse {
+import java.io.Serializable;
+
+public class ApiErrorResponse implements Serializable{
 	
 	private String message;
 

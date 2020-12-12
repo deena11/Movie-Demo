@@ -1,6 +1,8 @@
 package com.example.moviesearch.dto;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable {
 	private int id;
 	private String latitude;
 	private String longitude;

@@ -1,8 +1,9 @@
 package com.example.moviesearch.dto;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Cast {
+public class Cast implements Serializable{
 	private int id;
     private String name;
     private String role;
@@ -49,8 +50,19 @@ public class Cast {
 	}
 	@Override
 	public String toString() {
-		return "Cast [id=" + id + ", name=" + name + ", role=" + role + ", picture=" + Arrays.toString(picture) + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Cast [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", role=");
+		builder.append(role);
+		builder.append(", picture=");
+		builder.append(Arrays.toString(picture));
+		builder.append("]");
+		return builder.toString();
 	}
-
+	
+	
 	
 }
