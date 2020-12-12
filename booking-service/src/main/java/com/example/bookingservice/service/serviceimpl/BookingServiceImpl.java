@@ -245,7 +245,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	public Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
+	private Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(response, Play.class);
 	}
@@ -254,7 +254,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param request
 	 * @return HttpHeader to build header for RestTemplate
 	 */
-	public HttpHeaders buildHeader(HttpServletRequest request) {
+	private HttpHeaders buildHeader(HttpServletRequest request) {
 
 		String authorization = request.getHeader("Authorization");
 
@@ -270,7 +270,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param request
 	 * @return Play to fetch play data by playid
 	 */
-	public Play getPlayById(int playId, HttpServletRequest request) {
+	private Play getPlayById(int playId, HttpServletRequest request) {
 
 		HttpEntity requestEntity = new HttpEntity(buildHeader(request));
 
@@ -288,7 +288,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param request
 	 * @return SuccessRespone to update Play Record
 	 */
-	public APISuccessResponse updateSeatsInPlay(Play play, HttpServletRequest request) {
+	private APISuccessResponse updateSeatsInPlay(Play play, HttpServletRequest request) {
 
 		HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
 
