@@ -1,5 +1,6 @@
 package com.example.movieinventoryservice.entity;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import javax.persistence.Lob;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-public class Cast {
+public class Cast implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
@@ -62,7 +63,18 @@ public class Cast {
 	}
 	@Override
 	public String toString() {
-		return "Cast [id=" + id + ", name=" + name + ", role=" + role + ", picture=" + Arrays.toString(picture) + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Cast [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", role=");
+		builder.append(role);
+		builder.append(", picture=");
+		builder.append(Arrays.toString(picture));
+		builder.append("]");
+		return builder.toString();
 	}
+	
 		
 }

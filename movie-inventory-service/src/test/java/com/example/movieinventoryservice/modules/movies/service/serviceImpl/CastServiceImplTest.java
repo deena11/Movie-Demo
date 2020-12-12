@@ -16,9 +16,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.movieinventoryservice.entity.Cast;
-import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotFoundException;
-import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CastRepository;
 import com.example.movieinventoryservice.modules.movies.service.CastService;
@@ -49,7 +47,7 @@ public class CastServiceImplTest {
 
 	}
 	
-	@Test(expected=RecordNotFoundException.class)
+	@Test(expected=BusinessException.class)
 	public void testGetNoCastException() throws Exception {
 		Mockito.when(castRepository.findById(Mockito.anyInt()))
 		.thenReturn(Optional.ofNullable(null));
@@ -65,7 +63,7 @@ public class CastServiceImplTest {
 		assertTrue(casts.toString().contains("test"));
 	}
 	
-	@Test(expected=EmptyListException.class)
+	@Test(expected=BusinessException.class)
 	public void testGetAllCastEmptyList() throws Exception {
 		Mockito.when(castRepository.findAll()).thenReturn(new ArrayList<Cast>());
 		List<Cast> casts = castService.getAllCasts();
@@ -107,7 +105,7 @@ public class CastServiceImplTest {
 
 	}
 	
-	@Test(expected=RecordNotUpdatedException.class)
+	@Test(expected=BusinessException.class)
 	public void testUpdateCastException() throws Exception {
 		Mockito.when(castRepository.save(Mockito.any(Cast.class)))
 		.thenThrow(Mockito.mock(DataAccessException.class));

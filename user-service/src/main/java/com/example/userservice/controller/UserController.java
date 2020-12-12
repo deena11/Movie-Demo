@@ -184,7 +184,7 @@ public class UserController {
 	 * @param status
 	 * @return
 	 */
-	public ResponseEntity<ApiSuccessResponse> responseBuilder(String message, Object body, HttpStatus status) {
+	private ResponseEntity<ApiSuccessResponse> responseBuilder(String message, Object body, HttpStatus status) {
 
 		LOGGER.info("Success Response is Building");
 

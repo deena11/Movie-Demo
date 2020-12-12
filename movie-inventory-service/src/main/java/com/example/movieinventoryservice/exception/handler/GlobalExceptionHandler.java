@@ -19,7 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
@@ -163,9 +163,9 @@ public class GlobalExceptionHandler {
 
 	}
 
-	@ExceptionHandler(RecordNotAddedException.class)
+	@ExceptionHandler(BusinessException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(RecordNotAddedException ex,
+	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(BusinessException ex,
 			WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 

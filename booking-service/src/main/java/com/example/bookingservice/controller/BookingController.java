@@ -192,7 +192,8 @@ public class BookingController {
 	}
 
 	/**
-	 * @Description fall
+	 * @Description fallback response 
+	 * 
 	 */
 	public ResponseEntity<?> fallBackResponse() {
 

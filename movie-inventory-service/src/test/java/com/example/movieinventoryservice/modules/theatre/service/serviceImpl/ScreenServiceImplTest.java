@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.omg.CORBA.portable.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,8 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.movieinventoryservice.entity.Screen;
 import com.example.movieinventoryservice.entity.Theatre;
-import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotFoundException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.theatre.repository.AddressRepository;
 import com.example.movieinventoryservice.modules.theatre.repository.LocationRepository;
@@ -31,27 +29,24 @@ import com.example.movieinventoryservice.modules.theatre.service.TheatreService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ScreenServiceImpl.class,TheatreServiceImpl.class })
+@SpringBootTest(classes = { ScreenServiceImpl.class, TheatreServiceImpl.class })
 public class ScreenServiceImplTest {
-
-	
 
 	@Autowired
 	private ScreenService screenService;
-	
 
 	@MockBean
 	private ScreenRepository screenRepository;
-	
+
 	@Autowired
 	private TheatreService theatreService;
-	
+
 	@MockBean
 	private AddressRepository addressRepository;
-	
+
 	@MockBean
 	private LocationRepository locationRepository;
-	
+
 	@MockBean
 	private TheatreRepository theatreRepository;
 
@@ -66,7 +61,7 @@ public class ScreenServiceImplTest {
 		Mockito.when(theatreRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getTheatre()));
 
 	}
-	
+
 	@Test
 	public void addScreenTest() throws Exception {
 		Mockito.when(screenRepository.save(Mockito.any(Screen.class))).thenReturn(getScreen());
@@ -77,7 +72,8 @@ public class ScreenServiceImplTest {
 
 	@Test(expected = ServiceException.class)
 	public void addScreenTestError() throws JsonProcessingException, Exception {
-		Mockito.when(screenRepository.save(Mockito.any(Screen.class))).thenThrow(Mockito.mock(DataAccessException.class));
+		Mockito.when(screenRepository.save(Mockito.any(Screen.class)))
+				.thenThrow(Mockito.mock(DataAccessException.class));
 		Screen screen = screenService.addScreen(getScreen());
 	}
 
@@ -90,7 +86,7 @@ public class ScreenServiceImplTest {
 		assertEquals(1, screenList1.size());
 	}
 
-	@Test(expected = EmptyListException.class)
+	@Test(expected = BusinessException.class)
 	public void getAllscreenNotFoundTest() throws Exception {
 		List<Screen> screenList = new ArrayList<>();
 		Mockito.when(screenRepository.findAll()).thenReturn(screenList);
@@ -110,7 +106,7 @@ public class ScreenServiceImplTest {
 		assertEquals(1, screen.getId());
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = BusinessException.class)
 	public void getscreenByIdNotFoundTest() throws Exception {
 		Mockito.when(screenRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 		Screen screen = screenService.getScreenById(1);
@@ -131,7 +127,8 @@ public class ScreenServiceImplTest {
 
 	@Test(expected = ServiceException.class)
 	public void updatescreenTestError() throws JsonProcessingException, Exception {
-		Mockito.when(screenRepository.save(Mockito.any(Screen.class))).thenThrow(Mockito.mock(DataAccessException.class));
+		Mockito.when(screenRepository.save(Mockito.any(Screen.class)))
+				.thenThrow(Mockito.mock(DataAccessException.class));
 		Screen screen = screenService.updateScreen(getScreen());
 	}
 
@@ -146,23 +143,19 @@ public class ScreenServiceImplTest {
 		Mockito.doThrow(Mockito.mock(DataAccessException.class)).when(screenRepository).deleteById(Mockito.anyInt());
 		screenService.deleteScreen(1);
 	}
-	
-	
-	public Screen getScreen()
-	{
-		Screen screen=new Screen();
+
+	public Screen getScreen() {
+		Screen screen = new Screen();
 		screen.setId(1);
 		screen.setTheatre(getTheatre());
 		screen.setName("screen-1");
 		return screen;
 	}
-	
-	public Theatre getTheatre()
-	{
-		Theatre theatre=new Theatre();
+
+	public Theatre getTheatre() {
+		Theatre theatre = new Theatre();
 		theatre.setId(1);
 		return theatre;
 	}
-	
-	
+
 }

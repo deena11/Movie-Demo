@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.movieinventoryservice.entity.Theatre;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
@@ -27,7 +27,8 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 /**
  * @author M1053559
- *
+ * @version v1
+ * @description RestApi for Theatre Service
  */
 @RestController
 @CrossOrigin
@@ -39,8 +40,6 @@ public class TheatreController {
 	@Autowired
 	private TheatreService theatreService;
 
-	private String message = "";
-
 	/**
 	 * @param theatreId
 	 * @return
@@ -49,13 +48,13 @@ public class TheatreController {
 	 */
 	@GetMapping("/{theatreId}")
 	public ResponseEntity<ApiSuccessResponse> getTheatre(@PathVariable("theatreId") int theatreId)
-			throws RecordNotFoundException, ServiceException {
+			throws BusinessException, ServiceException {
 
-
+		String message = "";
 		logger.info("Fetching Theatre of id - " + theatreId + " Request is Processing");
 		message = "Successfully Fetched Theatre Data ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, theatreService.getTheatreById(theatreId)));
+		return responseBuilder(HttpStatus.OK, message, theatreService.getTheatreById(theatreId));
 
 	}
 
@@ -65,28 +64,30 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/")
-	public ResponseEntity<?> getAllTheatre() throws EmptyListException, ServiceException {
+	public ResponseEntity<?> getAllTheatre() throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Fetching All Theatre Data Request is Processing");
 		message = "Successfully Fetched All Theatres ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, theatreService.getAllTheatre()));
+		return responseBuilder(HttpStatus.OK, message, theatreService.getAllTheatre());
 
 	}
 
 	/**
 	 * @param theatre
 	 * @return
-	 * @throws RecordNotAddedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addTheatre(@RequestBody Theatre theatre) throws RecordNotAddedException, ServiceException {
+	public ResponseEntity<?> addTheatre(@RequestBody Theatre theatre) throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Adding Theatre of id - " + theatre.getId() + " Request is Processing");
 		message = "Successfully Added Theatre - " + theatre.getName();
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED,message, theatreService.addTheatre(theatre)));
+		return responseBuilder(HttpStatus.CREATED, message, theatreService.addTheatre(theatre));
 
 	}
 
@@ -97,12 +98,13 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updateTheatre(@RequestBody Theatre theatre) throws RecordNotUpdatedException, ServiceException {
+	public ResponseEntity<?> updateTheatre(@RequestBody Theatre theatre) throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Updating Theatre of id - " + theatre.getId() + " Request is Processing");
 		message = "Successfully Updated Theatre - " + theatre.getName();
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, theatreService.updateTheatre(theatre)));
+		return responseBuilder(HttpStatus.OK, message, theatreService.updateTheatre(theatre));
 
 	}
 
@@ -113,14 +115,16 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{theatreId}")
-	public ResponseEntity<?> deleteTheatre(@PathVariable("theatreId") int theatreId) throws RecordNotDeletedException, ServiceException {
+	public ResponseEntity<?> deleteTheatre(@PathVariable("theatreId") int theatreId)
+			throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Delete Theatre of id - " + theatreId + " Request is Processing");
 		message = "Successfully Deleted theatre id " + theatreId;
 
 		theatreService.deleteTheatre(theatreId);
-		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message, null));
-	
+		return responseBuilder(HttpStatus.NO_CONTENT, message, null);
+
 	}
 
 	/**
@@ -129,7 +133,7 @@ public class TheatreController {
 	 * @param body
 	 * @return
 	 */
-	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
+	private ResponseEntity<ApiSuccessResponse> responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
@@ -140,7 +144,7 @@ public class TheatreController {
 
 		logger.info("Request is Processed Successfully");
 
-		return response;
+		return ResponseEntity.ok(response);
 	}
 
 }

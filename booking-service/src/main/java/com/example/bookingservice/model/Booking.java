@@ -1,5 +1,7 @@
 package com.example.bookingservice.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Booking {
+public class Booking implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

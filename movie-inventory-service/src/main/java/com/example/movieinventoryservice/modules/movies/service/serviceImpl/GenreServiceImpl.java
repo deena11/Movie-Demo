@@ -11,11 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.movieinventoryservice.entity.Genre;
-import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
-import com.example.movieinventoryservice.exception.RecordNotDeletedException;
-import com.example.movieinventoryservice.exception.RecordNotFoundException;
-import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.GenreRepository;
 import com.example.movieinventoryservice.modules.movies.service.GenreService;
@@ -35,17 +31,17 @@ public class GenreServiceImpl implements GenreService {
 	 * @author M1053559
 	 *
 	 * @param genreId
-	 * @throws RecordNotDeletedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public void deleteGenre(int genreId) throws RecordNotDeletedException,ServiceException {
+	public void deleteGenre(int genreId) throws BusinessException,ServiceException {
 		try {
 			if(getGenreById(genreId)!=null) {
 			genreRepository.deleteById(genreId);
 			}
-			}catch (RecordNotFoundException e) {
-				throw new RecordNotDeletedException("genred id - "+genreId+" not found");
+			}catch (BusinessException e) {
+				throw new BusinessException("genred id - "+genreId+" not found");
 			}
 		catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Delete id-"+genreId, ex.getCause());
@@ -57,24 +53,24 @@ public class GenreServiceImpl implements GenreService {
 	 *
 	 * @param genre
 	 * @return
-	 * @throws RecordNotUpdatedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Genre updateGenre(Genre genre) throws RecordNotUpdatedException,ServiceException {
+	public Genre updateGenre(Genre genre) throws BusinessException,ServiceException {
 		try {
 			if(getGenreById(genre.getId())!=null) {
 			return genreRepository.save(genre);
 			}
-		}catch(RecordNotFoundException ex) {
-			throw new RecordNotUpdatedException("genred id - "+genre.getId()+" not found");
+		}catch(BusinessException ex) {
+			throw new BusinessException("genred id - "+genre.getId()+" not found");
 		}
 
 		catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Update", ex.getCause());
 		}
 		catch(Exception ex) {
-			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
+			throw new BusinessException("Failed to Update", ex.getCause());
 		}
 		return genre;
 	}
@@ -84,11 +80,11 @@ public class GenreServiceImpl implements GenreService {
 	 *
 	 * @param genreId
 	 * @return
-	 * @throws RecordNotFoundException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Genre getGenreById(int genreId) throws RecordNotFoundException ,ServiceException{
+	public Genre getGenreById(int genreId) throws BusinessException ,ServiceException{
 		try {
 			logger.info("Entered into Genre Service - getByid "+genreId);
 			logger.info(genreRepository.findAll().toString());
@@ -97,7 +93,7 @@ public class GenreServiceImpl implements GenreService {
 				logger.info(genre.get().toString());
 				return genre.get();
 			} else {
-				throw new RecordNotFoundException("Genre id -"+genreId+"is not present");
+				throw new BusinessException("Genre id -"+genreId+"is not present");
 			}
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Fetch", ex.getCause());
@@ -108,17 +104,17 @@ public class GenreServiceImpl implements GenreService {
 	 * @author M1053559
 	 *
 	 * @return
-	 * @throws EmptyListException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public List<Genre> getAllGenres() throws EmptyListException,ServiceException {
+	public List<Genre> getAllGenres() throws BusinessException,ServiceException {
 		try {
 			List<Genre> genres = genreRepository.findAll();
 			if (genres.size()>0) {
 				return genres;
 			} else {
-				throw new EmptyListException("No Record to Fetch");
+				throw new BusinessException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Fetch", ex.getCause());
@@ -130,17 +126,17 @@ public class GenreServiceImpl implements GenreService {
 	 *
 	 * @param genre
 	 * @return
-	 * @throws RecordNotAddedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Genre addGenre(Genre genre) throws RecordNotAddedException, ServiceException {
+	public Genre addGenre(Genre genre) throws BusinessException, ServiceException {
 		try {
 			return genreRepository.save(genre);
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed To Add Genre", ex.getCause());
 		}catch(Exception ex) {
-			throw new RecordNotAddedException("Invalid Data");
+			throw new BusinessException("Invalid Data");
 		}
 	}
 

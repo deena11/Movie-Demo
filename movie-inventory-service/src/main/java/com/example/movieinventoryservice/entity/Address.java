@@ -82,8 +82,19 @@ public class Address implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Address [id=" + id + ", street=" + street + ", city=" + city + ", state=" + state + ", pincode="
-				+ pincode + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Address [id=");
+		builder.append(id);
+		builder.append(", street=");
+		builder.append(street);
+		builder.append(", city=");
+		builder.append(city);
+		builder.append(", state=");
+		builder.append(state);
+		builder.append(", pincode=");
+		builder.append(pincode);
+		builder.append("]");
+		return builder.toString();
 	}
 	
 	

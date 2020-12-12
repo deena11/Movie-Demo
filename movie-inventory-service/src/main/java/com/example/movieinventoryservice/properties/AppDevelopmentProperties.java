@@ -90,9 +90,25 @@ public class AppDevelopmentProperties {
 
 	@Override
 	public String toString() {
-		return "AppDevelopmentProperties [title=" + title + ", project=" + project + ", version=" + version
-				+ ", environment=" + environment + ", licence=" + licence + ", contact=" + contact + ", description="
-				+ description + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("AppDevelopmentProperties [title=");
+		builder.append(title);
+		builder.append(", project=");
+		builder.append(project);
+		builder.append(", version=");
+		builder.append(version);
+		builder.append(", environment=");
+		builder.append(environment);
+		builder.append(", licence=");
+		builder.append(licence);
+		builder.append(", contact=");
+		builder.append(contact);
+		builder.append(", description=");
+		builder.append(description);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 
 }

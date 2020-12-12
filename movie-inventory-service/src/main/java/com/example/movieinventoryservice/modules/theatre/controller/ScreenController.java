@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.movieinventoryservice.entity.Screen;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
@@ -27,6 +27,8 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 /**
  * @author M1053559
+ * @version v1
+ * @description RestApi for Screen Service
  *
  */
 @RestController
@@ -39,8 +41,6 @@ public class ScreenController {
 	@Autowired
 	private ScreenService screenService;
 
-	private String message = "";
-
 	/**
 	 * @param screenId
 	 * @return
@@ -49,12 +49,13 @@ public class ScreenController {
 	 */
 	@GetMapping("/{screenId}")
 	public ResponseEntity<ApiSuccessResponse> getScreen(@PathVariable("screenId") int screenId)
-			throws RecordNotFoundException, ServiceException {
+			throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Fetching Screen of id - " + screenId + " Request is Processing");
 		message = "Successfully Fetched Screen Data ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, screenService.getScreenById(screenId)));
+		return responseBuilder(HttpStatus.OK, message, screenService.getScreenById(screenId));
 
 	}
 
@@ -64,28 +65,30 @@ public class ScreenController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/")
-	public ResponseEntity<?> getAllScreen() throws EmptyListException, ServiceException {
+	public ResponseEntity<?> getAllScreen() throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Fetching All Screen Data Request is Processing");
 		message = "Successfully Fetched All Screens ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, screenService.getAllScreen()));
+		return responseBuilder(HttpStatus.OK, message, screenService.getAllScreen());
 
 	}
 
 	/**
 	 * @param screen
 	 * @return
-	 * @throws RecordNotAddedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addScreen(@RequestBody Screen screen) throws RecordNotAddedException, ServiceException {
+	public ResponseEntity<?> addScreen(@RequestBody Screen screen) throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Adding Screen of id - " + screen.getId() + " Request is Processing");
 		message = "Successfully Added Screen - " + screen.getName();
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED, message, screenService.addScreen(screen)));
+		return responseBuilder(HttpStatus.CREATED, message, screenService.addScreen(screen));
 
 	}
 
@@ -96,13 +99,13 @@ public class ScreenController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updateScreen(@RequestBody Screen screen)
-			throws RecordNotUpdatedException, ServiceException {
+	public ResponseEntity<?> updateScreen(@RequestBody Screen screen) throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Updating Screen of id - " + screen.getId() + " Request is Processing");
 		message = "Successfully Updated Screen - " + screen.getName();
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK, message, screenService.updateScreen(screen)));
+		return responseBuilder(HttpStatus.OK, message, screenService.updateScreen(screen));
 
 	}
 
@@ -113,12 +116,14 @@ public class ScreenController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{screenId}")
-	public ResponseEntity<?> deleteScreen(@PathVariable("screenId") int screenId) throws RecordNotDeletedException, ServiceException {
+	public ResponseEntity<?> deleteScreen(@PathVariable("screenId") int screenId)
+			throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Delete Screen of id - " + screenId + " Request is Processing");
 		message = "Successfully Deleted screen id " + screenId;
 		screenService.deleteScreen(screenId);
-		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT, message, null));
+		return responseBuilder(HttpStatus.NO_CONTENT, message, null);
 
 	}
 
@@ -128,7 +133,7 @@ public class ScreenController {
 	 * @param body
 	 * @return
 	 */
-	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
+	private ResponseEntity<ApiSuccessResponse> responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
@@ -139,7 +144,7 @@ public class ScreenController {
 
 		logger.info("Request is Processed Successfully");
 
-		return response;
+		return ResponseEntity.ok(response);
 	}
 
 }

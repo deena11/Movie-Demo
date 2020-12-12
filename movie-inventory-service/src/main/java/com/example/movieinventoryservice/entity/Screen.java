@@ -1,4 +1,6 @@
 package com.example.movieinventoryservice.entity;
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Screen {
+public class Screen implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -65,9 +67,20 @@ public class Screen {
 
 	@Override
 	public String toString() {
-		return "Screen [id=" + id + ", name=" + name + ", theatre=" + theatre + ", totalSeatsPerScreen="
-				+ totalSeatsPerScreen + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Screen [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", theatre=");
+		builder.append(theatre);
+		builder.append(", totalSeatsPerScreen=");
+		builder.append(totalSeatsPerScreen);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
 
 	
 

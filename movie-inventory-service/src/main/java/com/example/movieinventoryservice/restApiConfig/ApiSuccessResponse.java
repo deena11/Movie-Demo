@@ -79,9 +79,23 @@ public class ApiSuccessResponse {
 
 	@Override
 	public String toString() {
-		return "ApiSuccessResponse [message=" + message + ", httpStatus=" + httpStatus + ", httpStatusCode="
-				+ httpStatusCode + ", body=" + body + ", success=" + success + ", error=" + error + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("ApiSuccessResponse [message=");
+		builder.append(message);
+		builder.append(", httpStatus=");
+		builder.append(httpStatus);
+		builder.append(", httpStatusCode=");
+		builder.append(httpStatusCode);
+		builder.append(", body=");
+		builder.append(body);
+		builder.append(", success=");
+		builder.append(success);
+		builder.append(", error=");
+		builder.append(error);
+		builder.append("]");
+		return builder.toString();
 	}
+
 	
 	
 	

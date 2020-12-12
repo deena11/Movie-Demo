@@ -20,8 +20,7 @@ import com.example.movieinventoryservice.entity.Movie;
 import com.example.movieinventoryservice.entity.Play;
 import com.example.movieinventoryservice.entity.Screen;
 import com.example.movieinventoryservice.entity.Theatre;
-import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotFoundException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CastRepository;
 import com.example.movieinventoryservice.modules.movies.repository.GenreRepository;
@@ -40,48 +39,47 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest({ PlayServiceImpl.class,ScreenServiceImpl.class,TheatreServiceImpl.class, MovieServiceImpl.class })
+@WebMvcTest({ PlayServiceImpl.class, ScreenServiceImpl.class, TheatreServiceImpl.class, MovieServiceImpl.class })
 public class PlayServiceImplTest {
 
 	@Autowired
 	private ScreenService screenService;
-	
+
 	@Autowired
 	private TheatreService theatreService;
-	
+
 	@Autowired
 	private MovieService movieService;
-	
+
 	@MockBean
 	private TheatreRepository theatreRepository;
-	
+
 	public ApiSuccessResponse apiResponse;
 
 	@Autowired
 	private PlayService playService;
-	
+
 	@MockBean
 	private ScreenRepository screenRepository;
 
 	@MockBean
 	private PlayRepository playRepository;
-	
+
 	@MockBean
 	private AddressRepository addressRepository;
-	
+
 	@MockBean
 	private LocationRepository locationRepository;
-	
+
 	@MockBean
 	private MovieRepository movieRepository;
-	
+
 	@MockBean
 	private CastRepository castRepository;
 
 	@MockBean
 	private GenreRepository genreRepository;
-	
-	
+
 	@Before
 	public void setUp() throws Exception {
 		List<Play> play = new ArrayList<>();
@@ -118,7 +116,7 @@ public class PlayServiceImplTest {
 		assertEquals(1, playList1.size());
 	}
 
-	@Test(expected = EmptyListException.class)
+	@Test(expected = BusinessException.class)
 	public void getAllPlayNotFoundTest() throws Exception {
 		List<Play> playList = new ArrayList<>();
 		Mockito.when(playRepository.findAll()).thenReturn(playList);
@@ -138,7 +136,7 @@ public class PlayServiceImplTest {
 		assertEquals(1, play.getId());
 	}
 
-	@Test(expected = RecordNotFoundException.class)
+	@Test(expected = BusinessException.class)
 	public void getPlayByIdNotFoundTest() throws Exception {
 		Mockito.when(playRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 		Play play = playService.getPlayById(1);
@@ -194,11 +192,12 @@ public class PlayServiceImplTest {
 		movie.setId(1);
 		return movie;
 	}
+
 	public Theatre getTheatre() {
 		Theatre theatre = new Theatre();
 		theatre.setId(1);
 		theatre.setName("test");
-		
+
 		return theatre;
 	}
 }

@@ -1,5 +1,7 @@
 package com.example.movieinventoryservice.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +13,7 @@ import javax.persistence.ManyToOne;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-public class Comment {
+public class Comment implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -73,9 +75,20 @@ public class Comment {
 
 	@Override
 	public String toString() {
-		return "Comment [id=" + id + ", comments=" + comments + ", rating=" + rating + ", movie=" + movie + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Comment [id=");
+		builder.append(id);
+		builder.append(", comments=");
+		builder.append(comments);
+		builder.append(", rating=");
+		builder.append(rating);
+		builder.append(", movie=");
+		builder.append(movie);
+		builder.append("]");
+		return builder.toString();
 	}
 
+	
 	
 	
 	

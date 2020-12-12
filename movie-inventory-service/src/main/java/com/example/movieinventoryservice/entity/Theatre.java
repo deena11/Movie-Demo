@@ -1,4 +1,6 @@
 package com.example.movieinventoryservice.entity;
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -6,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Theatre {
+public class Theatre implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -59,9 +61,22 @@ public class Theatre {
 	}
 	@Override
 	public String toString() {
-		return "Theatre [id=" + id + ", name=" + name + ", location=" + location + ", address=" + address
-				+ ", noofScreens=" + noofScreens + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Theatre [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", location=");
+		builder.append(location);
+		builder.append(", address=");
+		builder.append(address);
+		builder.append(", noofScreens=");
+		builder.append(noofScreens);
+		builder.append("]");
+		return builder.toString();
 	}
+	
+	
 	
 	
 }

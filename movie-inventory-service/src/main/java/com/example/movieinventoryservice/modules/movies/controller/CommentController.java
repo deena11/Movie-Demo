@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.movieinventoryservice.entity.Comment;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
 import com.example.movieinventoryservice.exception.RecordNotDeletedException;
 import com.example.movieinventoryservice.exception.RecordNotFoundException;
 import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
@@ -27,7 +27,8 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 
 /**
  * @author M1053559
- *
+ * @version v1
+ * @description restApi for comments controller
  */
 @RestController
 @CrossOrigin
@@ -35,7 +36,6 @@ import com.example.movieinventoryservice.restApiConfig.ApiSuccessResponse;
 public class CommentController {
 
 	private Logger logger = LoggerFactory.getLogger(CommentController.class);
-	private String message = "";
 
 	@Autowired
 	private CommentService commentService;
@@ -47,12 +47,14 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/{commentId}")
-	public ResponseEntity<?> getComment(@PathVariable("commentId") int commentId) throws RecordNotFoundException, ServiceException {
+	public ResponseEntity<?> getComment(@PathVariable("commentId") int commentId)
+			throws BusinessException, ServiceException {
+		String message = "";
 
 		logger.info("Fetching Comment of id - " + commentId + " Request is Processing");
 		message = "Successfully Fetched Comment Data ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, commentService.getCommentById(commentId)));
+		return responseBuilder(HttpStatus.OK, message, commentService.getCommentById(commentId));
 
 	}
 
@@ -62,28 +64,30 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/")
-	public ResponseEntity<?> getAllComment() throws EmptyListException, ServiceException {
+	public ResponseEntity<?> getAllComment() throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Fetching All Comment Data Request is Processing");
 		message = "Successfully Fetched All Comments ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, commentService.getAllComments()));
+		return responseBuilder(HttpStatus.OK, message, commentService.getAllComments());
 
 	}
 
 	/**
 	 * @param comment
 	 * @return
-	 * @throws RecordNotAddedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addComment(@RequestBody Comment comment) throws RecordNotAddedException, ServiceException {
+	public ResponseEntity<?> addComment(@RequestBody Comment comment) throws BusinessException, ServiceException {
+		String message = "";
 
 		logger.info("Adding Comment of id - " + comment.getId() + " Request is Processing");
-		message = "Successfully Added Comment for movie" ;
+		message = "Successfully Added Comment for movie";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.CREATED,message, commentService.addComment(comment)));
+		return responseBuilder(HttpStatus.CREATED, message, commentService.addComment(comment));
 
 	}
 
@@ -94,12 +98,13 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updateComment(@RequestBody Comment comment) throws RecordNotUpdatedException, ServiceException {
+	public ResponseEntity<?> updateComment(@RequestBody Comment comment) throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Updating Comment of id - " + comment.getId() + " Request is Processing");
 		message = "Successfully Updated Comment ";
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.OK,message, commentService.updateComment(comment)));
+		return responseBuilder(HttpStatus.OK, message, commentService.updateComment(comment));
 
 	}
 
@@ -110,13 +115,15 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity<?> deleteComment(@PathVariable("commentId") int commentId) throws RecordNotDeletedException, ServiceException {
+	public ResponseEntity<?> deleteComment(@PathVariable("commentId") int commentId)
+			throws BusinessException, ServiceException {
 
+		String message = "";
 		logger.info("Delete Comment of id - " + commentId + " Request is Processing");
 		message = "Successfully Deleted comment id " + commentId;
 		commentService.deleteComment(commentId);
 
-		return ResponseEntity.ok(responseBuilder(HttpStatus.NO_CONTENT,message,null ));
+		return responseBuilder(HttpStatus.NO_CONTENT, message, null);
 	}
 
 	/**
@@ -125,7 +132,7 @@ public class CommentController {
 	 * @param body
 	 * @return
 	 */
-	public ApiSuccessResponse responseBuilder(HttpStatus status, String message, Object body) {
+	private ResponseEntity<ApiSuccessResponse> responseBuilder(HttpStatus status, String message, Object body) {
 
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
@@ -137,7 +144,7 @@ public class CommentController {
 
 		logger.info("Request is Processed Successfully");
 
-		return response;
+		return ResponseEntity.ok(response);
 	}
 
 }

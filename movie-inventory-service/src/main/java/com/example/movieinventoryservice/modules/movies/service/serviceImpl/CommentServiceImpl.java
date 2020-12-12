@@ -11,11 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.movieinventoryservice.entity.Comment;
-import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
-import com.example.movieinventoryservice.exception.RecordNotDeletedException;
-import com.example.movieinventoryservice.exception.RecordNotFoundException;
-import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CommentRepository;
 import com.example.movieinventoryservice.modules.movies.service.CommentService;
@@ -37,17 +33,17 @@ public class CommentServiceImpl implements CommentService {
 	 * @author M1053559
 	 *
 	 * @param commentId
-	 * @throws RecordNotDeletedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public void deleteComment(int commentId) throws RecordNotDeletedException, ServiceException {
+	public void deleteComment(int commentId) throws BusinessException, ServiceException {
 		try {
 			if (getCommentById(commentId) != null) {
 				commentRepository.deleteById(commentId);
 			}
-		} catch (RecordNotFoundException e) {
-			throw new RecordNotDeletedException("commentd id - " + commentId + " not found");
+		} catch (BusinessException e) {
+			throw new BusinessException("commentd id - " + commentId + " not found");
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Delete id-" + commentId, ex.getCause());
 		}
@@ -58,23 +54,23 @@ public class CommentServiceImpl implements CommentService {
 	 *
 	 * @param comment
 	 * @return
-	 * @throws RecordNotUpdatedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Comment updateComment(Comment comment) throws RecordNotUpdatedException, ServiceException {
+	public Comment updateComment(Comment comment) throws BusinessException, ServiceException {
 		try {
 			if (getCommentById(comment.getId()) != null) {
 				return commentRepository.save(comment);
 			}
-		} catch (RecordNotFoundException ex) {
-			throw new RecordNotUpdatedException("commentd id - " + comment.getId() + " not found");
+		} catch (BusinessException ex) {
+			throw new BusinessException("commentd id - " + comment.getId() + " not found");
 		}
 
 		catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Update", ex.getCause());
 		} catch (Exception ex) {
-			throw new RecordNotUpdatedException("Failed to Update", ex.getCause());
+			throw new BusinessException("Failed to Update", ex.getCause());
 		}
 		return comment;
 	}
@@ -84,11 +80,11 @@ public class CommentServiceImpl implements CommentService {
 	 *
 	 * @param commentId
 	 * @return
-	 * @throws RecordNotFoundException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Comment getCommentById(int commentId) throws RecordNotFoundException, ServiceException {
+	public Comment getCommentById(int commentId) throws BusinessException, ServiceException {
 		try {
 			logger.info("Entered into Comment Service - getByid " + commentId);
 			logger.info(commentRepository.findAll().toString());
@@ -97,7 +93,7 @@ public class CommentServiceImpl implements CommentService {
 				logger.info(comment.get().toString());
 				return comment.get();
 			} else {
-				throw new RecordNotFoundException("Comment id -" + commentId + "is not present");
+				throw new BusinessException("Comment id -" + commentId + "is not present");
 			}
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Fetch", ex.getCause());
@@ -108,17 +104,17 @@ public class CommentServiceImpl implements CommentService {
 	 * @author M1053559
 	 *
 	 * @return
-	 * @throws EmptyListException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public List<Comment> getAllComments() throws EmptyListException, ServiceException {
+	public List<Comment> getAllComments() throws BusinessException, ServiceException {
 		try {
 			List<Comment> comments = commentRepository.findAll();
 			if (comments.size() > 0) {
 				return comments;
 			} else {
-				throw new EmptyListException("No Record to Fetch");
+				throw new BusinessException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Fetch", ex.getCause());
@@ -130,17 +126,17 @@ public class CommentServiceImpl implements CommentService {
 	 *
 	 * @param comment
 	 * @return
-	 * @throws RecordNotAddedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Comment addComment(Comment comment) throws RecordNotAddedException, ServiceException {
+	public Comment addComment(Comment comment) throws BusinessException, ServiceException {
 		try {
 			return commentRepository.save(comment);
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed To Add Comment", ex.getCause());
 		} catch (Exception ex) {
-			throw new RecordNotAddedException("Invalid Data");
+			throw new BusinessException("Invalid Data");
 		}
 	}
 

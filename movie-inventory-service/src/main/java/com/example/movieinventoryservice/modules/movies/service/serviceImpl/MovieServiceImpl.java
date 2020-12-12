@@ -12,11 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.movieinventoryservice.entity.Cast;
 import com.example.movieinventoryservice.entity.Movie;
-import com.example.movieinventoryservice.exception.EmptyListException;
-import com.example.movieinventoryservice.exception.RecordNotAddedException;
-import com.example.movieinventoryservice.exception.RecordNotDeletedException;
-import com.example.movieinventoryservice.exception.RecordNotFoundException;
-import com.example.movieinventoryservice.exception.RecordNotUpdatedException;
+import com.example.movieinventoryservice.exception.BusinessException;
 import com.example.movieinventoryservice.exception.ServiceException;
 import com.example.movieinventoryservice.modules.movies.repository.CastRepository;
 import com.example.movieinventoryservice.modules.movies.repository.GenreRepository;
@@ -47,12 +43,12 @@ public class MovieServiceImpl implements MovieService {
 	 *
 	 * @param movie
 	 * @return
-	 * @throws RecordNotAddedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
 	@Transactional
-	public Movie addMovie(Movie movie) throws RecordNotAddedException, ServiceException {
+	public Movie addMovie(Movie movie) throws BusinessException, ServiceException {
 
 		try {
 
@@ -76,7 +72,7 @@ public class MovieServiceImpl implements MovieService {
 			System.out.println(ex.getLocalizedMessage());
 			throw new ServiceException("Failed To Add Movie", ex.getCause());
 		} catch (Exception ex) {
-			throw new RecordNotAddedException("Invalid Data");
+			throw new BusinessException("Invalid Data");
 		}
 
 	}
@@ -85,17 +81,17 @@ public class MovieServiceImpl implements MovieService {
 	 * @author M1053559
 	 *
 	 * @param movieId
-	 * @throws RecordNotDeletedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public void deleteMovie(int movieId) throws RecordNotDeletedException, ServiceException {
+	public void deleteMovie(int movieId) throws BusinessException, ServiceException {
 		try {
 			if (getMovieById(movieId) != null) {
 				movieRepository.deleteById(movieId);
 			}
-		} catch (RecordNotFoundException e) {
-			throw new RecordNotDeletedException("movied id - " + movieId + " not found");
+		} catch (BusinessException e) {
+			throw new BusinessException("movied id - " + movieId + " not found");
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Delete id-" + movieId, ex.getCause());
 		}
@@ -107,11 +103,11 @@ public class MovieServiceImpl implements MovieService {
 	 *
 	 * @param movie
 	 * @return
-	 * @throws RecordNotUpdatedException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Movie updateMovie(Movie movie) throws RecordNotUpdatedException, ServiceException {
+	public Movie updateMovie(Movie movie) throws BusinessException, ServiceException {
 		try {
 			if (getMovieById(movie.getId()) != null) {
 				movie.getGenre().forEach(val -> {
@@ -127,10 +123,10 @@ public class MovieServiceImpl implements MovieService {
 
 				return movieRepository.save(movie);
 			} else {
-				throw new RecordNotUpdatedException("invalid movie id. cannot update");
+				throw new BusinessException("invalid movie id. cannot update");
 			}
-		} catch (RecordNotFoundException ex) {
-			throw new RecordNotUpdatedException("invalid movie id. cannot update");
+		} catch (BusinessException ex) {
+			throw new BusinessException("invalid movie id. cannot update");
 		}
 
 		catch (DataAccessException ex) {
@@ -144,18 +140,18 @@ public class MovieServiceImpl implements MovieService {
 	 *
 	 * @param movieId
 	 * @return
-	 * @throws RecordNotFoundException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public Movie getMovieById(int movieId) throws RecordNotFoundException, ServiceException {
+	public Movie getMovieById(int movieId) throws BusinessException, ServiceException {
 
 		try {
 			Optional<Movie> movie = movieRepository.findById(movieId);
 			if (movie.isPresent()) {
 				return movie.get();
 			} else {
-				throw new RecordNotFoundException("Movie of id - " + movieId + "is not present");
+				throw new BusinessException("Movie of id - " + movieId + "is not present");
 			}
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Fetch", ex.getCause());
@@ -166,17 +162,17 @@ public class MovieServiceImpl implements MovieService {
 	 * @author M1053559
 	 *
 	 * @return
-	 * @throws EmptyListException
+	 * @throws BusinessException
 	 * @throws ServiceException
 	 */
 	@Override
-	public List<Movie> getAllMovies() throws EmptyListException, ServiceException {
+	public List<Movie> getAllMovies() throws BusinessException, ServiceException {
 		try {
 			List<Movie> movies = movieRepository.findAll();
 			if (movies.size() > 0) {
 				return movies;
 			} else {
-				throw new EmptyListException("No Record to Fetch");
+				throw new BusinessException("No Record to Fetch");
 			}
 		} catch (DataAccessException ex) {
 			throw new ServiceException("Failed to Fetch", ex.getCause());
