@@ -88,33 +88,33 @@ services:
   #   networks: 
   #     - main-network    
 
-  movie-search:
-    container_name: movie-search
-    build: ./movie-search
-    image: movie-search
-    ports:
-      - "8060:8060"
-    depends_on: 
-      - eureka
-      - elasticsearch
-      - logstash
-    environment: 
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/movieapp?useSSL=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      KAFKA_BOOTSTRAPADDRESS: kafka:9092
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-      TOKEN_URL: http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/token
-      PLAY_URL: http://movie-inventory-service:8081/play/all
-      SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES: elasticsearch:9300
-      SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME: elasticsearch
-      SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI:  http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/check_token
-      LOGSTASH_HOST: http://logstash:9600
-      LOGSTASH_PORT: 9600
-    restart: always
-    networks:
-      main-network:
-      elk:
+#   movie-search:
+#     container_name: movie-search
+#     build: ./movie-search
+#     image: movie-search
+#     ports:
+#       - "8060:8060"
+#     depends_on: 
+#       - eureka
+#       - elasticsearch
+#       - logstash
+#     environment: 
+#       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/movieapp?useSSL=true
+#       SPRING_DATASOURCE_USERNAME: root
+#       SPRING_DATASOURCE_PASSWORD: root
+#       KAFKA_BOOTSTRAPADDRESS: kafka:9092
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+#       TOKEN_URL: http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/token
+#       PLAY_URL: http://movie-inventory-service:8081/play/all
+#       SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES: elasticsearch:9300
+#       SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME: elasticsearch
+#       SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI:  http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/check_token
+#       LOGSTASH_HOST: http://logstash:9600
+#       LOGSTASH_PORT: 9600
+#     restart: always
+#     networks:
+#       main-network:
+#       elk:
       
 
   kafka-service:
