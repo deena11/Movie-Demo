@@ -39,7 +39,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
       TOKEN_URL: http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/token
-      LOGSTASH_HOST: http://secyl95559dns.eastus2.cloudapp.azure.com:9600
+      LOGSTASH_HOST: http://logstash:9600
       LOGSTASH_PORT: 9600
     networks: 
       - main-network
@@ -61,7 +61,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
       TOKEN_URL: http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/token
       SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI:  http://secyl95559dns.eastus2.cloudapp.azure.com:8091/oauth/check_token
-      LOGSTASH_HOST: http://secyl95559dns.eastus2.cloudapp.azure.com:9600
+      LOGSTASH_HOST: http://logstash:9600
       LOGSTASH_PORT: 9600
     networks: 
       - main-network                      
