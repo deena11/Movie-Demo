@@ -61,7 +61,7 @@ public class UserController {
 		message = "Logging out process";
 		userServiceImpl.logout(request);
 
-		logger.info("SuccessFully Logged out user - ", request.getUserPrincipal().getName());
+		logger.info("SuccessFully Logged out user - {}", request.getUserPrincipal().getName());
 
 		return responseBuilder(message, null, HttpStatus.OK);
 	}
@@ -128,7 +128,7 @@ public class UserController {
 			throw new BusinessException(errorMessage.toString());
 		}
 		String message = "";
-		logger.info("Adding user Details {}" ,user.toString());
+		logger.info("Adding user Details {}" ,user.getUsername());
 
 		message = "Successfully Added Data";
 		User result = userServiceImpl.createUser(user);

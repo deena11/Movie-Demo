@@ -1,13 +1,11 @@
 package com.example.userservice.restApiConfig;
 
-import java.io.Serializable;
 
-public class ApiErrorResponse implements Serializable{
+public class ApiErrorResponse{
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 
 	private String message;
 
@@ -23,7 +21,6 @@ public class ApiErrorResponse implements Serializable{
 
 	public ApiErrorResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ApiErrorResponse(String message, Object httpStatus, boolean success, boolean error, Object cause,

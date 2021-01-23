@@ -1,13 +1,11 @@
 package com.example.userservice.restApiConfig;
 
-import java.io.Serializable;
 
-public class ApiSuccessResponse implements Serializable{
+public class ApiSuccessResponse {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 
 	private String message;
 
