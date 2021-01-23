@@ -39,14 +39,19 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	TokenStore tokenStore;
 
+	private static final String EXCEPTION_MESSAGE = "Exception message";
+
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-	
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param user
+	 * 
 	 * @return
+	 * 
 	 * @throws BusinessException
+	 * 
 	 * @throws ServiceException
 	 */
 	@Override
@@ -55,24 +60,28 @@ public class UserServiceImpl implements UserService {
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			if (!validUser(user.getEmail())) {
-				logger.info("email id - "+user.getEmail()+" is valid");
-				
+				logger.info("email id - {0} is valid", user.getEmail());
+
 				return userRepository.save(user);
 			} else {
 				throw new BusinessException("Email Already Exist");
 			}
 		} catch (DataAccessException ex) {
 
-			logger.error("Exception message - " + ex.getMessage());
+			logger.error(" - {0}", ex.getMessage());
 			throw new ServiceException("Failed to Add due to internal server err");
-		} 
-	} 
+		}
+	}
 
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param user
+	 * 
 	 * @return
+	 * 
 	 * @throws BusinessException
+	 * 
 	 * @throws ServiceException
 	 */
 	@Override
@@ -83,25 +92,27 @@ public class UserServiceImpl implements UserService {
 			if (fetchById(user.getId()) != null) {
 				userRepository.save(user);
 				return userRepository.save(user);
-			}
-			else {
-				logger.error("user of id "+user.getId()+" does not exist in database");
+			} else {
+				logger.error("user of id {0} does not exist in database", user.getId());
 				throw new BusinessException("User Id does not exist cannot update");
 			}
 		} catch (BusinessException ex) {
 			throw new BusinessException("User Id does not exist cannot update");
 
 		} catch (DataAccessException ex) {
-			logger.error("Exception message -" + ex.getMessage());
+			logger.error(EXCEPTION_MESSAGE, ex.getMessage());
 			throw new ServiceException("Failed to Update due to internal server err");
 		}
 
 	}
 
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param userId
+	 * 
 	 * @throws BusinessException
+	 * 
 	 * @throws ServiceException
 	 */
 	@Override
@@ -110,8 +121,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			if (fetchById(userId) != null) {
 				userRepository.deleteById(userId);
-			}
-			else {
+			} else {
 				throw new BusinessException("User Id does not exist cannot delete");
 			}
 		} catch (BusinessException ex) {
@@ -119,16 +129,20 @@ public class UserServiceImpl implements UserService {
 		}
 
 		catch (DataAccessException ex) {
-			logger.error("Exception occured while Deleted user -" + userId);
+			logger.error("Exception occured while Deleted user - {0}", userId);
 			throw new ServiceException("Failed to delete", ex.getCause());
 		}
 	}
 
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param userId
+	 * 
 	 * @return
+	 * 
 	 * @throws ServiceException
+	 * 
 	 * @throws BusinessException
 	 */
 	@Override
@@ -144,15 +158,18 @@ public class UserServiceImpl implements UserService {
 
 		} catch (DataAccessException ex) {
 
-			logger.error("Exception message -" + ex.getMessage());
+			logger.error(EXCEPTION_MESSAGE, ex.getMessage());
 			throw new ServiceException("Failed to Fetch due to internal server err");
 		}
 	}
 
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @return
+	 * 
 	 * @throws BusinessException
+	 * 
 	 * @throws ServiceException
 	 */
 	@Override
@@ -160,7 +177,7 @@ public class UserServiceImpl implements UserService {
 
 		try {
 			List<User> user = userRepository.findAll();
-			if (user.size() > 0) {
+			if (user.isEmpty()) {
 				return user;
 			} else {
 				throw new BusinessException("No Data Available");
@@ -168,14 +185,16 @@ public class UserServiceImpl implements UserService {
 
 		} catch (DataAccessException ex) {
 
-			logger.error("Exception message -" + ex.getMessage());
+			logger.error(EXCEPTION_MESSAGE, ex.getMessage());
 			throw new ServiceException("Failed to fetch all due to internal server err");
 		}
 	}
 
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param request
+	 * 
 	 * @throws BusinessException
 	 */
 	@Override
@@ -189,7 +208,6 @@ public class UserServiceImpl implements UserService {
 					logger.warn("Invalid Access Token");
 					throw new InvalidTokenException("Invalid Access Token");
 				}
-				System.out.println(accessToken.toString());
 				tokenStore.removeAccessToken(accessToken);
 				logger.info("User Logout Process is done Successfully");
 
@@ -198,16 +216,19 @@ public class UserServiceImpl implements UserService {
 
 		catch (Exception ex) {
 
-			logger.error("Exception occured while Logging out for user -" + request.getUserPrincipal().getName());
+			logger.error("Exception occured while Logging out for user -{0}", request.getUserPrincipal().getName());
 
 			throw new BusinessException("Failed to Logout", ex.getCause());
 		}
 	}
 
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param email
+	 * 
 	 * @return
+	 * 
 	 * @throws ServiceException
 	 */
 	@Override
@@ -215,12 +236,9 @@ public class UserServiceImpl implements UserService {
 		try {
 			Optional<User> user = userRepository.findByEmail(email);
 
-			if (user.isPresent()) {
-				return true;
-			}
-			return false;
+			return user.isPresent();
 		} catch (DataAccessException ex) {
-			logger.error("exception occured while trying to find user by email -"+email);
+			logger.error("exception occured while trying to find user by email - {0}", email);
 			throw new ServiceException("Unable to Access database");
 		}
 	}

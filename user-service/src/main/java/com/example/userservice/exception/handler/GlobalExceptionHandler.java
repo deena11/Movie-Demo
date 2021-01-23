@@ -22,17 +22,18 @@ import com.example.userservice.exception.NoSuchUserException;
 import com.example.userservice.exception.ServiceException;
 import com.example.userservice.restApiConfig.ApiErrorResponse;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	
+
 	private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-	
+
 	private ResponseEntity<Object> buildResponseEntity(ApiErrorResponse response, HttpStatus httpStatus) {
 
 		return ResponseEntity.status(HttpStatus.OK).header("status", String.valueOf(httpStatus)).body(response);
 	}
-	
+
+	private final String typeString = "should be of type ";
+
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -46,7 +47,6 @@ public class GlobalExceptionHandler {
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
 		response.setError(true);
 
-		
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
 	}
 
@@ -54,12 +54,11 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	protected ResponseEntity<Object> handleMethodArgumentTypeMismatchExceptions(
-			final MethodArgumentTypeMismatchException ex,
-			WebRequest request) {
+			final MethodArgumentTypeMismatchException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
-		
-		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-		 
+
+		String message = ex.getName() + typeString + ex.getRequiredType().getName();
+
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
@@ -67,18 +66,17 @@ public class GlobalExceptionHandler {
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(IllegalStateException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	protected ResponseEntity<Object> handleIllegalStateException(
-			final MethodArgumentTypeMismatchException ex,
+	protected ResponseEntity<Object> handleIllegalStateException(final MethodArgumentTypeMismatchException ex,
 			WebRequest request) {
-		System.out.println("type mismatch");
+//		System.out.println("type mismatch");
 		ApiErrorResponse response = new ApiErrorResponse();
-		
+
 		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-		 
+
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
@@ -86,16 +84,15 @@ public class GlobalExceptionHandler {
 
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	protected ResponseEntity<Object> handleMissingServletRequestParameter(
-	  MissingServletRequestParameterException ex, HttpHeaders headers, 
-	  HttpStatus status, WebRequest request) {
-	    
-	    ApiErrorResponse response = new ApiErrorResponse();
-	    String message = ex.getParameterName() + " should be of type " + ex.getParameterType();
-		 
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		ApiErrorResponse response = new ApiErrorResponse();
+		String message = ex.getParameterName() + typeString + ex.getParameterType();
+
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
 		response.setHttpStatus(HttpStatus.BAD_REQUEST);
@@ -111,8 +108,8 @@ public class GlobalExceptionHandler {
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(ex.getMessage());
-		logger.error("exception occured - ");
-		ex.printStackTrace();
+		logger.error("exception occured - {0}",ex.getLocalizedMessage());
+//		ex.printStackTrace();
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 		response.setError(true);
 
@@ -120,7 +117,6 @@ public class GlobalExceptionHandler {
 
 	}
 
-	
 	@ExceptionHandler(EmptyListException.class)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public final ResponseEntity<Object> handleEmptyListFoundExceptions(EmptyListException ex, WebRequest request) {
@@ -159,11 +155,9 @@ public class GlobalExceptionHandler {
 
 	}
 
-	
 	@ExceptionHandler(BusinessException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(BusinessException ex,
-			WebRequest request) {
+	public final ResponseEntity<Object> handleRecordNotCreatedExceptions(BusinessException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		if (ex.getCause() != null) {
@@ -182,8 +176,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ServiceException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public final ResponseEntity<Object> handleRecordNotDeletedExceptions(ServiceException ex,
-			WebRequest request) {
+	public final ResponseEntity<Object> handleRecordNotDeletedExceptions(ServiceException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		if (ex.getCause() != null) {
@@ -200,10 +193,10 @@ public class GlobalExceptionHandler {
 
 	}
 
-		
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public final ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+	public final ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex,
+			WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		if (ex.getCause() != null) {
@@ -219,8 +212,7 @@ public class GlobalExceptionHandler {
 		return buildResponseEntity(response, HttpStatus.BAD_REQUEST);
 
 	}
-	
-	
+
 	@ExceptionHandler(NullPointerException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public final ResponseEntity<Object> handleNullPointerException(NullPointerException ex, WebRequest request) {
@@ -232,7 +224,7 @@ public class GlobalExceptionHandler {
 			response.setCause(ex.getLocalizedMessage());
 		}
 		logger.error("exception occured - Nullpointer- ");
-		ex.printStackTrace();
+//		ex.printStackTrace();
 		response.setMessage("Something went wrong. Object is empty or null.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -241,8 +233,5 @@ public class GlobalExceptionHandler {
 		return buildResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
-	
-	
-	
 
 }
