@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService {
 
 		try {
 			List<User> user = userRepository.findAll();
-			if (user.isEmpty()) {
+			if (!user.isEmpty()) {
 				return user;
 			} else {
 				throw new BusinessException("No Data Available");
