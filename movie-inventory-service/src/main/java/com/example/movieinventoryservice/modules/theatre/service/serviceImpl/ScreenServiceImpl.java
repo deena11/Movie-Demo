@@ -47,10 +47,8 @@ public class ScreenServiceImpl implements ScreenService {
 			logger.info(screen.toString());
 			screen.setTheatre(theatreService.getTheatreById(screen.getTheatre().getId()));
 			return screenRepository.save(screen);
-		} catch (BusinessException ex) {
-			logger.error(ex.getLocalizedMessage());
-			throw new BusinessException("Failed To Add Screen -invalid data", ex.getCause());
 		} catch (DataAccessException ex) {
+			logger.error(ex.getLocalizedMessage());
 			throw new ServiceException("Record Not Added due to internal server");
 		}
 	}
@@ -112,11 +110,10 @@ public class ScreenServiceImpl implements ScreenService {
 	@Override
 	public Screen getScreenById(int screenId) throws BusinessException, ServiceException {
 		try {
-			logger.info("Entered into Screen Service - getByid " + screenId);
-			logger.info(screenRepository.findAll().toString());
+			logger.info("Entered into Screen Service - getByid  {}" , screenId);
 			Optional<Screen> screen = screenRepository.findById(screenId);
 			if (screen.isPresent()) {
-				logger.info(screen.get().toString());
+				logger.info("Screen of id {} is found",screenId);
 				return screen.get();
 			} else {
 				throw new BusinessException("No Record to Fetch");
@@ -137,7 +134,7 @@ public class ScreenServiceImpl implements ScreenService {
 	public List<Screen> getAllScreen() throws BusinessException, ServiceException {
 		try {
 			List<Screen> screens = screenRepository.findAll();
-			if (screens.size() > 0) {
+			if (!screens.isEmpty()) {
 				return screens;
 			} else {
 				throw new BusinessException("No Record to Fetch");

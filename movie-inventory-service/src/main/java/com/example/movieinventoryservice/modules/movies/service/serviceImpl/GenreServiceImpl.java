@@ -111,7 +111,7 @@ public class GenreServiceImpl implements GenreService {
 	public List<Genre> getAllGenres() throws BusinessException,ServiceException {
 		try {
 			List<Genre> genres = genreRepository.findAll();
-			if (genres.size()>0) {
+			if (!genres.isEmpty()) {
 				return genres;
 			} else {
 				throw new BusinessException("No Record to Fetch");

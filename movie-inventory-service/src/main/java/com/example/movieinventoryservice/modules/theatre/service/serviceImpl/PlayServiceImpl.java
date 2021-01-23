@@ -37,7 +37,7 @@ public class PlayServiceImpl implements PlayService{
 	@Autowired
 	private MovieService movieService;
 	
-	private Logger logger = LoggerFactory.getLogger(PlayService.class);
+	private Logger logger = LoggerFactory.getLogger(PlayServiceImpl.class);
 	
 
 	/**
@@ -125,8 +125,7 @@ public class PlayServiceImpl implements PlayService{
 	@Override
 	public Play getPlayById(int playId) throws BusinessException ,ServiceException{
 		try {
-			logger.info("Entered into Play Service - getByid "+playId);
-			logger.info(playRepository.findAll().toString());
+			logger.info("Entered into Play Service - getByid {}",playId);
 			Optional<Play> play = playRepository.findById(playId);
 			if (play.isPresent()) {
 				logger.info(play.get().toString());
@@ -150,7 +149,7 @@ public class PlayServiceImpl implements PlayService{
 	public List<Play> getAllPlay() throws BusinessException,ServiceException {
 		try {
 			List<Play> plays = playRepository.findAll();
-			if (plays.size()>0) {
+			if (!plays.isEmpty()) {
 				return plays;
 			} else {
 				throw new BusinessException("No Record to Fetch");

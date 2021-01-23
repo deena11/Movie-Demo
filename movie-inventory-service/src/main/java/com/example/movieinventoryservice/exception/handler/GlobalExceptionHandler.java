@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 			WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 		
-		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+		String message = ex.getName() + "should be of type " + ex.getRequiredType().getName();
 		 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
 		System.out.println("type mismatch");
 		ApiErrorResponse response = new ApiErrorResponse();
 		
-		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+		String message = ex.getName() + " should be of type" + ex.getRequiredType().getName();
 		 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
@@ -116,7 +116,6 @@ public class GlobalExceptionHandler {
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(ex.getMessage());
 		logger.error("exception occured - ");
-		ex.printStackTrace();
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 		response.setError(true);
 
@@ -154,7 +153,7 @@ public class GlobalExceptionHandler {
 		} else {
 			response.setCause(ex.getLocalizedMessage());
 		}
-		response.setMessage("Something went wrong !!. Record not found.");
+		response.setMessage("Something went wrong !!. Record is Empty.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.NO_CONTENT.toString());
 		response.setError(true);
@@ -275,7 +274,6 @@ public class GlobalExceptionHandler {
 			response.setCause(ex.getLocalizedMessage());
 		}
 		logger.error("exception occured - Nullpointer- ");
-		ex.printStackTrace();
 		response.setMessage("Something went wrong. Object is empty or null.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
@@ -296,7 +294,6 @@ public class GlobalExceptionHandler {
 			response.setCause(ex.getLocalizedMessage());
 		}
 		logger.error("exception occured - Service Error- ");
-		ex.printStackTrace();
 		response.setMessage("Something went wrong. Internal server error.");
 		response.setExceptionMessage(ex.getMessage());
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());

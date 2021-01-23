@@ -111,7 +111,7 @@ public class CastServiceImpl implements CastService {
 	public List<Cast> getAllCasts() throws BusinessException, ServiceException {
 		try {
 			List<Cast> casts = castRepository.findAll();
-			if (casts.size() > 0) {
+			if (!casts.isEmpty()) {
 				return casts;
 			} else {
 				throw new BusinessException("No Record to Fetch");

@@ -47,11 +47,11 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/{commentId}")
-	public ResponseEntity<?> getComment(@PathVariable("commentId") int commentId)
+	public ResponseEntity<ApiSuccessResponse> getComment(@PathVariable("commentId") int commentId)
 			throws BusinessException, ServiceException {
 		String message = "";
 
-		logger.info("Fetching Comment of id - " + commentId + " Request is Processing");
+		logger.info("Fetching Comment of id - {} Request is Processing",commentId);
 		message = "Successfully Fetched Comment Data ";
 
 		return responseBuilder(HttpStatus.OK, message, commentService.getCommentById(commentId));
@@ -64,7 +64,7 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/")
-	public ResponseEntity<?> getAllComment() throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> getAllComment() throws BusinessException, ServiceException {
 
 		String message = "";
 		logger.info("Fetching All Comment Data Request is Processing");
@@ -81,10 +81,10 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addComment(@RequestBody Comment comment) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> addComment(@RequestBody Comment comment) throws BusinessException, ServiceException {
 		String message = "";
 
-		logger.info("Adding Comment of id - " + comment.getId() + " Request is Processing");
+		logger.info("Adding Comment of id - {} Request is Processing",comment.getId() );
 		message = "Successfully Added Comment for movie";
 
 		return responseBuilder(HttpStatus.CREATED, message, commentService.addComment(comment));
@@ -98,10 +98,10 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updateComment(@RequestBody Comment comment) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> updateComment(@RequestBody Comment comment) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Updating Comment of id - " + comment.getId() + " Request is Processing");
+		logger.info("Updating Comment of id - {} Request is Processing",comment.getId() );
 		message = "Successfully Updated Comment ";
 
 		return responseBuilder(HttpStatus.OK, message, commentService.updateComment(comment));
@@ -115,11 +115,11 @@ public class CommentController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity<?> deleteComment(@PathVariable("commentId") int commentId)
+	public ResponseEntity<ApiSuccessResponse> deleteComment(@PathVariable("commentId") int commentId)
 			throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Delete Comment of id - " + commentId + " Request is Processing");
+		logger.info("Delete Comment of id - {} Request is Processing",commentId );
 		message = "Successfully Deleted comment id " + commentId;
 		commentService.deleteComment(commentId);
 
@@ -142,7 +142,6 @@ public class CommentController {
 		response.setSuccess(true);
 		response.setBody(body);
 
-		logger.info("Request is Processed Successfully");
 
 		return ResponseEntity.ok(response);
 	}

@@ -51,7 +51,7 @@ public class TheatreController {
 			throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Fetching Theatre of id - " + theatreId + " Request is Processing");
+		logger.info("Fetching Theatre of id - {}" + theatreId );
 		message = "Successfully Fetched Theatre Data ";
 
 		return responseBuilder(HttpStatus.OK, message, theatreService.getTheatreById(theatreId));
@@ -64,7 +64,7 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/")
-	public ResponseEntity<?> getAllTheatre() throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> getAllTheatre() throws BusinessException, ServiceException {
 
 		String message = "";
 		logger.info("Fetching All Theatre Data Request is Processing");
@@ -81,10 +81,10 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addTheatre(@RequestBody Theatre theatre) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> addTheatre(@RequestBody Theatre theatre) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Adding Theatre of id - " + theatre.getId() + " Request is Processing");
+		logger.info("Adding Theatre of id - {}" , theatre.getId());
 		message = "Successfully Added Theatre - " + theatre.getName();
 
 		return responseBuilder(HttpStatus.CREATED, message, theatreService.addTheatre(theatre));
@@ -98,10 +98,10 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updateTheatre(@RequestBody Theatre theatre) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> updateTheatre(@RequestBody Theatre theatre) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Updating Theatre of id - " + theatre.getId() + " Request is Processing");
+		logger.info("Updating Theatre of id - {}" , theatre.getId());
 		message = "Successfully Updated Theatre - " + theatre.getName();
 
 		return responseBuilder(HttpStatus.OK, message, theatreService.updateTheatre(theatre));
@@ -115,11 +115,11 @@ public class TheatreController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{theatreId}")
-	public ResponseEntity<?> deleteTheatre(@PathVariable("theatreId") int theatreId)
+	public ResponseEntity<ApiSuccessResponse> deleteTheatre(@PathVariable("theatreId") int theatreId)
 			throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Delete Theatre of id - " + theatreId + " Request is Processing");
+		logger.info("Delete Theatre of id - {}" , theatreId );
 		message = "Successfully Deleted theatre id " + theatreId;
 
 		theatreService.deleteTheatre(theatreId);

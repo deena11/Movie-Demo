@@ -98,11 +98,10 @@ public class TheatreServiceImpl implements TheatreService {
 	@Override
 	public Theatre getTheatreById(int theatreId) throws BusinessException ,ServiceException{
 		try {
-			logger.info("Entered into Theatre Service - getByid "+theatreId);
-			logger.info(theatreRepository.findAll().toString());
+			logger.info("Entered into Theatre Service - getByid {}",theatreId);
 			Optional<Theatre> theatre = theatreRepository.findById(theatreId);
 			if (theatre.isPresent()) {
-				logger.info(theatre.get().toString());
+				logger.info("Theatre of id -{} is found",theatreId);
 				return theatre.get();
 			} else {
 				throw new BusinessException("No Record to Fetch");
@@ -123,7 +122,7 @@ public class TheatreServiceImpl implements TheatreService {
 	public List<Theatre> getAllTheatre() throws BusinessException,ServiceException {
 		try {
 			List<Theatre> theatres = theatreRepository.findAll();
-			if (theatres.size()>0) {
+			if (!theatres.isEmpty()) {
 				return theatres;
 			} else {
 				throw new BusinessException("No Record to Fetch");

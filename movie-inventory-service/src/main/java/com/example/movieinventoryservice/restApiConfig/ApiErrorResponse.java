@@ -16,7 +16,6 @@ public class ApiErrorResponse {
 
 	public ApiErrorResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ApiErrorResponse(String message, Object httpStatus, boolean success, boolean error, Object cause,

@@ -62,7 +62,7 @@ public class PlayController {
 			throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Fetching Play of id - " + playId + " Request is Processing");
+		logger.info("Fetching Play of id - {} Request is Processing",playId);
 		message = "Successfully Fetched Play Data ";
 
 		return responseBuilder(HttpStatus.OK, message, playService.getPlayById(playId));
@@ -75,7 +75,7 @@ public class PlayController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/all")
-	public ResponseEntity<?> getAllPlay() throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> getAllPlay() throws BusinessException, ServiceException {
 
 		String message = "";
 		logger.info("Fetching All Play Data Request is Processing");
@@ -92,10 +92,10 @@ public class PlayController {
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addPlay(@RequestBody Play play) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> addPlay(@RequestBody Play play) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Adding Play of id - " + play.getId() + " Request is Processing");
+		logger.info("Adding Play of id - {} Request is Processing", play.getId());
 		message = "Successfully Added Play";
 
 		String kafkamessage = restTemplate.exchange(kafkaUrl + "play/" + "play data Added @" + new Date().toString(),
@@ -113,10 +113,10 @@ public class PlayController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updatePlay(@RequestBody Play play) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> updatePlay(@RequestBody Play play) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Updating Play of id - " + play.getId() + " Request is Processing");
+		logger.info("Updating Play of id - {} Request is Processing", play.getId() );
 		message = "Successfully Updated Play ";
 
 		return responseBuilder(HttpStatus.OK, message, playService.updatePlay(play));
@@ -130,10 +130,10 @@ public class PlayController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{playId}")
-	public ResponseEntity<?> deletePlay(@PathVariable("playId") int playId) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> deletePlay(@PathVariable("playId") int playId) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Delete Play of id - " + playId + " Request is Processing");
+		logger.info("Delete Play of id - {} Request is Processing",playId );
 		message = "Successfully Deleted play id " + playId;
 		playService.deletePlay(playId);
 

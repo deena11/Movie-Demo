@@ -48,10 +48,10 @@ public class MovieController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/{movieId}")
-	public ResponseEntity<?> getMovie(@PathVariable("movieId") int movieId) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> getMovie(@PathVariable("movieId") int movieId) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Fetching Movie of id - " + movieId + " Request is Processing");
+		logger.info("Fetching Movie of id - {} Request is Processing", movieId);
 		message = "Successfully Fetched Movie Data ";
 
 		return responseBuilder(HttpStatus.OK, message, movieService.getMovieById(movieId));
@@ -64,7 +64,7 @@ public class MovieController {
 	 * @throws ServiceException
 	 */
 	@GetMapping("/")
-	public ResponseEntity<?> getAllMovie() throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> getAllMovie() throws BusinessException, ServiceException {
 
 		String message = "";
 		logger.info("Fetching All Movie Data Request is Processing");
@@ -81,10 +81,10 @@ public class MovieController {
 	 * @throws ServiceException
 	 */
 	@PostMapping("/")
-	public ResponseEntity<?> addMovie(@RequestBody Movie movie) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> addMovie(@RequestBody Movie movie) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Adding Movie of id - " + movie.getId() + " Request is Processing");
+		logger.info("Adding Movie of id - {} Request is Processing", movie.getId() );
 		message = "Successfully Added Movie - " + movie.getName();
 
 		return responseBuilder(HttpStatus.CREATED, message, movieService.addMovie(movie));
@@ -98,10 +98,10 @@ public class MovieController {
 	 * @throws ServiceException
 	 */
 	@PutMapping("/")
-	public ResponseEntity<?> updateMovie(@RequestBody Movie movie) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> updateMovie(@RequestBody Movie movie) throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Updating Movie of id - " + movie.getId() + " Request is Processing");
+		logger.info("Updating Movie of id - {} Request is Processing",movie.getId() );
 		message = "Successfully Updated Movie - " + movie.getName();
 
 		return responseBuilder(HttpStatus.OK, message, movieService.updateMovie(movie));
@@ -115,11 +115,11 @@ public class MovieController {
 	 * @throws ServiceException
 	 */
 	@DeleteMapping("/{movieId}")
-	public ResponseEntity<?> deleteMovie(@PathVariable("movieId") int movieId)
+	public ResponseEntity<ApiSuccessResponse> deleteMovie(@PathVariable("movieId") int movieId)
 			throws BusinessException, ServiceException {
 
 		String message = "";
-		logger.info("Delete Movie of id - " + movieId + " Request is Processing");
+		logger.info("Delete Movie of id - {} Request is Processing",movieId);
 		message = "Successfully Deleted movie id " + movieId;
 		movieService.deleteMovie(movieId);
 
@@ -142,7 +142,6 @@ public class MovieController {
 		response.setSuccess(true);
 		response.setBody(body);
 
-		logger.info("Request is Processed Successfully");
 
 		return ResponseEntity.ok(response);
 	}

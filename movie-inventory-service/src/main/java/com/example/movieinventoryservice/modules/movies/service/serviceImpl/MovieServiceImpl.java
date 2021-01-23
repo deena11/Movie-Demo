@@ -60,16 +60,15 @@ public class MovieServiceImpl implements MovieService {
 			});
 			movie.getGenre().forEach(v -> genreRepository.save(v));
 
-			logger.info(movie.getGenre().toString());
 
 			List<Cast> cast = movie.getCast();
 			cast.forEach(v -> v.setId(castRepository.save(v).getId()));
 
-			logger.info(movie.getCast().toString());
-
+			
+			logger.info("Successfully Added Movie Details {}",movie.getName());
 			return movieRepository.save(movie);
+			
 		} catch (DataAccessException ex) {
-			System.out.println(ex.getLocalizedMessage());
 			throw new ServiceException("Failed To Add Movie", ex.getCause());
 		} catch (Exception ex) {
 			throw new BusinessException("Invalid Data");
@@ -169,7 +168,7 @@ public class MovieServiceImpl implements MovieService {
 	public List<Movie> getAllMovies() throws BusinessException, ServiceException {
 		try {
 			List<Movie> movies = movieRepository.findAll();
-			if (movies.size() > 0) {
+			if (!movies.isEmpty()) {
 				return movies;
 			} else {
 				throw new BusinessException("No Record to Fetch");

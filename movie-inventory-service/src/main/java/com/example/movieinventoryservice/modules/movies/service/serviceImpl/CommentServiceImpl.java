@@ -111,7 +111,7 @@ public class CommentServiceImpl implements CommentService {
 	public List<Comment> getAllComments() throws BusinessException, ServiceException {
 		try {
 			List<Comment> comments = commentRepository.findAll();
-			if (comments.size() > 0) {
+			if (!comments.isEmpty()) {
 				return comments;
 			} else {
 				throw new BusinessException("No Record to Fetch");
