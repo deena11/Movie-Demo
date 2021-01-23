@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			if (!validUser(user.getEmail())) {
-				logger.info("email id - {0} is valid", user.getEmail());
+				logger.info("email id - {} is valid", user.getEmail());
 
 				return userRepository.save(user);
 			} else {
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 			}
 		} catch (DataAccessException ex) {
 
-			logger.error(" - {0}", ex.getMessage());
+			logger.error(" - {}", ex.getMessage());
 			throw new ServiceException("Failed to Add due to internal server err");
 		}
 	}
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 				userRepository.save(user);
 				return userRepository.save(user);
 			} else {
-				logger.error("user of id {0} does not exist in database", user.getId());
+				logger.error("user of id {} does not exist in database", user.getId());
 				throw new BusinessException("User Id does not exist cannot update");
 			}
 		} catch (BusinessException ex) {
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		catch (DataAccessException ex) {
-			logger.error("Exception occured while Deleted user - {0}", userId);
+			logger.error("Exception occured while Deleted user - {}", userId);
 			throw new ServiceException("Failed to delete", ex.getCause());
 		}
 	}
@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
 
 		catch (Exception ex) {
 
-			logger.error("Exception occured while Logging out for user -{0}", request.getUserPrincipal().getName());
+			logger.error("Exception occured while Logging out for user -{}", request.getUserPrincipal().getName());
 
 			throw new BusinessException("Failed to Logout", ex.getCause());
 		}
@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
 
 			return user.isPresent();
 		} catch (DataAccessException ex) {
-			logger.error("exception occured while trying to find user by email - {0}", email);
+			logger.error("exception occured while trying to find user by email - {}", email);
 			throw new ServiceException("Unable to Access database");
 		}
 	}

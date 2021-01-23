@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.OK).header("status", String.valueOf(httpStatus)).body(response);
 	}
 
-	private final String typeString = "should be of type ";
+	private static final String TYPE_STRING = "should be of type ";
 
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 			final MethodArgumentTypeMismatchException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
-		String message = ex.getName() + typeString + ex.getRequiredType().getName();
+		String message = ex.getName() + TYPE_STRING + ex.getRequiredType().getName();
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
@@ -72,7 +72,6 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	protected ResponseEntity<Object> handleIllegalStateException(final MethodArgumentTypeMismatchException ex,
 			WebRequest request) {
-//		System.out.println("type mismatch");
 		ApiErrorResponse response = new ApiErrorResponse();
 
 		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
@@ -91,7 +90,7 @@ public class GlobalExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
 		ApiErrorResponse response = new ApiErrorResponse();
-		String message = ex.getParameterName() + typeString + ex.getParameterType();
+		String message = ex.getParameterName() + TYPE_STRING + ex.getParameterType();
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
@@ -108,8 +107,7 @@ public class GlobalExceptionHandler {
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(ex.getMessage());
-		logger.error("exception occured - {0}",ex.getLocalizedMessage());
-//		ex.printStackTrace();
+		logger.error("exception occured - {}",ex.getLocalizedMessage());
 		response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 		response.setError(true);
 

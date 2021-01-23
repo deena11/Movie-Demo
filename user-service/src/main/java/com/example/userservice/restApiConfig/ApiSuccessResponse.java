@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 public class ApiSuccessResponse implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String message;
 
 	private String httpStatus;

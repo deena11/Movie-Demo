@@ -53,7 +53,7 @@ public class UserController {
 	 * @throws BusinessException
 	 */
 	@DeleteMapping("/logout")
-	public ResponseEntity<?> revokeToken(HttpServletRequest request) throws BusinessException {
+	public ResponseEntity<ApiSuccessResponse> revokeToken(HttpServletRequest request) throws BusinessException {
 
 		String message = "";
 		logger.info("Log out Request is Called");
@@ -74,15 +74,15 @@ public class UserController {
 	 */
 	@GetMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
-	public ResponseEntity<?> getUser(@PathVariable("userId") int userId) throws ServiceException, BusinessException {
+	public ResponseEntity<ApiSuccessResponse> getUser(@PathVariable("userId") int userId) throws ServiceException, BusinessException {
 		String message = "";
-		logger.info("fetching user details of id - {0}" , userId);
+		logger.info("fetching user details of id - {}" , userId);
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
 		message = "Successfully fetched user data of id- " + userId;
 		User result = userServiceImpl.fetchById(userId);
 
-		logger.info("SuccessFully Fetched user Data of id -{0} building Success Respone", userId);
+		logger.info("SuccessFully Fetched user Data of id -{} building Success Respone", userId);
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -94,7 +94,7 @@ public class UserController {
 	 */
 	@GetMapping("/") // ()
 	@PreAuthorize("hasRole('ROLE_admin')")
-	public ResponseEntity<?> getAllUser() throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> getAllUser() throws BusinessException, ServiceException {
 
 		String message = "";
 		logger.info("fetching all user details");
@@ -115,7 +115,7 @@ public class UserController {
 	 * @throws ServiceException
 	 */
 	@PostMapping("/add")
-	public ResponseEntity<?> addUser(@Valid @RequestBody User user, BindingResult bindingResult)
+	public ResponseEntity<ApiSuccessResponse> addUser(@Valid @RequestBody User user, BindingResult bindingResult)
 			throws BusinessException, ServiceException {
 
 		if (bindingResult.hasErrors()) {
@@ -128,12 +128,12 @@ public class UserController {
 			throw new BusinessException(errorMessage.toString());
 		}
 		String message = "";
-		logger.info("Adding user Details {0}" ,user.toString());
+		logger.info("Adding user Details {}" ,user.toString());
 
 		message = "Successfully Added Data";
 		User result = userServiceImpl.createUser(user);
 
-		logger.info("SuccessFully Added user id -" + user.getId() + " building Success Respone");
+		logger.info("SuccessFully Added user id -{} building Success Respone",  user.getId());
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -146,14 +146,14 @@ public class UserController {
 	 */
 	@PutMapping("/")
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
-	public ResponseEntity<?> updateUser(@RequestBody User user) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> updateUser(@RequestBody User user) throws BusinessException, ServiceException {
 		String message = "";
-		logger.info("updating user Details for user id -" + user.getId());
+		logger.info("updating user Details for user id -{}" , user.getId());
 
 		message = "Successfully Updated Data";
 		User result = userServiceImpl.updateUser(user);
 
-		logger.info("SuccessFully Updated user id -" + user.getId() + " building Success Respone");
+		logger.info("SuccessFully Updated user id -{}" , user.getId() + " building Success Respone");
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -166,14 +166,14 @@ public class UserController {
 	 */
 	@DeleteMapping("/{userId}")
 	@PreAuthorize("hasRole('ROLE_admin')")
-	public ResponseEntity<?> deleteUser(@PathVariable("userId") int userId) throws BusinessException, ServiceException {
+	public ResponseEntity<ApiSuccessResponse> deleteUser(@PathVariable("userId") int userId) throws BusinessException, ServiceException {
 		String message = "";
-		logger.info("Deleting user of id -{0}" , userId);
+		logger.info("Deleting user of id -{}" , userId);
 
 		message = "Successfully Deleted Data";
 		userServiceImpl.deleteUser(userId);
 
-		logger.info("SuccessFully deleted user id -{0} building Success Respone",userId);
+		logger.info("SuccessFully deleted user id -{} building Success Respone",userId);
 
 		return responseBuilder(message, null, HttpStatus.NO_CONTENT);
 	}
