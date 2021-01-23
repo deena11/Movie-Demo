@@ -45,7 +45,7 @@ public class UserController {
 	@Autowired
 	private UserServiceImpl userServiceImpl;
 
-	private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	/**
 	 * @param request
@@ -56,12 +56,12 @@ public class UserController {
 	public ResponseEntity<?> revokeToken(HttpServletRequest request) throws BusinessException {
 
 		String message = "";
-		LOGGER.info("Log out Request is Called");
+		logger.info("Log out Request is Called");
 
 		message = "Logging out process";
 		userServiceImpl.logout(request);
 
-		LOGGER.info("SuccessFully Logged out user - " + request.getUserPrincipal().getName());
+		logger.info("SuccessFully Logged out user - ", request.getUserPrincipal().getName());
 
 		return responseBuilder(message, null, HttpStatus.OK);
 	}
@@ -76,13 +76,13 @@ public class UserController {
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> getUser(@PathVariable("userId") int userId) throws ServiceException, BusinessException {
 		String message = "";
-		LOGGER.info("fetching user details of id - " + userId);
+		logger.info("fetching user details of id - {0}" , userId);
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);
 		message = "Successfully fetched user data of id- " + userId;
 		User result = userServiceImpl.fetchById(userId);
 
-		LOGGER.info("SuccessFully Fetched user Data of id -" + userId + " building Success Respone");
+		logger.info("SuccessFully Fetched user Data of id -{0} building Success Respone", userId);
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -97,12 +97,12 @@ public class UserController {
 	public ResponseEntity<?> getAllUser() throws BusinessException, ServiceException {
 
 		String message = "";
-		LOGGER.info("fetching all user details");
+		logger.info("fetching all user details");
 
 		message = "Successfully fetched Data";
 		List<User> result = userServiceImpl.fetchAll();
 
-		LOGGER.info("SuccessFully Fetched All users. building Success Respone");
+		logger.info("SuccessFully Fetched All users. building Success Respone");
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -124,16 +124,16 @@ public class UserController {
 			for (FieldError error : errors) {
 				errorMessage.append(error.getDefaultMessage() + " ");
 			}
-			LOGGER.error("Error: {}", errorMessage);
+			logger.error("Error: {}", errorMessage);
 			throw new BusinessException(errorMessage.toString());
 		}
 		String message = "";
-		LOGGER.info("Adding user Details " + user.toString());
+		logger.info("Adding user Details {0}" ,user.toString());
 
 		message = "Successfully Added Data";
 		User result = userServiceImpl.createUser(user);
 
-		LOGGER.info("SuccessFully Added user id -" + user.getId() + " building Success Respone");
+		logger.info("SuccessFully Added user id -" + user.getId() + " building Success Respone");
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -148,12 +148,12 @@ public class UserController {
 	@PreAuthorize("hasRole('ROLE_user') or hasRole('ROLE_admin')")
 	public ResponseEntity<?> updateUser(@RequestBody User user) throws BusinessException, ServiceException {
 		String message = "";
-		LOGGER.info("updating user Details for user id -" + user.getId());
+		logger.info("updating user Details for user id -" + user.getId());
 
 		message = "Successfully Updated Data";
 		User result = userServiceImpl.updateUser(user);
 
-		LOGGER.info("SuccessFully Updated user id -" + user.getId() + " building Success Respone");
+		logger.info("SuccessFully Updated user id -" + user.getId() + " building Success Respone");
 
 		return responseBuilder(message, result, HttpStatus.OK);
 	}
@@ -168,12 +168,12 @@ public class UserController {
 	@PreAuthorize("hasRole('ROLE_admin')")
 	public ResponseEntity<?> deleteUser(@PathVariable("userId") int userId) throws BusinessException, ServiceException {
 		String message = "";
-		LOGGER.info("Deleting user of id -" + userId);
+		logger.info("Deleting user of id -{0}" , userId);
 
 		message = "Successfully Deleted Data";
 		userServiceImpl.deleteUser(userId);
 
-		LOGGER.info("SuccessFully deleted user id -" + userId + " building Success Respone");
+		logger.info("SuccessFully deleted user id -{0} building Success Respone",userId);
 
 		return responseBuilder(message, null, HttpStatus.NO_CONTENT);
 	}
@@ -186,7 +186,7 @@ public class UserController {
 	 */
 	private ResponseEntity<ApiSuccessResponse> responseBuilder(String message, Object body, HttpStatus status) {
 
-		LOGGER.info("Success Response is Building");
+		logger.info("Success Response is Building");
 
 		ApiSuccessResponse response = new ApiSuccessResponse();
 		response.setError(false);

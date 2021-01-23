@@ -23,11 +23,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 
-	
-	/* @author M1053559
+	/*
+	 * @author M1053559
 	 *
 	 * @param name
+	 * 
 	 * @return
+	 * 
 	 * @throws UsernameNotFoundException
 	 */
 	@Override
@@ -35,12 +37,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 		Optional<User> optionalUser = userRepository.findByUsername(name);
 
-		optionalUser.orElseThrow(() -> new UsernameNotFoundException("Username or password wrong"));
-
-		System.out.println(optionalUser.get().toString());
-		UserDetails userDetails = new AuthUserDetails(optionalUser.get());
-		new AccountStatusUserDetailsChecker().check(userDetails);
-		return userDetails;
+		if (optionalUser.isPresent()) {
+//			System.out.println(optionalUser.get().toString());
+			UserDetails userDetails = new AuthUserDetails(optionalUser.get());
+			new AccountStatusUserDetailsChecker().check(userDetails);
+			return userDetails;
+		} else {
+			throw new UsernameNotFoundException("Username or password wrong");
+		}
 
 	}
 
