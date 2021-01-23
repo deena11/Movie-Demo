@@ -38,7 +38,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		Optional<User> optionalUser = userRepository.findByUsername(name);
 
 		if (optionalUser.isPresent()) {
-//			System.out.println(optionalUser.get().toString());
 			UserDetails userDetails = new AuthUserDetails(optionalUser.get());
 			new AccountStatusUserDetailsChecker().check(userDetails);
 			return userDetails;

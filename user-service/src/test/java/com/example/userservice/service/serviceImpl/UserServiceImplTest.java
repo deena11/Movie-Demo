@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +42,9 @@ public class UserServiceImplTest {
 	
 	@MockBean
 	private TokenStore tokenStore;
+	
+	@MockBean
+	private HttpServletRequest httpServletRequest;
 
 	@Before
 	public void setUp() throws Exception {
@@ -127,10 +132,35 @@ public class UserServiceImplTest {
 		Mockito.verify(userRepository,Mockito.times(1)).deleteById(Mockito.any());
 	}
 	
+	@Test(expected = BusinessException.class)
+	public void testDeleteUserException() throws Exception {
+		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+		userService.deleteUser(1);
+		Mockito.verify(userRepository,Mockito.times(1)).deleteById(Mockito.any());
+	}
+	
+	@Test(expected = ServiceException.class)
+	public void testDeleteServiceException() throws Exception {
+		Mockito.when(userRepository.findById(Mockito.anyInt())).thenThrow(Mockito.mock(DataAccessException.class));
+		userService.deleteUser(1);
+		Mockito.verify(userRepository,Mockito.times(1)).deleteById(Mockito.any());
+	}
+	
 	@Test
 	public void validEmail() throws Exception{
 		Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(getUser()));
 		assertTrue(userService.validUser("test@gmail.com"));
+	}
+	
+	@Test(expected = ServiceException.class)
+	public void validEmailServiceException() throws Exception{
+		Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenThrow(Mockito.mock(DataAccessException.class));
+		assertTrue(userService.validUser("test@gmail.com"));
+	}
+	
+	@Test
+	public void logoutTest() throws BusinessException {
+		userService.logout(httpServletRequest);
 	}
 
 	
