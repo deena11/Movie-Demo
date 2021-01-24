@@ -89,8 +89,6 @@ public class BookingServiceImpl implements BookingService {
 				kafkaMessage(apiResponse);
 				return bookingRepository.save(booking);
 
-
-
 			} else {
 				throw new InValidRequestException(" Required Seats are  Unavailable seats are full");
 			}
@@ -105,8 +103,7 @@ public class BookingServiceImpl implements BookingService {
 
 	private void kafkaMessage(APISuccessResponse apiResponse) {
 		try {
-			restTemplate.exchange(kafkaUrl + apiResponse.getBody().toString(), HttpMethod.GET, null,
-					String.class);
+			restTemplate.exchange(kafkaUrl + apiResponse.getBody().toString(), HttpMethod.GET, null, String.class);
 		} catch (Exception ex) {
 			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 		}
@@ -216,7 +213,6 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException("No Booking Data found for the id - " + bookingId);
 			}
 
-
 			Play play = getPlayById(booking.get().getPlayId(), request);
 
 			play.setSeatsAvailable(play.getSeatsAvailable() + booking.get().getSeatCount());
@@ -238,12 +234,14 @@ public class BookingServiceImpl implements BookingService {
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
-	 
-//	private Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
-//		return new ObjectMapper().readValue(response, Play.class);
-//	}
-
-	/**
+	 * 
+	 *                              // private Play getPlayObjcetMapper(String
+	 *                              response) throws JsonParseException,
+	 *                              JsonMappingException, IOException { // return
+	 *                              new ObjectMapper().readValue(response,
+	 *                              Play.class); // }
+	 * 
+	 *                              /**
 	 * @param request
 	 * @return HttpHeader to build header for RestTemplate
 	 */
@@ -262,7 +260,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @param playId
 	 * @param request
 	 * @return Play to fetch play data by playid
-	 * @throws BookingServiceDaoException 
+	 * @throws BookingServiceDaoException
 	 */
 	private Play getPlayById(int playId, HttpServletRequest request) throws BookingServiceDaoException {
 
@@ -270,14 +268,12 @@ public class BookingServiceImpl implements BookingService {
 
 		APISuccessResponse response = restTemplate
 				.exchange(playUrl + playId, HttpMethod.GET, requestEntity, APISuccessResponse.class).getBody();
-
-		if (response!=null && response.getHttpStatus().equals(HttpStatus.OK.toString())) {
+		if (response != null && response.getBody() != null) {
 			return objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
 			});
 		}else {
-			throw new BookingServiceDaoException("Invalid Response Internal server error");
+			throw new BookingServiceDaoException("Internal server error");
 		}
-
 	}
 
 	/**
@@ -289,8 +285,7 @@ public class BookingServiceImpl implements BookingService {
 
 		HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
 
-		return restTemplate
-				.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
+		return restTemplate.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
 
 	}
 

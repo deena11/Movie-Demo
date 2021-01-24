@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 			}
 		} catch (DataAccessException ex) {
 
-			logger.error(" - {}", ex.getMessage());
+//			logger.error(" - {}", ex.getMessage());
 			throw new ServiceException("Failed to Add due to internal server err");
 		}
 	}
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException("User Id does not exist cannot update");
 
 		} catch (DataAccessException ex) {
-			logger.error(EXCEPTION_MESSAGE, ex.getMessage());
+//			logger.error(EXCEPTION_MESSAGE, ex.getMessage());
 			throw new ServiceException("Failed to Update due to internal server err");
 		}
 
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		catch (DataAccessException ex) {
-			logger.error("Exception occured while Deleted user - {}", userId);
+//			logger.error("Exception occured while Deleted user - {}", userId);
 			throw new ServiceException("Failed to delete", ex.getCause());
 		}
 	}
