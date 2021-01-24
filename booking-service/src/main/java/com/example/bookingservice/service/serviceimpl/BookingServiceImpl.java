@@ -24,7 +24,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.bookingservice.dto.Play;
 import com.example.bookingservice.exception.BookingServiceDaoException;
 import com.example.bookingservice.exception.InValidRequestException;
-import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.model.Booking;
 import com.example.bookingservice.repository.BookingRepository;
 import com.example.bookingservice.response.APISuccessResponse;
@@ -79,7 +78,6 @@ public class BookingServiceImpl implements BookingService {
 	@Transactional
 	public Booking addBooking(Booking booking, HttpServletRequest request) throws BookingServiceDaoException {
 		try {
-			logger.info("Adding booking data for play id -" + booking.getPlayId());
 
 			Play play = getPlayById(booking.getPlayId(), request);
 
@@ -125,7 +123,6 @@ public class BookingServiceImpl implements BookingService {
 	@Transactional
 	public List<Booking> getAllBooking() throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("fetching all booking service request is processing");
 			List<Booking> bookings = bookingRepository.findAll();
 			if (!bookings.isEmpty()) {
 				return bookings;
@@ -151,7 +148,6 @@ public class BookingServiceImpl implements BookingService {
 	public Booking getBookingById(int bookingId, HttpServletRequest request)
 			throws InValidRequestException, BookingServiceDaoException {
 		try {
-			logger.info("fetching booking details fof id - " + bookingId);
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (booking.isPresent()) {
 				return booking.get();
@@ -178,7 +174,6 @@ public class BookingServiceImpl implements BookingService {
 	public Booking updateBooking(Booking booking, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("updating booking of id " + booking.getId());
 
 			Play play = getPlayById(booking.getPlayId(), request);
 
@@ -215,14 +210,12 @@ public class BookingServiceImpl implements BookingService {
 	public String deleteBooking(int bookingId, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("deleting booking of id -" + bookingId);
 
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (!booking.isPresent()) {
 				throw new InValidRequestException("No Booking Data found for the id - " + bookingId);
 			}
 
-			logger.info(booking.get().toString());
 
 			Play play = getPlayById(booking.get().getPlayId(), request);
 
@@ -245,10 +238,10 @@ public class BookingServiceImpl implements BookingService {
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
-	 */
-	private Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
-		return new ObjectMapper().readValue(response, Play.class);
-	}
+	 
+//	private Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
+//		return new ObjectMapper().readValue(response, Play.class);
+//	}
 
 	/**
 	 * @param request
