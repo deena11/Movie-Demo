@@ -88,15 +88,9 @@ public class BookingServiceImpl implements BookingService {
 				play.setSeatsAvailable(play.getSeatsAvailable() - booking.getSeatCount());
 
 				APISuccessResponse apiResponse = updateSeatsInPlay(play, request);
-				try {
-					restTemplate.exchange(kafkaUrl + apiResponse.getBody().toString(), HttpMethod.GET, null,
-							String.class);
-				} catch (Exception ex) {
-					logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
-				}
+				kafkaMessage(apiResponse);
 				return bookingRepository.save(booking);
 
-//            	  webClientBuilder.build().get().uri("http://kafka-service/kafka/publish/"+bookingResponse.toString()).retrieve().bodyToMono(String.class);
 
 
 			} else {
@@ -104,13 +98,20 @@ public class BookingServiceImpl implements BookingService {
 			}
 
 		} catch (DataAccessException ex) {
-			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException("Failed to Book", ex.getCause());
 		} catch (Exception ex) {
-			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException(ex.getMessage(), ex.getCause());
 		}
 
+	}
+
+	private void kafkaMessage(APISuccessResponse apiResponse) {
+		try {
+			restTemplate.exchange(kafkaUrl + apiResponse.getBody().toString(), HttpMethod.GET, null,
+					String.class);
+		} catch (Exception ex) {
+			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
+		}
 	}
 
 	/**
@@ -132,7 +133,6 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException("No Bookings Data the list is empty");
 			}
 		} catch (DataAccessException ex) {
-			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException("Failed to fetch all Booking ", ex.getCause());
 		}
 	}
@@ -159,7 +159,6 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException("No Record Found for the id - " + bookingId);
 			}
 		} catch (DataAccessException ex) {
-			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException("Failed to fetch Booking of id " + bookingId, ex.getCause());
 		}
 	}
@@ -248,8 +247,7 @@ public class BookingServiceImpl implements BookingService {
 	 * @throws IOException
 	 */
 	private Play getPlayObjcetMapper(String response) throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(response, Play.class);
+		return new ObjectMapper().readValue(response, Play.class);
 	}
 
 	/**
