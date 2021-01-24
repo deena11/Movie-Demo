@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 			final MethodArgumentTypeMismatchException ex, WebRequest request) {
 		ApiErrorResponse response = new ApiErrorResponse();
 
-		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+		String message = ex.getName() +ex.getRequiredType().getName();
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
 		System.out.println("type mismatch");
 		ApiErrorResponse response = new ApiErrorResponse();
 
-		String message = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+		String message = ex.getName() + "should be of type" + ex.getRequiredType().getName();
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
 		ApiErrorResponse response = new ApiErrorResponse();
-		String message = ex.getParameterName() + " should be of type " + ex.getParameterType();
+		String message = ex.getParameterName() + "should be of type" + ex.getParameterType();
 
 		response.setCause(ex.getLocalizedMessage());
 		response.setMessage(message);

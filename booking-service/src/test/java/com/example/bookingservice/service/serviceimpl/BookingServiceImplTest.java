@@ -190,6 +190,7 @@ public class BookingServiceImplTest {
 		response.setBody(getPlay());
 		
 		response.setMessage("success");
+		response.setHttpStatus(HttpStatus.OK.toString());
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	

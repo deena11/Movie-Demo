@@ -59,6 +59,9 @@ public class BookingControllerTest {
 	
 	@Autowired
 	private BookingService bookingService;
+	
+	@Autowired
+	private BookingController bookingController;
 
 	@MockBean
 	private BookingRepository bookingRepository;
@@ -198,6 +201,12 @@ public class BookingControllerTest {
 
 	}
 
+	@Test
+	public void testFallbackResponse() throws Exception {
+		
+		assertTrue(bookingController.fallBackResponse().toString().contains("message"));
+
+	}
 	public String getBookingsAsJson() {
 		try {
 			return new ObjectMapper().writeValueAsString(getBooking());
@@ -234,6 +243,7 @@ public class BookingControllerTest {
 		response.setBody(getPlay());
 		
 		response.setMessage("success");
+		response.setHttpStatus(HttpStatus.OK.toString());
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 

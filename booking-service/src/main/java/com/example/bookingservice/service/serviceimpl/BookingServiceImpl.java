@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.bookingservice.dto.Play;
 import com.example.bookingservice.exception.BookingServiceDaoException;
 import com.example.bookingservice.exception.InValidRequestException;
+import com.example.bookingservice.exception.ServiceException;
 import com.example.bookingservice.model.Booking;
 import com.example.bookingservice.repository.BookingRepository;
 import com.example.bookingservice.response.APISuccessResponse;
@@ -39,6 +41,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Service
 public class BookingServiceImpl implements BookingService {
+
+	private static final String CAUSE = "cause ";
+
+	private static final String MESSAGE = "message ";
 
 	@Value("${play.url}")
 	private String playUrl;
@@ -73,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
 	@Transactional
 	public Booking addBooking(Booking booking, HttpServletRequest request) throws BookingServiceDaoException {
 		try {
-			logger.info("Adding booking data for play id -"+booking.getPlayId());
+			logger.info("Adding booking data for play id -" + booking.getPlayId());
 
 			Play play = getPlayById(booking.getPlayId(), request);
 
@@ -86,23 +92,22 @@ public class BookingServiceImpl implements BookingService {
 					restTemplate.exchange(kafkaUrl + apiResponse.getBody().toString(), HttpMethod.GET, null,
 							String.class);
 				} catch (Exception ex) {
-					logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
+					logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 				}
-				Booking bookingResponse = bookingRepository.save(booking);
+				return bookingRepository.save(booking);
 
 //            	  webClientBuilder.build().get().uri("http://kafka-service/kafka/publish/"+bookingResponse.toString()).retrieve().bodyToMono(String.class);
 
-				return bookingResponse;
 
 			} else {
 				throw new InValidRequestException(" Required Seats are  Unavailable seats are full");
 			}
 
 		} catch (DataAccessException ex) {
-			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
+			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException("Failed to Book", ex.getCause());
 		} catch (Exception ex) {
-			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
+			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException(ex.getMessage(), ex.getCause());
 		}
 
@@ -121,13 +126,13 @@ public class BookingServiceImpl implements BookingService {
 		try {
 			logger.info("fetching all booking service request is processing");
 			List<Booking> bookings = bookingRepository.findAll();
-			if (bookings.size() > 0) {
+			if (!bookings.isEmpty()) {
 				return bookings;
 			} else {
 				throw new InValidRequestException("No Bookings Data the list is empty");
 			}
 		} catch (DataAccessException ex) {
-			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
+			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException("Failed to fetch all Booking ", ex.getCause());
 		}
 	}
@@ -146,7 +151,7 @@ public class BookingServiceImpl implements BookingService {
 	public Booking getBookingById(int bookingId, HttpServletRequest request)
 			throws InValidRequestException, BookingServiceDaoException {
 		try {
-			logger.info("fetching booking details fof id - "+bookingId);
+			logger.info("fetching booking details fof id - " + bookingId);
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (booking.isPresent()) {
 				return booking.get();
@@ -154,7 +159,7 @@ public class BookingServiceImpl implements BookingService {
 				throw new InValidRequestException("No Record Found for the id - " + bookingId);
 			}
 		} catch (DataAccessException ex) {
-			logger.error("message " + ex.getMessage() + "cause " + ex.getCause());
+			logger.error(MESSAGE + ex.getMessage() + CAUSE + ex.getCause());
 			throw new BookingServiceDaoException("Failed to fetch Booking of id " + bookingId, ex.getCause());
 		}
 	}
@@ -174,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
 	public Booking updateBooking(Booking booking, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("updating booking of id "+booking.getId());
+			logger.info("updating booking of id " + booking.getId());
 
 			Play play = getPlayById(booking.getPlayId(), request);
 
@@ -211,7 +216,7 @@ public class BookingServiceImpl implements BookingService {
 	public String deleteBooking(int bookingId, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		try {
-			logger.info("deleting booking of id -"+bookingId);
+			logger.info("deleting booking of id -" + bookingId);
 
 			Optional<Booking> booking = bookingRepository.findById(bookingId);
 			if (!booking.isPresent()) {
@@ -220,18 +225,15 @@ public class BookingServiceImpl implements BookingService {
 
 			logger.info(booking.get().toString());
 
-
 			Play play = getPlayById(booking.get().getPlayId(), request);
 
 			play.setSeatsAvailable(play.getSeatsAvailable() + booking.get().getSeatCount());
 
 			updateSeatsInPlay(play, request);
 
-
 			bookingRepository.deleteById(bookingId);
 
 			return "Successfully deleted booking of id - " + bookingId;
-
 
 		} catch (DataAccessException ex) {
 			throw new BookingServiceDaoException("Failed to Delete Booking", ex.getCause());
@@ -269,18 +271,22 @@ public class BookingServiceImpl implements BookingService {
 	 * @param playId
 	 * @param request
 	 * @return Play to fetch play data by playid
+	 * @throws BookingServiceDaoException 
 	 */
-	private Play getPlayById(int playId, HttpServletRequest request) {
+	private Play getPlayById(int playId, HttpServletRequest request) throws BookingServiceDaoException {
 
 		HttpEntity requestEntity = new HttpEntity(buildHeader(request));
 
 		APISuccessResponse response = restTemplate
 				.exchange(playUrl + playId, HttpMethod.GET, requestEntity, APISuccessResponse.class).getBody();
 
-		Play play = objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
-		});
+		if (response!=null && response.getHttpStatus().equals(HttpStatus.OK.toString())) {
+			return objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
+			});
+		}else {
+			throw new BookingServiceDaoException("Invalid Response Internal server error");
+		}
 
-		return play;
 	}
 
 	/**
@@ -292,12 +298,9 @@ public class BookingServiceImpl implements BookingService {
 
 		HttpEntity<Play> updateRequest = new HttpEntity<>(play, buildHeader(request));
 
-		APISuccessResponse apiResponse = restTemplate
+		return restTemplate
 				.exchange(playUrl, HttpMethod.PUT, updateRequest, APISuccessResponse.class).getBody();
 
-		logger.info(apiResponse.toString());
-
-		return apiResponse;
 	}
 
 }

@@ -55,7 +55,7 @@ public class BookingController {
 	@PostMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponseBooking", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
-	public ResponseEntity<?> addBooking(@RequestBody Booking booking, HttpServletRequest request)
+	public ResponseEntity<APISuccessResponse> addBooking(@RequestBody Booking booking, HttpServletRequest request)
 			throws BookingServiceDaoException {
 
 		String message = "";
@@ -79,7 +79,7 @@ public class BookingController {
 	@GetMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
-	public ResponseEntity<?> getAllBooking() throws BookingServiceDaoException, InValidRequestException {
+	public ResponseEntity<APISuccessResponse> getAllBooking() throws BookingServiceDaoException, InValidRequestException {
 		String message = "";
 
 		logger.info("Get All booking Data Request is Processing");
@@ -103,7 +103,7 @@ public class BookingController {
 	@GetMapping("/{bookingId}")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
-	public ResponseEntity<?> getBookingById(@PathVariable int bookingId, HttpServletRequest request)
+	public ResponseEntity<APISuccessResponse> getBookingById(@PathVariable int bookingId, HttpServletRequest request)
 			throws InValidRequestException, BookingServiceDaoException {
 		String message = "";
 
@@ -128,7 +128,7 @@ public class BookingController {
 	@PutMapping("/")
 	@HystrixCommand(fallbackMethod = "fallBackResponseBooking", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
-	public ResponseEntity<?> updateBooking(@RequestBody Booking booking, HttpServletRequest request)
+	public ResponseEntity<APISuccessResponse> updateBooking(@RequestBody Booking booking, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		
 		String message = "";
@@ -154,7 +154,7 @@ public class BookingController {
 	@DeleteMapping("/{bookingId}")
 	@HystrixCommand(fallbackMethod = "fallBackResponse", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000") })
-	public ResponseEntity<?> deleteUser(@PathVariable int bookingId, HttpServletRequest request)
+	public ResponseEntity<APISuccessResponse> deleteUser(@PathVariable int bookingId, HttpServletRequest request)
 			throws BookingServiceDaoException, InValidRequestException {
 		
 		String message = "";
@@ -174,7 +174,7 @@ public class BookingController {
 	 * @param request
 	 * @return fallback response
 	 */
-	public ResponseEntity<?> fallBackResponse(int bookingId, HttpServletRequest request) {
+	public ResponseEntity<ApiErrorResponse> fallBackResponse(int bookingId, HttpServletRequest request) {
 
 		logger.info("Fallback Service is Called  for booking id -"+bookingId);
 		return fallbackResponseBuilder();
@@ -185,7 +185,7 @@ public class BookingController {
 	 * @param request
 	 * @return
 	 */
-	public ResponseEntity<?> fallBackResponseBooking(Booking booking, HttpServletRequest request) {
+	public ResponseEntity<ApiErrorResponse> fallBackResponseBooking(Booking booking, HttpServletRequest request) {
 
 		logger.info("Fallback Service is Called for booking id - "+booking.getId());
 		return fallbackResponseBuilder();
@@ -195,7 +195,7 @@ public class BookingController {
 	 * @Description fallback response 
 	 * 
 	 */
-	public ResponseEntity<?> fallBackResponse() {
+	public ResponseEntity<ApiErrorResponse> fallBackResponse() {
 
 		logger.info("Fallback Service is Called  ");
 		return fallbackResponseBuilder();
