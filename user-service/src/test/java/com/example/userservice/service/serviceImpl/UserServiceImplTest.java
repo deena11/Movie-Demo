@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.exceptions.base.MockitoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -120,6 +121,13 @@ public class UserServiceImplTest {
 
 	}
 
+	@Test(expected=BusinessException.class)
+	public void testUpdateUserException1() throws Exception {
+
+		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+		userService.updateUser(getUser());
+	}
+	
 	@Test(expected=ServiceException.class)
 	public void testUpdateUserException() throws Exception {
 		Mockito.when(userRepository.save(Mockito.any(User.class))).thenThrow(Mockito.mock(DataAccessException.class));
@@ -158,8 +166,17 @@ public class UserServiceImplTest {
 		assertTrue(userService.validUser("test@gmail.com"));
 	}
 	
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void logoutTest() throws BusinessException {
+
+		Mockito.when(httpServletRequest.getHeader(Mockito.anyString())).thenReturn("Bearer test1234");
+		userService.logout(httpServletRequest);
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void logoutTestException() throws BusinessException {
+
+		Mockito.when(httpServletRequest.getHeader(Mockito.anyString())).thenThrow(Mockito.mock(NullPointerException.class));
 		userService.logout(httpServletRequest);
 	}
 

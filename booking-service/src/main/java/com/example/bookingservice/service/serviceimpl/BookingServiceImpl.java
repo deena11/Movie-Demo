@@ -268,12 +268,8 @@ public class BookingServiceImpl implements BookingService {
 
 		APISuccessResponse response = restTemplate
 				.exchange(playUrl + playId, HttpMethod.GET, requestEntity, APISuccessResponse.class).getBody();
-		if (response != null && response.getBody() != null) {
 			return objectMapper.convertValue(response.getBody(), new TypeReference<Play>() {
 			});
-		}else {
-			throw new BookingServiceDaoException("Internal server error");
-		}
 	}
 
 	/**

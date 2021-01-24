@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.junit.Before;
@@ -63,6 +64,9 @@ public class UserControllerTest {
 	@Autowired
 	private UserDetailsService userDetailService;
 	
+	@MockBean
+	private HttpServletRequest httpServletRequest;
+	
 	@Before
 	public void setUp() throws Exception {
 		List<User> users = new ArrayList<>();
@@ -72,6 +76,8 @@ public class UserControllerTest {
 		Mockito.when(userRepository.getOne(Mockito.anyInt())).thenReturn(getUser());
 		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getUser()));
 		Mockito.when(userRepository.findAll()).thenReturn(users);
+		
+	
 	}
 
 	@Test
@@ -183,6 +189,18 @@ public class UserControllerTest {
 				.andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 		assertTrue(result.getResponse().getContentAsString().contains("Successfully Deleted"));
+
+	}
+	
+	@Test
+	@WithMockUser(username="user",roles="admin")
+	public void testLogout() throws Exception {
+		
+		Mockito.when(httpServletRequest.getHeader(Mockito.anyString())).thenThrow(Mockito.mock(DataAccessException.class));
+		
+		MvcResult result = this.mockMvc.perform(delete("/users/v1/logout")).andExpect(MockMvcResultMatchers.status().isOk())
+				.andReturn();
+		System.out.println(result.getResponse().getContentAsString());
 
 	}
 
